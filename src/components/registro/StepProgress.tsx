@@ -6,6 +6,7 @@ import { CheckIcon } from '@heroicons/react/24/solid';
 import { Form1 } from './Form1';
 import Modal from "@/components/Modals/ModalProps"; 
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import SubmitButton from './SubmitButton';
 
 
 function FormStep2() {
@@ -115,7 +116,9 @@ export default function StepperFormWizard() {
         >
           Siguiente
         </button>
-
+        <div className={`${step !== steps.length ? 'hidden' : 'block'}`}>
+        <SubmitButton/>
+        </div>
         <a
         href="#"
         onClick={openModal}
