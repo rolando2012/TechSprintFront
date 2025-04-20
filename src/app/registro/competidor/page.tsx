@@ -9,6 +9,7 @@ export default function RegistroCompetidor() {
       <div className="w-full max-w-4xl bg-white shadow-md px-4 sm:px-6 py-6 mb-6 rounded-2xl">
         <StepProgress />
       </div>
+      
     </main>
 
     );

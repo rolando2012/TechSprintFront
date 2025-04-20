@@ -1,21 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { CheckIcon } from '@heroicons/react/24/solid';
 import { Form1 } from './Form1';
+import Modal from "@/components/Modals/ModalProps"; 
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
-function FormStep1() {
-  return (
-    <div>
-      <h2 className="text-lg font-semibold mb-2">Formulario Paso 1</h2>
-      <input
-        type="text"
-        placeholder="Campo del paso 1"
-        className="w-full p-2 border rounded"
-      />
-    </div>
-  );
-}
 
 function FormStep2() {
   return (
@@ -46,6 +37,12 @@ function FormStep3() {
 export default function StepperFormWizard() {
   const [step, setStep] = useState<number>(1);
   const steps = [1, 2, 3];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevenir la navegación
+    setIsModalOpen(true);
+  };
 
   const handleNext = () => setStep((s) => Math.min(s + 1, steps.length));
   const handlePrev = () => setStep((s) => Math.max(s - 1, 1));
@@ -103,21 +100,40 @@ export default function StepperFormWizard() {
       <div className="mb-6">{renderForm()}</div>
 
       {/* Botones de navegación */}
-      <div className="flex justify-between">
+      <div className="flex items-center gap-x-2">
         <button
           onClick={handlePrev}
-          disabled={step === 1}
-          className="px-4 py-2 bg-bright-gray-400 text-white rounded-2xl disabled:opacity-50"
+         
+          className={`px-4 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl ${step === 1 ? 'hidden' : 'block'}`}
         >
           Anterior
         </button>
         <button
           onClick={handleNext}
-          disabled={step === steps.length}
-          className="px-4 py-2 bg-boton text-white rounded-2xl disabled:opacity-50"
+         
+          className={`px-4 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl disabled:opacity-50 ${step === steps.length ? 'hidden' : 'block'}`}
         >
           Siguiente
         </button>
+
+        <a
+        href="#"
+        onClick={openModal}
+        className="px-4 py-2 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl disabled:opacity-50"
+      >
+        Cancelar
+      </a>
+
+      {isModalOpen && (
+        <Modal  onClose={() => setIsModalOpen(false)}>
+            
+        <ExclamationCircleIcon className="w-16 h-16 text-white-500 mb-4" />
+          <p>¿Estás suguro de cancelar el registro?</p>
+          <Link href="/" className="mt-4 px-4 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl">
+            Sí, estoy seguro
+          </Link>
+        </Modal>
+      )}
       </div>
     </div>
   );
