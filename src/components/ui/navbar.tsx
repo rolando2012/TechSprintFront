@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -28,7 +29,7 @@ const Navbar: React.FC = () => {
     <nav className="bg-bright-gray-900 text-bright-gray-50 font-adlam">
       <div className="container px-4 md:flex items-center gap-6">
         <div className="flex items-center  md:w-auto w-full">
-          
+
           {/* mobile menu icon */}
           <div className="md:hidden flex items-center">
             <button 
@@ -36,7 +37,9 @@ const Navbar: React.FC = () => {
               className="mobile-menu-button"
               onClick={toggleMobileMenu}
             >
+              <Bars3BottomLeftIcon className="h-6 w-6 text-bright-gray-50" />
             </button>
+            
           </div>
         </div>
         <div className={`${mobileMenuOpen ? 'flex' : 'hidden'} md:flex md:flex-row flex-col items-center justify-start md:space-x-1 pb-3 md:pb-0 navigation-menu`}>
