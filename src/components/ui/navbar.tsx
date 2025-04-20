@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
 import { adlam } from "@/config/fonts";
