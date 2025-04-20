@@ -27,4 +27,5 @@ const FormStep1 = forwardRef<HTMLFormElement, Props>(({ onSubmitSuccess }, ref) 
   );
 });
 
+FormStep1.displayName = 'FormStep1'; 
 export default FormStep1;
