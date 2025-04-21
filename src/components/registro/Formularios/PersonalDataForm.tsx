@@ -1,5 +1,11 @@
 import { useState } from 'react';
 import { z } from 'zod';
+import { forwardRef } from 'react';
+
+type Props = {
+  onSubmitSuccess: () => void;
+};
+
 
 // Define validation schema
 const personalDataSchema = z.object({
@@ -17,7 +23,7 @@ const personalDataSchema = z.object({
 
 type PersonalData = z.infer<typeof personalDataSchema>;
 
-const PersonalDataForm = () => {
+const PersonalDataForm = forwardRef<HTMLFormElement, Props>(({ onSubmitSuccess }, ref) => {
   const [formData, setFormData] = useState<PersonalData>({
     nombre: '',
     apellido: '',
@@ -88,17 +94,17 @@ const PersonalDataForm = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (validateForm()) {
+    // if (validateForm()) {
       console.log('Form data is valid:', formData);
       // Here you would typically submit the form or move to the next step
       alert('Formulario válido. Pasando a la siguiente página...');
-      
-    } else {
-      console.log('Form data is invalid');
-    }
+      onSubmitSuccess();
+    // } else {
+    //   console.log('Form data is invalid');
+    // }
   };
 
 
@@ -106,7 +112,7 @@ const PersonalDataForm = () => {
     <div className="max-w-lg mx-auto bg-gray-100 p-6 rounded-md">
       <h2 className="text-lg font-medium text-gray-700 mb-4">Datos personales</h2>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form ref={ref} onSubmit={handleSubmit} className="space-y-4">
         <div className="relative">
           <div className="flex items-center">
             <div className="w-8 h-8 flex items-center justify-center">
@@ -307,25 +313,10 @@ const PersonalDataForm = () => {
           </div>
           {errors.celular && <p className="text-red-500 text-xs mt-1">{errors.celular}</p>}
         </div>
-
-        <div className="flex justify-between pt-4">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Siguiente
-          </button>
-          {/* <button
-            type="button"
-            onClick={handleCancel}
-            className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
-            Cancelar
-          </button> */}
-        </div>
       </form>
     </div>
   );
-};
+});
 
+PersonalDataForm.displayName = 'PersonalDataForm'; 
 export default PersonalDataForm;

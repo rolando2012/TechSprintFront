@@ -1,21 +1,31 @@
 'use client';
 import { useState, useRef } from 'react';
+import Link from 'next/link';
 import { CheckIcon } from '@heroicons/react/24/solid';
-import FormStep1 from '@/components/registro/Formularios/FormStep1';
 import FormStep2 from '@/components/registro/Formularios/FormStep2';
 import FormStep3 from '@/components/registro/Formularios/FormStep3';
+import PersonalDataForm from '@/components/registro/Formularios/PersonalDataForm';
+import Modal from "@/components/Modals/ModalProps"; 
+import SubmitButton from '@/components/registro/SubmitButton';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 export default function StepperFormWizard() {
   const [step, setStep] = useState(1);
   const steps = [1, 2, 3];
   const formRef = useRef<HTMLFormElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevenir la navegación
+    setIsModalOpen(true);
+  };
 
   const handleNext = () => setStep((s) => Math.min(s + 1, steps.length));
   const handlePrev = () => setStep((s) => Math.max(s - 1, 1));
 
   const renderForm = () => {
     const props = { onSubmitSuccess: handleNext, ref: formRef } as const;
-    if (step === 1) return <FormStep1 {...props} />;
+    if (step === 1) return <PersonalDataForm {...props} />;
     if (step === 2) return <FormStep2 {...props} />;
     return <FormStep3 {...props} />;
   };
@@ -56,18 +66,39 @@ export default function StepperFormWizard() {
       <div className="flex justify-between">
         <button
           onClick={handlePrev}
-          disabled={step === 1}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+          
+          className={`px-4 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl  ${step === 1 ? 'hidden' : 'block'}`}
         >
           Anterior
         </button>
         <button
           onClick={() => formRef.current?.requestSubmit()}
-          disabled={step === steps.length}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
+
+          className={`px-4 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl ${step === steps.length ? 'hidden' : 'block'}`}
         >
           Siguiente
         </button>
+        <div className={`${step !== steps.length ? 'hidden' : 'block'}`}>
+        <SubmitButton/>
+        </div>
+        <a
+        href="#"
+        onClick={openModal}
+        className="px-4 py-2 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl disabled:opacity-50"
+      >
+        Cancelar
+      </a>
+
+      {isModalOpen && (
+        <Modal  onClose={() => setIsModalOpen(false)}>
+            
+        <ExclamationCircleIcon className="w-16 h-16 text-white-500 mb-4" />
+          <p>¿Estás suguro de cancelar el registro?</p>
+          <Link href="/" className="mt-4 px-4 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl">
+            Sí, estoy seguro
+          </Link>
+        </Modal>
+      )}
       </div>
     </div>
   );
