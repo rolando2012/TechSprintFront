@@ -10,14 +10,13 @@ type Props = {
   onSubmitSuccess: () => void;
 };
 
-// Ajustamos el tipo a HTMLDivElement si usamos un <div> como contenedor
-const Inscripcion = forwardRef<HTMLDivElement, Props>(({ onSubmitSuccess }, ref) => {
+const Inscripcion = forwardRef<HTMLFormElement, Props>(({ onSubmitSuccess }, ref) => {
   const [selectedArea, setSelectedArea] = useState<string>('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState<string>('');
 
-  const handleInscription = (level: string, category: string) => {
+  const handleInscription = (level: string) => {
     setSelectedLevel(level);
     setShowPaymentModal(true);
   };
@@ -34,7 +33,7 @@ const Inscripcion = forwardRef<HTMLDivElement, Props>(({ onSubmitSuccess }, ref)
   };
 
   return (
-    <div ref={ref} className="min-h-screen p-8 bg-gray-100">
+    <div className="min-h-screen p-8 bg-gray-100">
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-md shadow">
         <h1 className="text-2xl font-semibold text-gray-700 mb-2">Inscripción a olimpiadas</h1>
         <p className="text-gray-600 mb-6">
