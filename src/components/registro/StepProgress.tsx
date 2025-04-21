@@ -93,7 +93,7 @@ export default function StepperFormWizard() {
         <Modal  onClose={() => setIsModalOpen(false)}>
             
         <ExclamationCircleIcon className="w-16 h-16 text-white-500 mb-4" />
-          <p>¿Estás suguro de cancelar el registro?</p>
+          <p>¿Estás seguro de cancelar el registro?</p>
           <Link href="/" className="mt-4 px-4 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl">
             Sí, estoy seguro
           </Link>
