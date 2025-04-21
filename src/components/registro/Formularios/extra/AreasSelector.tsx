@@ -16,7 +16,7 @@ const AreasSelector: React.FC<AreasSelectorProps> = ({ selectedArea, onSelectAre
             key={area}
             className={`py-3 px-6 rounded-md transition-colors ${
               selectedArea === area
-                ? 'bg-blue-600 text-white'
+                ? 'bg-boton text-white'
                 : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
             }`}
             onClick={() => onSelectArea(area)}
@@ -26,7 +26,7 @@ const AreasSelector: React.FC<AreasSelectorProps> = ({ selectedArea, onSelectAre
         ))}
       </div>
       {selectedArea && (
-        <div className="mt-4 p-2 bg-gray-100 rounded-md border-l-4 border-blue-500">
+        <div className="mt-4 p-2 bg-gray-100 rounded-md border-l-4 border-boton">
           <h3 className="font-semibold text-gray-800">{selectedArea}</h3>
         </div>
       )}

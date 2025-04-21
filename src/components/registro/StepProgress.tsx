@@ -2,9 +2,9 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { CheckIcon } from '@heroicons/react/24/solid';
-import FormStep2 from '@/components/registro/Formularios/FormStep2';
 import FormStep3 from '@/components/registro/Formularios/FormStep3';
 import PersonalDataForm from '@/components/registro/Formularios/PersonalDataForm';
+import Inscripcion from '@/components/registro/Formularios/Inscripcion';
 import Modal from "@/components/Modals/ModalProps"; 
 import SubmitButton from '@/components/registro/SubmitButton';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
@@ -26,7 +26,7 @@ export default function StepperFormWizard() {
   const renderForm = () => {
     const props = { onSubmitSuccess: handleNext, ref: formRef } as const;
     if (step === 1) return <PersonalDataForm {...props} />;
-    if (step === 2) return <FormStep2 {...props} />;
+    if (step === 2) return <Inscripcion {...props} />;
     return <FormStep3 {...props} />;
   };
 
@@ -67,14 +67,14 @@ export default function StepperFormWizard() {
         <button
           onClick={handlePrev}
           
-          className={`px-4 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl  ${step === 1 ? 'hidden' : 'block'}`}
+          className={`px-4 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl  ${step === 1 || step === steps.length ? 'hidden' : 'block'}`}
         >
           Anterior
         </button>
         <button
           onClick={() => formRef.current?.requestSubmit()}
 
-          className={`px-4 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl ${step === steps.length ? 'hidden' : 'block'}`}
+          className={`px-4 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl ${step !== 1 ? 'hidden' : 'block'}`}
         >
           Siguiente
         </button>

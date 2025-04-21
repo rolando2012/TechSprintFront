@@ -26,7 +26,7 @@ interface ConfirmationModalProps {
             
             <button
               onClick={onClose}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition"
+              className="bg-boton hover:bg-boton-hover text-white px-6 py-2 rounded-md transition"
             >
               Aceptar
             </button>

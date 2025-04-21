@@ -100,7 +100,7 @@ const PersonalDataForm = forwardRef<HTMLFormElement, Props>(({ onSubmitSuccess }
     // if (validateForm()) {
       console.log('Form data is valid:', formData);
       // Here you would typically submit the form or move to the next step
-      alert('Formulario válido. Pasando a la siguiente página...');
+      //alert('Formulario válido. Pasando a la siguiente página...');
       onSubmitSuccess();
     // } else {
     //   console.log('Form data is invalid');

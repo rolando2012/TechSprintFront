@@ -26,7 +26,7 @@ interface PaymentModalProps {
             
             <button
               onClick={onPayment}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-md font-medium transition w-full"
+              className="bg-boton hover:bg-boton-hover text-white px-6 py-3 rounded-md font-medium transition w-full"
             >
               Pagar
             </button>

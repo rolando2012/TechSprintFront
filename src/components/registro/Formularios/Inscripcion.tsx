@@ -1,12 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import AreasSelector from '@/components/registro/Formularios/extra/AreasSelector';
 import CategorySelector from '@/components/registro/Formularios/extra/CategorySelector';
 import PaymentModal from '@/components/Modals/regComp/PaymentModal';
 import ConfirmationModal from '@/components/Modals/regComp/ConfirmationModal';
 
-const Inscripcion = () => {
+type Props = {
+  onSubmitSuccess: () => void;
+};
+
+const Inscripcion = forwardRef<HTMLFormElement, Props>(({ onSubmitSuccess }, ref) => {
   const [selectedArea, setSelectedArea] = useState<string>('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -24,17 +28,21 @@ const Inscripcion = () => {
     setShowConfirmationModal(true);
   };
 
+  // <-- Cambiado aquí: no recibe e, firma () => void
   const closeConfirmationModal = () => {
     setShowConfirmationModal(false);
-    // Reset state after completing the flow
     setSelectedArea('');
+    // Avanza al siguiente stepper
+    onSubmitSuccess();
   };
 
   return (
     <div className="min-h-screen p-8 bg-gray-100">
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-md shadow">
         <h1 className="text-2xl font-semibold text-gray-700 mb-2">Inscripción a olimpiadas</h1>
-        <p className="text-gray-600 mb-6">Selecciona el área, categoría y nivel para ver los precios</p>
+        <p className="text-gray-600 mb-6">
+          Selecciona el área, categoría y nivel para ver los precios
+        </p>
         
         <AreasSelector selectedArea={selectedArea} onSelectArea={setSelectedArea} />
         
@@ -57,11 +65,12 @@ const Inscripcion = () => {
         <ConfirmationModal 
           area={selectedArea}
           level={selectedLevel}
-          onClose={closeConfirmationModal} 
+          onClose={closeConfirmationModal}  // Ya encaja con () => void
         />
       )}
     </div>
   );
-}
+});
+
 Inscripcion.displayName = 'Inscripcion';
 export default Inscripcion;
