@@ -1,13 +1,28 @@
 import { useState, useEffect } from 'react';
 import { getCategoriesForArea } from '@/lib/data';
 
+// Define la forma de una categoría
+interface Category {
+  id: string;
+  grade: string;
+  level: string;
+  price: number;
+}
+
+// Define la estructura de los datos que contiene las categorías
+interface Categories {
+  primary: Category[];
+  secondary: Category[];
+}
+
 interface CategorySelectorProps {
   area: string;
   onInscription: (level: string, category: string) => void;
 }
 
 const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription }) => {
-  const [categories, setCategories] = useState<any>({
+  // Usa el tipo Categories en lugar de any
+  const [categories, setCategories] = useState<Categories>({
     primary: [],
     secondary: []
   });
@@ -20,7 +35,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Primaria Section */}
+      {/* Sección Primaria */}
       {categories.primary.length > 0 && (
         <div className="bg-gray-100 p-4 rounded-md">
           <div className="bg-gray-200 p-4 rounded-t-md">
@@ -28,7 +43,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
             <p className="text-sm text-gray-600">Categoría</p>
           </div>
           <div className="divide-y">
-            {categories.primary.map((category: any) => (
+            {categories.primary.map((category: Category) => (
               <div key={category.id} className="p-4 flex justify-between items-center">
                 <div>
                   <p className="font-medium text-gray-700">{category.grade}</p>
@@ -53,7 +68,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
         </div>
       )}
 
-      {/* Secundaria Section */}
+      {/* Sección Secundaria */}
       {categories.secondary.length > 0 && (
         <div className="bg-gray-100 p-4 rounded-md">
           <div className="bg-gray-200 p-4 rounded-t-md">
@@ -61,7 +76,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
             <p className="text-sm text-gray-600">Categoría</p>
           </div>
           <div className="divide-y">
-            {categories.secondary.map((category: any) => (
+            {categories.secondary.map((category: Category) => (
               <div key={category.id} className="p-4 flex justify-between items-center">
                 <div>
                   <p className="font-medium text-gray-700">{category.grade}</p>

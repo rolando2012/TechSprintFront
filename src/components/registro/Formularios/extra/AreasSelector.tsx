@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 interface AreasSelectorProps {
   selectedArea: string;
   onSelectArea: (area: string) => void;

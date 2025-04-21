@@ -10,16 +10,15 @@ type Props = {
   onSubmitSuccess: () => void;
 };
 
-const Inscripcion = forwardRef<HTMLFormElement, Props>(({ onSubmitSuccess }, ref) => {
+// Ajustamos el tipo a HTMLDivElement si usamos un <div> como contenedor
+const Inscripcion = forwardRef<HTMLDivElement, Props>(({ onSubmitSuccess }, ref) => {
   const [selectedArea, setSelectedArea] = useState<string>('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedLevel, setSelectedLevel] = useState<string>('');
 
   const handleInscription = (level: string, category: string) => {
     setSelectedLevel(level);
-    setSelectedCategory(category);
     setShowPaymentModal(true);
   };
 
@@ -28,16 +27,14 @@ const Inscripcion = forwardRef<HTMLFormElement, Props>(({ onSubmitSuccess }, ref
     setShowConfirmationModal(true);
   };
 
-  // <-- Cambiado aquí: no recibe e, firma () => void
   const closeConfirmationModal = () => {
     setShowConfirmationModal(false);
     setSelectedArea('');
-    // Avanza al siguiente stepper
     onSubmitSuccess();
   };
 
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
+    <div ref={ref} className="min-h-screen p-8 bg-gray-100">
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-md shadow">
         <h1 className="text-2xl font-semibold text-gray-700 mb-2">Inscripción a olimpiadas</h1>
         <p className="text-gray-600 mb-6">
@@ -65,7 +62,7 @@ const Inscripcion = forwardRef<HTMLFormElement, Props>(({ onSubmitSuccess }, ref
         <ConfirmationModal 
           area={selectedArea}
           level={selectedLevel}
-          onClose={closeConfirmationModal}  // Ya encaja con () => void
+          onClose={closeConfirmationModal}
         />
       )}
     </div>
