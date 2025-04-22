@@ -9,7 +9,7 @@ export default function SubmitButton () {
       type="submit"
       aria-disabled={pending}
       disabled={pending}
-      className={`bg-boton hover:bg-boton-hover text-white ${adlam.className} py-2 px-3 rounded-2xl`}>
+      className={`bg-boton hover:bg-boton-hover text-white ${adlam.className} py-2 px-4 rounded-2xl`}>
     {pending ? "Cargando..." : "Enviar"}
     </button>
   )

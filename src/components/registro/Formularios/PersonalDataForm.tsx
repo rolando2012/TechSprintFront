@@ -142,19 +142,19 @@ const PersonalDataForm = forwardRef<HTMLFormElement, Props>(({ onSubmitSuccess }
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    if (validateForm()) {
+    // if (validateForm()) {
       console.log('Form data is valid:', formData);
       // Here you would typically submit the form or move to the next step
       alert('Formulario válido. Pasando a la siguiente página...');
       onSubmitSuccess();
-    } else {
-      console.log('Form data is invalid');
-    }
+    // } else {
+    //   console.log('Form data is invalid');
+    // }
   };
 
 
   return (
-    <div className="max-w-lg mx-auto bg-gray-100 p-6 rounded-md">
+    <div className="w-full mx-auto bg-gray-100 p-6 rounded-md">
       <h2 className="text-lg font-medium text-gray-700 mb-4">Datos personales</h2>
       
       <form ref={ref} onSubmit={handleSubmit} className="space-y-4">
