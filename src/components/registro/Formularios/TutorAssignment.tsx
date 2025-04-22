@@ -41,7 +41,7 @@ const TutorAssignment: React.FC<TutorAssignmentProps> = ({ studentId }) => {
   };
   
   return (
-    <div className="min-h-screen w-full md:max-w-4xl lg:max-w-6xl mx-auto bg-white rounded-lg shadow p-6">
+    <div className="w-full md:max-w-4xl lg:max-w-6xl mx-auto bg-white rounded-lg shadow p-6">
       <h2 className="text-xl font-semibold text-gray-700 mb-4">Asignación de tutor o tutores</h2>
       <p className="text-gray-600 mb-6">Seleccione tutor para su área respectiva</p>
       
@@ -49,7 +49,7 @@ const TutorAssignment: React.FC<TutorAssignmentProps> = ({ studentId }) => {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b border-t border-gray-200">
+              <tr className="border-b-2 border-t-2 border-bright-gray-300">
                 <th className="py-3 px-4 text-left text-gray-600 font-medium">Nombre completo</th>
                 <th className="py-3 px-4 text-left text-gray-600 font-medium">Grado</th>
                 <th className="py-3 px-4 text-left text-gray-600 font-medium">Area(s) de competencia</th>
@@ -57,7 +57,7 @@ const TutorAssignment: React.FC<TutorAssignmentProps> = ({ studentId }) => {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-gray-200">
+              <tr className="border-b-2 border-bright-gray-300">
                 <td className="py-3 px-4">{student.nombre}</td>
                 <td className="py-3 px-4">{student.grado}</td>
                 <td className="py-3 px-4">{student.area}</td>
@@ -100,14 +100,14 @@ const TutorAssignment: React.FC<TutorAssignmentProps> = ({ studentId }) => {
           </div>
         )}
         
-        <div className="mt-6 flex justify-end">
+        {/* <div className="mt-6 flex justify-end">
           <button
             type="submit"
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Asignar Tutor
           </button>
-        </div>
+        </div> */}
       </form>
     </div>
   );

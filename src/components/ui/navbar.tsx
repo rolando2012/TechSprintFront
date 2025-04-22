@@ -32,9 +32,9 @@ const Navbar: React.FC = () => {
           <Link href="/" className={`py-1 px-3 block hover:bg-bright-gray-950 rounded-xl ${adlam.className}`}>
             Inicio
           </Link>
-          <Link href="/versiones" className={`py-1 px-3 block hover:bg-bright-gray-950 rounded-xl ${adlam.className}`}>
+          {/* <Link href="/versiones" className={`py-1 px-3 block hover:bg-bright-gray-950 rounded-xl ${adlam.className}`}>
             versiones
-          </Link> 
+          </Link>  */}
         </div>
       </div>
     </nav>
