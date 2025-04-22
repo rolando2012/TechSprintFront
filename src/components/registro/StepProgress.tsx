@@ -36,7 +36,25 @@ export default function StepperFormWizard() {
       <div className="flex justify-center items-center mb-12">
         <div className="relative flex items-center w-full max-w-md justify-between">
           {/* Line connecting the steps */}
-          <div className="absolute h-1 bg-gray-200 top-1/2 left-0 right-0 -translate-y-1/2"></div>
+          {steps.map((s, index) => {
+            // Don't render a line after the last step
+            if (index === steps.length - 1) return null;
+            
+            const isCompleted = step > s;
+            
+            return (
+              <div 
+                key={`line-${s}`} 
+                className={`absolute h-1 top-1/2 -translate-y-1/2 z-0 ${
+                  isCompleted ? 'bg-black' : 'bg-gray-200'
+                }`}
+                style={{
+                  left: `${(100 / (steps.length - 1)) * index}%`,
+                  right: `${100 - ((100 / (steps.length - 1)) * (index + 1))}%`
+                }}
+              />
+            );
+          })}
           
           {/* Steps */}
           {steps.map((s) => {
@@ -98,17 +116,28 @@ export default function StepperFormWizard() {
         </a>
 
         {isModalOpen && (
-          <Modal onClose={() => setIsModalOpen(false)}>
-            <ExclamationCircleIcon className="w-16 h-16 text-white-500 mb-4" />
-            <p>¿Estás seguro de cancelar el registro?</p>
-            <Link
-              href="/"
-              className="mt-4 px-4 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl"
-            >
-              Sí, estoy seguro
-            </Link>
-          </Modal>
-        )}
+  <Modal onClose={() => setIsModalOpen(false)}>
+    <div className="flex flex-col items-center w-full">
+      <ExclamationCircleIcon className="w-16 h-16 text-bright-gray-800 mb-4" />
+      <p className="text-lg text-bright-gray-800 mb-6">¿Estás seguro de cancelar el registro?</p>
+      
+      <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
+        <Link
+          href="/"
+          className="px-6 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl text-center"
+        >
+          Sí, estoy seguro
+        </Link>
+        
+        <button 
+          onClick={() => setIsModalOpen(false)} 
+          className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl"
+        >
+          No, cerrar
+        </button>
+      </div>
+    </div>
+  </Modal>)}
       </div>
     </div>
   );

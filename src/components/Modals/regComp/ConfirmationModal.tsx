@@ -1,4 +1,4 @@
-// components/ConfirmationModal.tsx
+import { adlam } from "@/config/fonts";
 interface ConfirmationModalProps {
     onClose: () => void;
     area: string;
@@ -15,10 +15,10 @@ interface ConfirmationModalProps {
             </svg>
           </button>
           
-          <div className="text-center">
-            <h2 className="text-xl font-bold mb-4">Solicitud de Validación de Pago Enviada</h2>
+          <div className={`text-center ${adlam.className} `}>
+            <h2 className="text-xl font-bold text-bright-gray-700 mb-4">Solicitud de Validación de Pago Enviada</h2>
             
-            <p className="text-gray-700 mb-6">
+            <p className="text-bright-gray-700 mb-6">
               Tu solicitud para la inscripción a la competencia de [{area} Nivel {level}] ha sido enviada exitosamente
               para validación. Un cajero revisará tu información y confirmará el estado de tu pago. Recibirás una notificación
               una vez que el proceso haya sido completado. ¡Gracias por tu paciencia!
