@@ -1,9 +1,12 @@
 'use client';
 import React from 'react';
+import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { CheckIcon } from '@heroicons/react/24/solid';
+import { CheckIcon,  } from '@heroicons/react/24/solid';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { RegistroProvider } from './context';
+import Modal from "@/components/Modals/ModalProps"; 
 
 const steps = [
   { slug: 'datos-personales', label: 'Datos Personales' },
@@ -16,6 +19,12 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
   const router = useRouter();
   const idx = steps.findIndex(s => pathname.includes(s.slug));
   const stepIndex = idx === -1 ? 0 : idx;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsModalOpen(true);
+  };
 
   const formId = stepIndex === 0
     ? 'registroForm'
@@ -66,7 +75,7 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
         {stepIndex > 0 && (
           <button
             onClick={() => router.push(`/registro/competidor/${steps[stepIndex - 1].slug}`)}
-            className="px-6 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-2xl"
+            className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500  text-white rounded-2xl"
           >Anterior</button>
         )}
 
@@ -76,7 +85,7 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
               ? (document.getElementById(formId) as HTMLFormElement)?.requestSubmit()
               : undefined
             }
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl"
+            className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl"
           >Siguiente</button>
         )}
 
@@ -84,9 +93,40 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
           <button
             type="submit"
             form="tutorForm" 
-            className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-2xl"
+            className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl"
           >Enviar</button>
         )}
+        <a
+          href="#"
+          onClick={openModal}
+          className="px-6 py-2 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl disabled:opacity-50"
+        >
+          Cancelar
+        </a>
+
+        {isModalOpen && (
+  <Modal onClose={() => setIsModalOpen(false)}>
+    <div className="flex flex-col items-center w-full">
+      <ExclamationCircleIcon className="w-16 h-16 text-bright-gray-800 mb-4" />
+      <p className="text-lg text-bright-gray-800 mb-6">¿Estás seguro de cancelar el registro?</p>
+      
+      <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
+        <Link
+          href="/"
+          className="px-6 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl text-center"
+        >
+          Sí, estoy seguro
+        </Link>
+        
+        <button 
+          onClick={() => setIsModalOpen(false)} 
+          className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl"
+        >
+          No, cerrar
+        </button>
+      </div>
+    </div>
+  </Modal>)}
       </div>
         </div>
         </main>
