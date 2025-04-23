@@ -2,8 +2,8 @@
 import React, { useState, FormEvent } from 'react';
 import { useRegistro, InscripcionData } from '../context';
 import { useRouter } from 'next/navigation';
-import AreasSelector     from '@/components/registro/Formularios/extra/AreasSelector';
-import CategorySelector  from '@/components/registro/Formularios/extra/CategorySelector';
+import AreasSelector     from '@/components/registro/AreasSelector';
+import CategorySelector  from '@/components/registro/CategorySelector';
 import PaymentModal      from '@/components/Modals/regComp/PaymentModal';
 import ConfirmationModal from '@/components/Modals/regComp/ConfirmationModal';
 
