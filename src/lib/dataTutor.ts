@@ -16,7 +16,7 @@ export const tutors: Tutor[] = [
     id: "t2",
     nombre: "Dra. Ana Martinez",
     especialidad: "Algebra y Geometría",
-    areas: ["Matematicas"]
+    areas: ["Matematicas","Fisica"]
   },
   {
     id: "t3",
@@ -28,7 +28,7 @@ export const tutors: Tutor[] = [
     id: "t4",
     nombre: "Prof. Laura Jimenez",
     especialidad: "Literatura Hispánica",
-    areas: ["Literatura"]
+    areas: ["Literatura","Astronomia"]
   },
  {
    id: "t5",
@@ -40,6 +40,6 @@ export const tutors: Tutor[] = [
    id: "t6",
    nombre: "Lic. Mario Vargas",
    especialidad: "Biología Molecular",
-   areas: ["Biologia"]
+   areas: ["Biologia","Quimica"]
  },
 ];
