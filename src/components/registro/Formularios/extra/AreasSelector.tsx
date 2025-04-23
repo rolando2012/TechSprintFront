@@ -1,9 +1,10 @@
 interface AreasSelectorProps {
   selectedArea: string;
   onSelectArea: (area: string) => void;
+  disabled?: boolean;
 }
 
-const AreasSelector: React.FC<AreasSelectorProps> = ({ selectedArea, onSelectArea }) => {
+const AreasSelector: React.FC<AreasSelectorProps> = ({ selectedArea, onSelectArea, }) => {
   const areas = ['Informatica', 'Astronomia', 'Robotica', 'Biologia', 'Fisica', 'Matematicas', 'Quimica'];
 
   return (
