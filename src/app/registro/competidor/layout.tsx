@@ -49,7 +49,7 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
     <RegistroProvider>
       <main className="min-h-screen w-full py-8 bg-background-reg flex justify-center">
         <div className="w-full max-w-4xl bg-gray-100 shadow-md px-4 sm:px-6 py-6 mb-6 rounded-2xl">
-          <h1 className="text-3xl font-bold text-center mb-6">Registro para Competencia</h1>
+          <h1 className="text-4xl font-extralight text-center mb-6">Registro para Competencia</h1>
 
           {/* Stepper */}
           <div className="flex justify-center items-center mb-12">

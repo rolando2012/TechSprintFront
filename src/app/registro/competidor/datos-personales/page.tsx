@@ -10,6 +10,7 @@ import {
   getGrados,
   getNivelesByGrado,
 } from '@/lib/dataInscripcion';
+import {inter} from '@/config/fonts';
 
 export default function Page() {
   const router = useRouter();
@@ -104,12 +105,12 @@ export default function Page() {
 
   const formFieldStyle = "bg-gray-200 rounded-3xl p-3 w-full border-none";
   const fieldContainerStyle = "mb-4 border-b-2 border-gray-300 pb-4";
-  const labelContainerStyle = "flex items-center text-gray-700 w-1/3";
-  const inputContainerStyle = "w-2/3";
+  const labelContainerStyle = "flex items-center font-medium text-gray-700 w-1/3";
+  const inputContainerStyle = "w-2/3 font-semibold";
 
   return (
     <div className="w-full mx-auto bg-gray-100 p-6 rounded-md">
-      <h2 className="text-lg font-medium text-gray-700 mb-4">Datos personales</h2>
+      <h2 className="text-lg  text-gray-700 mb-4">Datos personales</h2>
     <form id="registroForm" onSubmit={onSubmit} className="space-y-4">
       <div className={fieldContainerStyle}>
         <div className="flex items-center">
@@ -121,7 +122,7 @@ export default function Page() {
               </span>
              Nombre(s)
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <input
               id="nombre"
               name="nombre"
@@ -148,7 +149,7 @@ export default function Page() {
               </span>
             Apellido(s)
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <input
               id="apellido"
               name="apellido"
@@ -174,7 +175,7 @@ export default function Page() {
               </span>
           Carnet de identidad
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <input
               id="carnetIdentidad"
               name="carnetIdentidad"
@@ -201,7 +202,7 @@ export default function Page() {
               </span>
             Correo electrónico
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <input
               id="correoElectronico"
               name="correoElectronico"
@@ -227,7 +228,7 @@ export default function Page() {
               </span>
              Fecha de nacimiento
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <input
               id="fechaNacimiento"
               name="fechaNacimiento"
@@ -253,7 +254,7 @@ export default function Page() {
               </span>
           Departamento
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <select
               id="departamento"
               name="departamento"
@@ -280,7 +281,7 @@ export default function Page() {
               </span>
             Municipio
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <select
               id="municipio"
               name="municipio"
@@ -311,7 +312,7 @@ export default function Page() {
               </span>
             Colegio/institución
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <input
               id="colegio"
               name="colegio"
@@ -337,7 +338,7 @@ export default function Page() {
               </span>
             Grado
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <select
               id="grado"
               name="grado"
@@ -364,7 +365,7 @@ export default function Page() {
               </span>
             Nivel
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <select
               id="nivel"
               name="nivel"
@@ -395,7 +396,7 @@ export default function Page() {
               </span>
             Celular
           </label>
-          <div className={inputContainerStyle}>
+          <div className={`${inputContainerStyle} ${inter.className}`}>
             <input
               id="celular"
               name="celular"
