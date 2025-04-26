@@ -60,6 +60,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
           <div className="p-4 flex justify-center">
             <button
               onClick={() => onInscription('Primaria', area)}
+              type='button'
               className="bg-boton hover:bg-boton-hover text-white px-6 py-2 rounded-md transition"
             >
               Inscribirse
@@ -93,6 +94,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
           <div className="p-4 flex justify-center">
             <button
               onClick={() => onInscription('Secundaria', area)}
+              type='button'
               className="bg-boton hover:bg-boton-hover text-white px-6 py-2 rounded-md transition"
             >
               Inscribirse
