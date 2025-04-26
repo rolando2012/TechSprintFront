@@ -98,7 +98,7 @@ export default function Page() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    //if (!validateForm()) return;
+    if (!validateForm()) return;
     setPersonalData(localData);
     router.push('/registro/competidor/inscripcion');
   };
@@ -281,7 +281,7 @@ export default function Page() {
               </span>
             Municipio
           </label>
-          <div className={`${inputContainerStyle} ${inter.className}`}>
+          <div className={`${inputContainerStyle} ${inter.className} ${!localData.departamento ? 'opacity-60' : ''}`}>
             <select
               id="municipio"
               name="municipio"
@@ -291,6 +291,7 @@ export default function Page() {
                 if (errors.municipio) validateField('municipio', e.target.value);
               }}
               disabled={!localData.departamento}
+
               className={`${formFieldStyle} ${errors.municipio ? 'border border-red-500' : ''}`}
             >
               <option value="">Seleccione un municipio</option>
@@ -365,7 +366,7 @@ export default function Page() {
               </span>
             Nivel
           </label>
-          <div className={`${inputContainerStyle} ${inter.className}`}>
+          <div className={`${inputContainerStyle} ${inter.className} ${!localData.departamento ? 'opacity-60' : ''}`}>
             <select
               id="nivel"
               name="nivel"
