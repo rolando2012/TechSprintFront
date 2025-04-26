@@ -4,7 +4,6 @@ import { useRegistro, InscripcionData } from '../context';
 import { useRouter } from 'next/navigation';
 import AreasSelector     from '@/components/registro/AreasSelector';
 import CategorySelector  from '@/components/registro/CategorySelector';
-import PaymentModal      from '@/components/Modals/regComp/PaymentModal';
 import ConfirmationModal from '@/components/Modals/regComp/ConfirmationModal';
 
 export default function InscripcionPage() {
@@ -13,7 +12,6 @@ export default function InscripcionPage() {
 
   const [currentArea, setCurrentArea]           = useState<string>('');
   const [currentLevel, setCurrentLevel]         = useState<string>('');
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [error, setError]                       = useState<string>('');
 
@@ -21,11 +19,6 @@ export default function InscripcionPage() {
   const handleSelectArea = (area: string) => {
     setError('');
     setCurrentArea(area);
-  };
-
-  const handlePayment = () => {
-    setShowPaymentModal(false);
-    setShowConfirmModal(true);
   };
 
   // Al cerrar confirmación, guardamos la inscripción y limpiamos errores
@@ -71,7 +64,7 @@ export default function InscripcionPage() {
           area={currentArea}
           onInscription={(level) => {
             setCurrentLevel(level);
-            setShowPaymentModal(true);
+            setShowConfirmModal(true);
           }}
         />
       )}
@@ -85,14 +78,6 @@ export default function InscripcionPage() {
             </li>
           ))}
         </ul>
-      )}
-
-      {/* Modales */}
-      {showPaymentModal && (
-        <PaymentModal
-          onClose={() => setShowPaymentModal(false)}
-          onPayment={handlePayment}
-        />
       )}
       {showConfirmModal && (
         <ConfirmationModal

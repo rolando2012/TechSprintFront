@@ -13,6 +13,7 @@ const AreasSelector: React.FC<AreasSelectorProps> = ({ selectedArea, onSelectAre
         {areas.map((area) => (
           <button
             key={area}
+            type="button"
             className={`py-3 px-6 rounded-md transition-colors ${
               selectedArea === area
                 ? 'bg-boton text-white'
