@@ -29,7 +29,8 @@ export default function InscripcionPage() {
       Swal.fire({
         icon: 'warning',
         title: 'Ya estás inscrito',
-        text: `Ya tienes una inscripción en el área de ${currentArea}`
+        text: `Ya tienes una inscripción en el área de ${currentArea}`,
+        confirmButtonColor: '#00abe4',
       });
       return;
     }
@@ -50,7 +51,8 @@ export default function InscripcionPage() {
     Swal.fire({
       icon: 'success',
       title: 'Inscripción exitosa',
-      text: 'Tu inscripción se ha registrado correctamente.'
+      text: 'Tu inscripción se ha registrado correctamente.',
+      confirmButtonColor: '#00abe4',
     });
   };
 
