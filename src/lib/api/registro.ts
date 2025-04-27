@@ -19,13 +19,18 @@ export interface Departamento {
       return [];
     }
   }
+export interface Municipio {
+    codMun: string;
+    nombreMun: string;
+  }
 
-export async function getMunicipios(departamento: string): Promise<string[]> {
+export async function getMunicipios(departamento: string): Promise<Municipio[]> {
   try {
-    const { data, status } = await axios.get<string[]>(
-      `${BASE_URL}/competencia/municipios?dep=${departamento}`
+    const { data, status } = await axios.get<Municipio[]>(
+      `${BASE_URL}/competencia/departamentos/${departamento}/municipios`
     );
-    return status === 200 ? data : [];
+    if (status !== 200) throw new Error(`Status ${status}`);
+      return data;
   } catch (error) {
     console.error('[API] Error en getMunicipios:', error);
     return [];

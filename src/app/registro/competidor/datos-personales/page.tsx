@@ -5,12 +5,11 @@ import { useRegistro } from '@/app/registro/competidor/context';
 import { useRouter } from 'next/navigation';
 import { personalDataSchema, PersonalData } from '@/lib/schemas/ValidarRegComp';
 import {
-  getMunicipiosByDepartamento,
   getGrados,
   getNivelesByGrado,
 } from '@/lib/dataInscripcion';
 import {inter} from '@/config/fonts';
-import { Departamento, getDepartamentos,  } from '@/lib/api/registro';
+import { Departamento, getDepartamentos, Municipio, getMunicipios  } from '@/lib/api/registro';
 
 export default function Page() {
   const router = useRouter();
@@ -20,7 +19,7 @@ export default function Page() {
   const [touchedFields, setTouchedFields] = useState<Set<keyof PersonalData>>(new Set());
 
   const [departamentos, setDepartamentos] = useState<Departamento[]>([]);
-  const [municipios, setMunicipios] = useState<string[]>([]);
+  const [municipios, setMunicipios] = useState<Municipio[]>([]);
   const [grados, setGrados] = useState<string[]>([]);
   const [niveles, setNiveles] = useState<string[]>([]);
 
@@ -29,13 +28,27 @@ export default function Page() {
       try {
         const deps = await getDepartamentos();
         setDepartamentos(deps);
-        
       } catch (error) {
         console.error('Error fetching departamentos:', error);
       }
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+      if (!localData.departamento) {
+        setMunicipios([]);
+        return;
+      }
+      (async () => { 
+      try {
+        const mun = await getMunicipios(localData.departamento);
+        setMunicipios(mun);
+      } catch (error) { 
+        console.error('Error fetching municipios:', error);
+      }
+    })();
+  }, [localData.departamento]);
 
   // Carga maestros
   useEffect(() => {
@@ -44,9 +57,7 @@ export default function Page() {
 
   // Al montar, repoblar municipios y niveles según datos previos
   useEffect(() => {
-    if (localData.departamento) {
-      setMunicipios(getMunicipiosByDepartamento(localData.departamento));
-    }
+    
     if (localData.grado) {
       setNiveles(getNivelesByGrado(localData.grado));
     }
@@ -55,7 +66,6 @@ export default function Page() {
    // Cuando cambian dep/grado en el form
    const onDepartamentoChange = (codDept: string) => {
     setLocalData(d => ({ ...d, departamento: codDept, municipio: '' }));
-    setMunicipios(codDept ? getMunicipiosByDepartamento(codDept) : []);
     if (errors.departamento) validateField('departamento', codDept);
   };
 
@@ -307,7 +317,7 @@ export default function Page() {
               className={`${formFieldStyle} ${errors.municipio ? 'border border-red-500' : ''}`}
             >
               <option value="">Seleccione un municipio</option>
-              {municipios.map(mun => <option key={mun} value={mun}>{mun}</option>)}
+              {municipios.map(mun => <option key={mun.codMun} value={mun.codMun}>{mun.nombreMun}</option>)}
             </select>
             {errors.municipio && <p className="text-red-500 text-xs mt-1">{errors.municipio}</p>}
           </div>
@@ -427,5 +437,4 @@ export default function Page() {
     </form>
     </div>
   );
- 
 }
