@@ -10,7 +10,18 @@ import {
   getGrados,
   getNivelesByGrado,
 } from '@/lib/dataInscripcion';
+import axios from 'axios';
 import {inter} from '@/config/fonts';
+
+async function getDepartamento() {
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/competencia/departamentos`);
+  if (response.status !== 200) {
+    console.error('Error fetching departamentos:', response.statusText);
+    return [];
+  }
+  const data = response.data;
+  return data;
+}
 
 export default function Page() {
   const router = useRouter();
@@ -23,6 +34,19 @@ export default function Page() {
   const [municipios, setMunicipios] = useState<string[]>([]);
   const [grados, setGrados] = useState<string[]>([]);
   const [niveles, setNiveles] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDepartamento();
+        //setDepartamentos(data);
+        console.log('Departamentos:', data);
+      } catch (error) {
+        console.error('Error fetching departamentos:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   // Carga maestros
   useEffect(() => {
@@ -415,4 +439,5 @@ export default function Page() {
     </form>
     </div>
   );
+ 
 }
