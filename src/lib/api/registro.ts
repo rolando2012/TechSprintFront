@@ -10,7 +10,7 @@ export interface Departamento {
   export async function getDepartamentos(): Promise<Departamento[]> {
     try {
       const { data, status } = await axios.get<Departamento[]>(
-        `${BASE_URL}/competencia/departamentos`
+        `${BASE_URL}/registro/departamentos`
       );
       if (status !== 200) throw new Error(`Status ${status}`);
       return data;
@@ -27,7 +27,7 @@ export interface Municipio {
 export async function getMunicipios(departamento: string): Promise<Municipio[]> {
   try {
     const { data, status } = await axios.get<Municipio[]>(
-      `${BASE_URL}/competencia/departamentos/${departamento}/municipios`
+      `${BASE_URL}/registro/departamentos/${departamento}/municipios`
     );
     if (status !== 200) throw new Error(`Status ${status}`);
       return data;

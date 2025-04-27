@@ -64,7 +64,7 @@ export default function Page() {
   }, []); // sólo al primer render
 
    // Cuando cambian dep/grado en el form
-   const onDepartamentoChange = (codDept: string) => {
+    const onDepartamentoChange = (codDept: string) => {
     setLocalData(d => ({ ...d, departamento: codDept, municipio: '' }));
     if (errors.departamento) validateField('departamento', codDept);
   };
@@ -97,7 +97,6 @@ export default function Page() {
     validateField(field, value);
   };
   
-
   const handleChange = (e: React.ChangeEvent<any>) => {
     const { name, value } = e.target;
     setLocalData(d => ({ ...d, [name]: value }));
