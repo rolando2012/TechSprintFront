@@ -5,23 +5,12 @@ import { useRegistro } from '@/app/registro/competidor/context';
 import { useRouter } from 'next/navigation';
 import { personalDataSchema, PersonalData } from '@/lib/schemas/ValidarRegComp';
 import {
-  getDepartamentos,
   getMunicipiosByDepartamento,
   getGrados,
   getNivelesByGrado,
 } from '@/lib/dataInscripcion';
-import axios from 'axios';
 import {inter} from '@/config/fonts';
-
-async function getDepartamento() {
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/competencia/departamentos`);
-  if (response.status !== 200) {
-    console.error('Error fetching departamentos:', response.statusText);
-    return [];
-  }
-  const data = response.data;
-  return data;
-}
+import { Departamento, getDepartamentos,  } from '@/lib/api/registro';
 
 export default function Page() {
   const router = useRouter();
@@ -30,7 +19,7 @@ export default function Page() {
   const [errors, setErrors] = useState<Partial<Record<keyof PersonalData, string>>>({});
   const [touchedFields, setTouchedFields] = useState<Set<keyof PersonalData>>(new Set());
 
-  const [departamentos, setDepartamentos] = useState<string[]>([]);
+  const [departamentos, setDepartamentos] = useState<Departamento[]>([]);
   const [municipios, setMunicipios] = useState<string[]>([]);
   const [grados, setGrados] = useState<string[]>([]);
   const [niveles, setNiveles] = useState<string[]>([]);
@@ -38,9 +27,9 @@ export default function Page() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getDepartamento();
-        //setDepartamentos(data);
-        console.log('Departamentos:', data);
+        const deps = await getDepartamentos();
+        setDepartamentos(deps);
+        
       } catch (error) {
         console.error('Error fetching departamentos:', error);
       }
@@ -50,7 +39,6 @@ export default function Page() {
 
   // Carga maestros
   useEffect(() => {
-    setDepartamentos(getDepartamentos());
     setGrados(getGrados());
   }, []);
 
@@ -65,10 +53,10 @@ export default function Page() {
   }, []); // sólo al primer render
 
    // Cuando cambian dep/grado en el form
-   const onDepartamentoChange = (dep: string) => {
-    setLocalData(d => ({ ...d, departamento: dep, municipio: '' }));
-    setMunicipios(dep ? getMunicipiosByDepartamento(dep) : []);
-    if (errors.departamento) validateField('departamento', dep);
+   const onDepartamentoChange = (codDept: string) => {
+    setLocalData(d => ({ ...d, departamento: codDept, municipio: '' }));
+    setMunicipios(codDept ? getMunicipiosByDepartamento(codDept) : []);
+    if (errors.departamento) validateField('departamento', codDept);
   };
 
 
@@ -287,7 +275,7 @@ export default function Page() {
               className={`${formFieldStyle} ${errors.departamento ? 'border border-red-500' : ''}`}
             >
               <option value="">Seleccione un departamento</option>
-              {departamentos.map(dep => <option key={dep} value={dep}>{dep}</option>)}
+              {departamentos.map(dep => <option key={dep.codDept} value={dep.codDept}>{dep.nombreDept}</option>)}
             </select>
             {errors.departamento && <p className="text-red-500 text-xs mt-1">{errors.departamento}</p>}
           </div>
