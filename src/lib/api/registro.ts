@@ -37,3 +37,29 @@ export async function getMunicipios(departamento: string): Promise<Municipio[]> 
   }
 }
 
+export interface Areas{
+  codArea: string;
+  nombreArea: string;
+}
+export async function getAreas(): Promise<Areas[]> {
+  const areas = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/registro/areas`);
+  if (areas.status !== 200) {
+    console.error('Error fetching areas:', areas.statusText);
+    return [];
+  }
+  return areas.data;
+}
+export interface Category {
+  codGrado: string;
+  grade: string;
+  level: string;
+  price: number;
+  codNivel: string;
+}
+
+interface Categories {
+  primary: Category[];
+  secondary: Category[];
+}
+
+

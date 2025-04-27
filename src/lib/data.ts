@@ -1,6 +1,3 @@
-// This file simulates a database or API service
-// In a real app, you would fetch this data from a backend
-
 export interface Category {
     id: string;
     grade: string;
