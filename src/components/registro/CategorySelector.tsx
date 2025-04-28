@@ -85,7 +85,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
       {categories.primary.length > 0 && (
         <div className="bg-gray-100 p-4 rounded-md">
           <div className="bg-gray-200 p-4 rounded-t-md">
-            <h2 className="text-lg font-semibold text-gray-700">Primaria</h2>
+            <h2 className="text-xl font-thin text-gray-700">Primaria</h2>
             <p className="text-sm text-gray-600">Categoría</p>
           </div>
           <div className="divide-y">
@@ -98,7 +98,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
                   </span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="font-semibold text-gray-800">Bs {category.price}</span>
+                  <span className="font-normal text-xl text-gray-800">Bs {category.price}</span>
                 </div>
               </div>
             ))}
@@ -119,7 +119,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
       {categories.secondary.length > 0 && (
         <div className="bg-gray-100 p-4 rounded-md">
           <div className="bg-gray-200 p-4 rounded-t-md">
-            <h2 className="text-lg font-semibold text-gray-700">Secundaria</h2>
+            <h2 className="text-xl font-thin text-gray-700">Secundaria</h2>
             <p className="text-sm text-gray-600">Categoría</p>
           </div>
           <div className="divide-y">
@@ -132,7 +132,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
                   </span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="font-semibold text-gray-800">Bs {category.price}</span>
+                  <span className="font-normal text-xl text-gray-800">Bs {category.price}</span>
                 </div>
               </div>
             ))}
