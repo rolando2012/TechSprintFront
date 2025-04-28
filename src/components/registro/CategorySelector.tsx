@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { getCategoriesArea, Category as ApiCategory, AreaCategories } from '@/lib/api/registro';
+import Swal from 'sweetalert2';
+import { useRegistro } from '@/app/registro/competidor/context';
 
 // Define la forma de una categoría local
-interface Category {
+type Category = {
   id: string;
   grade: string;
   level: string;
   price: number;
-  codNivel: number; // opcional, ya que no se usa en la UI
-}
+  codNivel: number;
+};
 
 // Estructura de categorías en el componente
 interface Categories {
@@ -18,13 +20,14 @@ interface Categories {
 
 interface CategorySelectorProps {
   area: string;  // codArea como string, se convertirá a number al llamar la API
-  onInscription: (level: string, category: string) => void;
+  onInscription: (categoryType: 'Primaria' | 'Secundaria', area: string) => void;
 }
 
 const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription }) => {
+  const { personalData } = useRegistro();
   const [categories, setCategories] = useState<Categories>({
     primary: [],
-    secondary: []
+    secondary: [],
   });
 
   useEffect(() => {
@@ -35,23 +38,20 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
 
     const fetchCategories = async () => {
       try {
-        // Llama a la API con codArea convertido a number
         const data: AreaCategories = await getCategoriesArea(area);
-        console.log('respuesta API:', data);
-        // Mapea la respuesta al tipo local
         const primary = data.primary.map((c: ApiCategory) => ({
           id: c.codGrado.toString(),
           grade: c.grade,
           level: c.level,
           price: c.price,
-          codNivel: c.codNivel 
+          codNivel: c.codNivel,
         }));
         const secondary = data.secondary.map((c: ApiCategory) => ({
           id: c.codGrado.toString(),
           grade: c.grade,
           level: c.level,
           price: c.price,
-          codNivel: c.codNivel
+          codNivel: c.codNivel,
         }));
         setCategories({ primary, secondary });
       } catch (err) {
@@ -63,6 +63,22 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
     fetchCategories();
   }, [area]);
 
+  
+  const handleClick = (categoryType: 'Primaria' | 'Secundaria') => {
+    if (personalData.grado !== categoryType) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Acceso denegado',
+        text: `Los estudiantes de ${personalData.grado.toLowerCase()} no pueden inscribirse en competencias de ${categoryType.toLowerCase()}.`,
+
+        confirmButtonColor: '#00abe4',
+      });
+      return;
+    }
+
+    onInscription(categoryType, area);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Sección Primaria */}
@@ -73,7 +89,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
             <p className="text-sm text-gray-600">Categoría</p>
           </div>
           <div className="divide-y">
-            {categories.primary.map((category: Category) => (
+            {categories.primary.map((category) => (
               <div key={category.codNivel} className="p-4 flex justify-between items-center">
                 <div>
                   <p className="font-medium text-gray-700">{category.grade}</p>
@@ -89,8 +105,8 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
           </div>
           <div className="p-4 flex justify-center">
             <button
-              onClick={() => onInscription('Primaria', area)}
-              type='button'
+              onClick={() => handleClick('Primaria')}
+              type="button"
               className="bg-boton hover:bg-boton-hover text-white px-6 py-2 rounded-md transition"
             >
               Inscribirse
@@ -107,7 +123,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
             <p className="text-sm text-gray-600">Categoría</p>
           </div>
           <div className="divide-y">
-            {categories.secondary.map((category: Category) => (
+            {categories.secondary.map((category) => (
               <div key={category.codNivel} className="p-4 flex justify-between items-center">
                 <div>
                   <p className="font-medium text-gray-700">{category.grade}</p>
@@ -123,8 +139,8 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
           </div>
           <div className="p-4 flex justify-center">
             <button
-              onClick={() => onInscription('Secundaria', area)}
-              type='button'
+              onClick={() => handleClick('Secundaria')}
+              type="button"
               className="bg-boton hover:bg-boton-hover text-white px-6 py-2 rounded-md transition"
             >
               Inscribirse
