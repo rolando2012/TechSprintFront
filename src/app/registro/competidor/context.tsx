@@ -1,5 +1,6 @@
 'use client';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+
+import React, { createContext, useContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { PersonalData } from '@/lib/schemas/ValidarRegComp';
 
 export interface InscripcionData {
@@ -8,11 +9,18 @@ export interface InscripcionData {
   nivel: string;
 }
 
+export interface TutorAssignmentData {
+  codTut: string;
+  nombre: string;
+}
+
 interface RegistroContextValue {
   personalData: PersonalData;
-  setPersonalData: (d: PersonalData) => void;
+  setPersonalData: Dispatch<SetStateAction<PersonalData>>;
   inscripciones: InscripcionData[];
-  setInscripciones: (i: InscripcionData[]) => void;
+  setInscripciones: Dispatch<SetStateAction<InscripcionData[]>>;
+  tutorAssignments: Record<string, TutorAssignmentData>;
+  setTutorAssignments: Dispatch<SetStateAction<Record<string, TutorAssignmentData>>>;
 }
 
 const initialPersonal: PersonalData = {
@@ -21,17 +29,22 @@ const initialPersonal: PersonalData = {
   colegio: '', grado: '', nivel: '', celular: '',
 };
 
+const initialTutorAssignments: Record<string, TutorAssignmentData> = {};
+
 const RegistroContext = createContext<RegistroContextValue | undefined>(undefined);
 
 export function RegistroProvider({ children }: { children: React.ReactNode }) {
-  const [personalData, setPersonalData]     = useState<PersonalData>(initialPersonal);
-  const [inscripciones, setInscripciones]   = useState<InscripcionData[]>([]);
+  const [personalData, setPersonalData]   = useState<PersonalData>(initialPersonal);
+  const [inscripciones, setInscripciones] = useState<InscripcionData[]>([]);
+  const [tutorAssignments, setTutorAssignments] = useState<Record<string, TutorAssignmentData>>(initialTutorAssignments);
 
   useEffect(() => {
     const p = sessionStorage.getItem('personalData');
     if (p) setPersonalData(JSON.parse(p));
     const i = sessionStorage.getItem('inscripciones');
     if (i) setInscripciones(JSON.parse(i));
+    const t = sessionStorage.getItem('tutorAssignments');
+    if (t) setTutorAssignments(JSON.parse(t));
   }, []);
 
   useEffect(() => {
@@ -42,8 +55,19 @@ export function RegistroProvider({ children }: { children: React.ReactNode }) {
     sessionStorage.setItem('inscripciones', JSON.stringify(inscripciones));
   }, [inscripciones]);
 
+  useEffect(() => {
+    sessionStorage.setItem('tutorAssignments', JSON.stringify(tutorAssignments));
+  }, [tutorAssignments]);
+
   return (
-    <RegistroContext.Provider value={{ personalData, setPersonalData, inscripciones, setInscripciones }}>
+    <RegistroContext.Provider value={{
+      personalData,
+      setPersonalData,
+      inscripciones,
+      setInscripciones,
+      tutorAssignments,
+      setTutorAssignments,
+    }}>
       {children}
     </RegistroContext.Provider>
   );
