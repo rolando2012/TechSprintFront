@@ -69,3 +69,19 @@ export async function getCategoriesArea(codArea: string): Promise<AreaCategories
   if (status !== 200) throw new Error(`Status ${status}`);
   return data[0];
 }
+
+export interface Tutor {
+  codPer: string;
+  codTut: string;
+  nombre: string;
+  apellidoPaterno: string;
+  apellidoMaterno: string;
+}
+
+export async function getTutors(): Promise<Tutor[]>{
+  const { data, status } = await axios.get<Tutor[]>(
+    `${BASE_URL}/registro/tutores`,
+  );
+  if (status !== 200) throw new Error(`Status ${status}`);
+  return data;
+} 

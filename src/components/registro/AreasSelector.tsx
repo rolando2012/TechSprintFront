@@ -1,5 +1,4 @@
 import {getAreas} from '@/lib/api/registro';
-import {inter} from '@/config/fonts';
 
 interface AreasSelectorProps {
   selectedArea: string;

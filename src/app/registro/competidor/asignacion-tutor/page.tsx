@@ -2,10 +2,13 @@
 
 import React, { useState, FormEvent } from 'react';
 import { useRegistro } from '../context';
-import { tutors } from '@/lib/dataTutor';
 import {inter} from '@/config/fonts';
+import { getTutors } from '@/lib/api/registro';
+
+const tutores = await getTutors();
 
 export default function TutorAssignmentPage() {
+  
   const { personalData, inscripciones } = useRegistro();
   const [selectedTutors, setSelectedTutors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string>('');
@@ -47,7 +50,7 @@ export default function TutorAssignmentPage() {
           </thead>
           <tbody>
             {inscripciones.map((insc, i) => {
-              const disponibles = tutors.filter(t => t.areas.includes(insc.area));
+              //const disponibles = tutors.filter(t => t.areas.includes(insc.area));
               const fullName = `${personalData.nombre} ${personalData.apellido}`;
               return (
                 <tr key={i} className={`border-b border-gray-200 text-gray-500 ${inter.className} font-semibold`}>
@@ -61,8 +64,8 @@ export default function TutorAssignmentPage() {
                       className="border rounded p-2 w-full"
                     >
                       <option value="">Selecciona tutor</option>
-                      {disponibles.map(t => (
-                        <option key={t.id} value={t.id}>{t.nombre}</option>
+                      {tutores.map(t => (
+                        <option key={t.codTut} value={t.codTut}>{t.nombre} {t.apellidoPaterno} {t.apellidoMaterno}</option>
                       ))}
                     </select>
                   </td>
