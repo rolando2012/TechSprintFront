@@ -119,7 +119,7 @@ export default function Page() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    //if (!validateForm()) return;
+    if (!validateForm()) return;
     setPersonalData(localData);
     router.push('/registro/competidor/inscripcion');
   };
