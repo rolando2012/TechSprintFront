@@ -1,36 +1,66 @@
-import { useState, useEffect } from 'react';
-import { getCategoriesForArea } from '@/lib/data';
+import React, { useState, useEffect } from 'react';
+import { getCategoriesArea, Category as ApiCategory, AreaCategories } from '@/lib/api/registro';
 
-// Define la forma de una categoría
+// Define la forma de una categoría local
 interface Category {
   id: string;
   grade: string;
   level: string;
   price: number;
+  codNivel: number; // opcional, ya que no se usa en la UI
 }
 
-// Define la estructura de los datos que contiene las categorías
+// Estructura de categorías en el componente
 interface Categories {
   primary: Category[];
   secondary: Category[];
 }
 
 interface CategorySelectorProps {
-  area: string;
+  area: string;  // codArea como string, se convertirá a number al llamar la API
   onInscription: (level: string, category: string) => void;
 }
 
 const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription }) => {
-  // Usa el tipo Categories en lugar de any
   const [categories, setCategories] = useState<Categories>({
     primary: [],
     secondary: []
   });
 
   useEffect(() => {
-    // Fetch categories based on the selected area
-    const fetchedCategories = getCategoriesForArea(area);
-    setCategories(fetchedCategories);
+    if (!area) {
+      setCategories({ primary: [], secondary: [] });
+      return;
+    }
+
+    const fetchCategories = async () => {
+      try {
+        // Llama a la API con codArea convertido a number
+        const data: AreaCategories = await getCategoriesArea(area);
+        console.log('respuesta API:', data);
+        // Mapea la respuesta al tipo local
+        const primary = data.primary.map((c: ApiCategory) => ({
+          id: c.codGrado.toString(),
+          grade: c.grade,
+          level: c.level,
+          price: c.price,
+          codNivel: c.codNivel 
+        }));
+        const secondary = data.secondary.map((c: ApiCategory) => ({
+          id: c.codGrado.toString(),
+          grade: c.grade,
+          level: c.level,
+          price: c.price,
+          codNivel: c.codNivel
+        }));
+        setCategories({ primary, secondary });
+      } catch (err) {
+        console.error('Error fetching categories:', err);
+        setCategories({ primary: [], secondary: [] });
+      }
+    };
+
+    fetchCategories();
   }, [area]);
 
   return (
@@ -44,7 +74,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
           </div>
           <div className="divide-y">
             {categories.primary.map((category: Category) => (
-              <div key={category.id} className="p-4 flex justify-between items-center">
+              <div key={category.codNivel} className="p-4 flex justify-between items-center">
                 <div>
                   <p className="font-medium text-gray-700">{category.grade}</p>
                   <span className="inline-block bg-gray-200 px-4 py-1 rounded-full text-sm">
@@ -78,7 +108,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
           </div>
           <div className="divide-y">
             {categories.secondary.map((category: Category) => (
-              <div key={category.id} className="p-4 flex justify-between items-center">
+              <div key={category.codNivel} className="p-4 flex justify-between items-center">
                 <div>
                   <p className="font-medium text-gray-700">{category.grade}</p>
                   <span className="inline-block bg-gray-200 px-4 py-1 rounded-full text-sm">

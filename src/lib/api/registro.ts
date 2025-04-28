@@ -38,7 +38,7 @@ export async function getMunicipios(departamento: string): Promise<Municipio[]> 
 }
 
 export interface Areas{
-  codArea: string;
+  codArea: number;
   nombreArea: string;
 }
 export async function getAreas(): Promise<Areas[]> {
@@ -50,16 +50,22 @@ export async function getAreas(): Promise<Areas[]> {
   return areas.data;
 }
 export interface Category {
-  codGrado: string;
+  codGrado: number;
   grade: string;
   level: string;
   price: number;
-  codNivel: string;
+  codNivel: number;
 }
 
-interface Categories {
+export interface AreaCategories {
+  codArea: number;
   primary: Category[];
   secondary: Category[];
 }
 
-
+export async function getCategoriesArea(codArea: string): Promise<AreaCategories> {
+  const url = `${BASE_URL}/registro/areas/grados/nivel/2025/${codArea}`;
+  const { data, status } = await axios.get<AreaCategories[]>(url);
+  if (status !== 200) throw new Error(`Status ${status}`);
+  return data[0];
+}
