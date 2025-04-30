@@ -55,6 +55,7 @@ export interface Category {
   grade: string;
   level: string;
   price: number;
+  rango?: string; // opcional, para secundarios especiales
 }
 
 export interface AreaCategories {

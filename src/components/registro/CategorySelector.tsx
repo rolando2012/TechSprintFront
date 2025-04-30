@@ -43,7 +43,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
         // para primaria:
         const primary = data.primary.map((c: ApiCategory) => ({
           id:   (c.codGrado  ?? c.codNivel)!.toString(),
-          grade: c.grade,
+          grade: c.rango ?? c.grade,
           level: c.level,
           price: c.price,
           // Asegúrate de rellenar codNivel:
@@ -53,7 +53,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
         // para secundaria:
         const secondary = data.secondary.map((c: ApiCategory) => ({
           id:   (c.codGrado  ?? c.codNivel)!.toString(),
-          grade: c.grade,
+          grade: c.rango ?? c.grade,
           level: c.level,
           price: c.price,
           codNivel: c.codGrado ?? c.codNivel!
