@@ -76,7 +76,8 @@ export default function TutorAssignmentPage() {
                       className="border rounded p-2 w-full"
                     >
                       <option value="">Selecciona tutor</option>
-                      {tutores.map(t => (
+                    {/* <!-- Filtra los tutores por área --> */}
+                      {tutores.filter(t => t.nombreArea === insc.area).map(t => (
                         <option key={t.codTut} value={t.codTut}>
                           {t.nombre} {t.apellidoPaterno} {t.apellidoMaterno}
                         </option>

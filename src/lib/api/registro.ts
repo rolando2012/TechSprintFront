@@ -79,6 +79,7 @@ export interface Tutor {
   nombre: string;
   apellidoPaterno: string;
   apellidoMaterno: string;
+  nombreArea: string;
 }
 
 export async function getTutors(): Promise<Tutor[]>{
