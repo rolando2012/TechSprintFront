@@ -4,27 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Bars3BottomLeftIcon } from "@heroicons/react/24/solid";
 import { adlam } from "@/config/fonts";
-import { useRouter } from "next/navigation";
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loginMenuOpen, setLoginMenuOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); 
-  const [dropdownOpen, setDropdownOpen] = useState(false); 
-  const loginMenuRef = useRef<HTMLDivElement>(null);
-  const roleMenuRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-    setIsLoggedIn(loggedIn);
-
-    // Cerramos el dropdown si el usuario está en la página de Tutor
-    if (router.pathname === "/registro/tutor") {
-      setDropdownOpen(false);
-    }
-  }, [router.pathname]);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null); // Estado para el rol seleccionado
+  const loginMenuRef = useRef<HTMLDivElement>(null); // Para referenciar la ventana flotante
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -34,31 +19,28 @@ const Navbar: React.FC = () => {
     setLoginMenuOpen(!loginMenuOpen);
   };
 
+  // Cerrar la ventana flotante si el usuario hace clic fuera de ella
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (loginMenuOpen && loginMenuRef.current && !loginMenuRef.current.contains(event.target as Node)) {
+        setLoginMenuOpen(false);
+        setSelectedRole(null); // Resetear el rol seleccionado
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [loginMenuOpen]);
+
   const handleRoleSelect = (role: string) => {
     setSelectedRole(role);
-    setLoginMenuOpen(true); 
+    setLoginMenuOpen(true); // Cerrar el menú de selección de rol y abrir el formulario
   };
 
   const handleBackToRoleSelection = () => {
-    setSelectedRole(null);  // Reinicia el rol seleccionado
-    setLoginMenuOpen(true); // Abre nuevamente el menú de selección de rol
-  };
-
-  const handleLoginSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (selectedRole === "Tutor") {
-      localStorage.setItem("isLoggedIn", "true");
-      router.push("/registro/tutor");
-      setIsLoggedIn(true);
-    }
-    setLoginMenuOpen(false);
-    setSelectedRole(null);
-  };
-
-  const handleLogout = () => {
-    localStorage.setItem("isLoggedIn", "false");
-    setIsLoggedIn(false);
-    router.push("/"); 
+    setSelectedRole(null); // Volver al menú de selección de rol
   };
 
   return (
@@ -77,33 +59,12 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6">
-          {!isLoggedIn ? (
-            <button
-              onClick={toggleLoginMenu}
-              className="bg-white text-[#2F3A49] px-4 py-2 rounded-full font-semibold hover:bg-[#3A4A5A] transition-colors"
-            >
-              Iniciar Sesión
-            </button>
-          ) : (
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="text-white flex items-center gap-2"
-              >
-                <Image src="/tipo_usuario/icono_cuenta.png" alt="Cuenta" width={40} height={40} />
-              </button>
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 bg-white text-[#2F3A49] rounded-md shadow-lg w-40">
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-200"
-                  >
-                    Cerrar Sesión
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+          <button
+            onClick={toggleLoginMenu}
+            className="bg-white text-[#2F3A49] px-4 py-2 rounded-full font-semibold hover:bg-[#3A4A5A] transition-colors"
+          >
+            Iniciar Sesión
+          </button>
         </div>
 
         {/* Mobile menu button */}
@@ -130,7 +91,7 @@ const Navbar: React.FC = () => {
       {loginMenuOpen && !selectedRole && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-10 flex justify-center items-center">
           <div
-            ref={roleMenuRef}
+            ref={loginMenuRef}
             className="bg-gradient-to-r from-[#2F3A49] to-[#4F5B66] p-6 rounded-lg shadow-xl w-11/12 max-w-5xl flex flex-col justify-between"
           >
             <div className="flex justify-between items-center text-white">
@@ -151,7 +112,7 @@ const Navbar: React.FC = () => {
               ].map(({ role, icon }) => (
                 <button
                   key={role}
-                  onClick={() => handleRoleSelect(role)}
+                  onClick={() => handleRoleSelect(role)} // Establecer el rol seleccionado
                   className="text-center p-8 bg-white rounded-lg shadow-lg hover:scale-105 transform transition-all duration-300 w-40"
                 >
                   <Image src={icon} alt={role} width={70} height={70} className="mx-auto" />
@@ -183,7 +144,10 @@ const Navbar: React.FC = () => {
               <h3 className="text-xl font-semibold text-white mb-4">
                 Iniciar sesión como {selectedRole}
               </h3>
-              <form className="flex flex-col gap-4" onSubmit={handleLoginSubmit}>
+              <h3 className="text-xl font-semibold text-white mb-4">
+                Iniciar sesión como {selectedRole}
+              </h3>
+              <form className="flex flex-col gap-4">
                 <input
                   type="email"
                   placeholder="Correo Electrónico"
@@ -194,17 +158,12 @@ const Navbar: React.FC = () => {
                   placeholder="Contraseña"
                   className="p-2 rounded-md"
                 />
-                <input
-                  type="text"
-                  placeholder="Código"
-                  className="p-2 rounded-md"
-                />
                 <button className="bg-[#FF6347] text-white py-2 px-4 rounded-full hover:bg-[#FF4500] transition-colors">
                   Iniciar sesión
                 </button>
               </form>
               <button
-                onClick={handleBackToRoleSelection}
+                onClick={handleBackToRoleSelection} // Volver al menú de selección de rol
                 className="mt-4 bg-[#FF6347] text-white py-2 px-4 rounded-full hover:bg-[#FF4500] transition-colors"
               >
                 Volver a seleccionar rol

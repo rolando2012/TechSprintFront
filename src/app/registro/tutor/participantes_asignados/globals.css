@@ -1,0 +1,85 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --color-boton: #00abe4;
+  --color-boton-2: #ff5f5f;
+  --color-boton-hover: #0095d4;
+  --color-boton-2-hover: #f83b3b;
+  --color-background-reg: #898989;
+  --color-bright-gray-50: #f7f8f8;
+  --color-bright-gray-100: #edeef1;
+  --color-bright-gray-200: #d7dae0;
+  --color-bright-gray-300: #b4b9c5;
+  --color-bright-gray-400: #8b95a5;
+  --color-bright-gray-500: #6d788a;
+  --color-bright-gray-600: #586171;
+  --color-bright-gray-700: #484f5c;
+  --color-bright-gray-800: #3e434e;
+  --color-bright-gray-900: #373b44;
+  --color-bright-gray-950: #24262d;
+  --color-lineas: #B4B4B4;
+
+  --font-adlam: "ADLaM Display", system-ui;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #000000;
+  }
+}
+
+body {
+  font-family: var(--font-adlam);
+  background-color: var(--color-bright-gray-50);
+  color: var(--color-bright-gray-900);
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos para tablas que puedes usar en Participantes Asignados */
+.table-container {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.table th, .table td {
+  border: 1px solid var(--color-lineas);
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.table th {
+  background-color: var(--color-boton);
+  color: white;
+}
+
+.table tr:nth-child(even) {
+  background-color: var(--color-bright-gray-100);
+}
+
+.table tr:hover {
+  background-color: var(--color-bright-gray-200);
+}
+
+/* Botones generales */
+.button-primary {
+  background-color: var(--color-boton);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.button-primary:hover {
+  background-color: var(--color-boton-hover);
+  transform: scale(1.05);
+}
