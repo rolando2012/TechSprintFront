@@ -1,0 +1,61 @@
+/* globals.css para la página del Tutor */
+
+:root {
+    --color-fondo: #2C3E50;
+    --color-texto: #ecf0f1;
+    --color-primario: #3498db;
+    --color-secundario: #1abc9c;
+    --color-hover: #2980b9;
+    --fuente-principal: 'Roboto', sans-serif;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--fuente-principal);
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    min-height: 100vh;
+  }
+  
+  a {
+    color: var(--color-primario);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: var(--color-hover);
+  }
+  
+  button {
+    background-color: var(--color-secundario);
+    color: var(--color-texto);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: var(--color-hover);
+  }
+  
+  .container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+  }
+  
+  .main-content {
+    padding: 2rem;
+  }
+  

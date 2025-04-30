@@ -1,6 +1,8 @@
-@import "tailwindcss";
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-@theme  {
+:root {
   --color-boton: #00abe4;
   --color-boton-2: #ff5f5f;
   --color-boton-hover: #0095d4;
@@ -19,7 +21,7 @@
   --color-bright-gray-950: #24262d;
   --color-lineas: #B4B4B4;
 
-  --font-adlam: "ADLaM Display", "system-ui";
+  --font-adlam: "ADLaM Display", system-ui;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,7 +32,5 @@
 }
 
 body {
-  color: var(--foreground);
   font-family: var(--font-adlam);
 }
-
