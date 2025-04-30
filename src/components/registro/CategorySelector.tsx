@@ -35,34 +35,40 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
       setCategories({ primary: [], secondary: [] });
       return;
     }
-
+  
     const fetchCategories = async () => {
       try {
         const data: AreaCategories = await getCategoriesArea(area);
+  
+        // para primaria:
         const primary = data.primary.map((c: ApiCategory) => ({
-          id: c.codGrado.toString(),
+          id:   (c.codGrado  ?? c.codNivel)!.toString(),
           grade: c.grade,
           level: c.level,
           price: c.price,
-          codNivel: c.codNivel,
+          // Asegúrate de rellenar codNivel:
+          codNivel: c.codGrado ?? c.codNivel!
         }));
+  
+        // para secundaria:
         const secondary = data.secondary.map((c: ApiCategory) => ({
-          id: c.codGrado.toString(),
+          id:   (c.codGrado  ?? c.codNivel)!.toString(),
           grade: c.grade,
           level: c.level,
           price: c.price,
-          codNivel: c.codNivel,
+          codNivel: c.codGrado ?? c.codNivel!
         }));
+  
         setCategories({ primary, secondary });
       } catch (err) {
         console.error('Error fetching categories:', err);
         setCategories({ primary: [], secondary: [] });
       }
     };
-
+  
     fetchCategories();
   }, [area]);
-
+  
   
   const handleClick = (categoryType: 'Primaria' | 'Secundaria') => {
     if (personalData.grado !== categoryType) {
@@ -89,16 +95,16 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({ area, onInscription
             <p className="text-sm text-gray-600">Categoría</p>
           </div>
           <div className="divide-y">
-            {categories.primary.map((category) => (
-              <div key={category.codNivel} className="p-4 flex justify-between items-center">
+            {categories.primary.map(cat => (
+              <div key={cat.codNivel} className="p-4 flex justify-between items-center">
                 <div>
-                  <p className="font-medium text-gray-700">{category.grade}</p>
+                  <p className="font-medium text-gray-700">{cat.grade}</p>
                   <span className="inline-block bg-gray-200 px-4 py-1 rounded-full text-sm">
-                    {category.level}
+                    {cat.level}
                   </span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="font-normal text-xl text-gray-800">Bs {category.price}</span>
+                  <span className="font-normal text-xl text-gray-800">Bs {cat.price}</span>
                 </div>
               </div>
             ))}

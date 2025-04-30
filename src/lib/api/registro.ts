@@ -50,11 +50,11 @@ export async function getAreas(): Promise<Areas[]> {
   return areas.data;
 }
 export interface Category {
-  codGrado: number;
+  codGrado?: number;   // opcional, porque en secundarios especiales puede no venir
+  codNivel?: number;   // opcional para regulares
   grade: string;
   level: string;
   price: number;
-  codNivel: number;
 }
 
 export interface AreaCategories {
@@ -63,13 +63,15 @@ export interface AreaCategories {
   secondary: Category[];
 }
 
-export async function getCategoriesArea(codArea: string): Promise<AreaCategories> {
-  const url = `${BASE_URL}/registro/areas/grados/nivel/2025/${codArea}`;
-  const { data, status } = await axios.get<AreaCategories[]>(url);
-  if (status !== 200) throw new Error(`Status ${status}`);
-  return data[0];
+export async function getCategoriesArea(area: string): Promise<AreaCategories> {
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+  const url = `${BASE_URL}/registro/areas/grados/nivel/2025/${area}`;
+  const resp = await axios.get<AreaCategories>(url);
+  if (resp.status !== 200) {
+    throw new Error(`API returned status ${resp.status}`);
+  }
+  return resp.data;
 }
-
 export interface Tutor {
   codPer: string;
   codTut: string;
