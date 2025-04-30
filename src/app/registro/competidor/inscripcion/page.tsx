@@ -23,7 +23,7 @@ export default function InscripcionPage() {
   };
 
   // Maneja la inscripción directamente, sin modal de confirmación
-  const handleInscription = (level: string) => {
+  const handleInscription = ({ area, categoria, nivel }: InscripcionData) => {
     // Previene duplicar la misma área
     if (inscripciones.some(i => i.area === currentArea)) {
       Swal.fire({
@@ -42,7 +42,7 @@ export default function InscripcionPage() {
     }
 
     // Agregar inscripción
-    const [categoria, nivel] = level.split('|');
+ 
     const nueva: InscripcionData = { area: currentArea, categoria, nivel };
     setInscripciones([...inscripciones, nueva]);
     setCurrentArea('');

@@ -4,6 +4,8 @@ import React, { FormEvent } from 'react';
 import { useRegistro, TutorAssignmentData } from '@/app/registro/competidor/context';
 import { inter } from '@/config/fonts';
 import { getTutors } from '@/lib/api/registro';
+import {registrarCompetidor} from '@/lib/api/registro';
+import Swal from 'sweetalert2';
 
 const tutores = await getTutors();
 
@@ -21,7 +23,7 @@ export default function TutorAssignmentPage() {
     }));
   };
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     for (const insc of inscripciones) {
       if (!tutorAssignments[insc.area]) {
@@ -29,16 +31,50 @@ export default function TutorAssignmentPage() {
         return;
       }
     }
-
-    console.log('Datos:', {
-      personalData,
-      inscripciones,
-      tutorAssignments,
-    });
-
+    console.log('Tutor assignments:', tutorAssignments);
+    console.log('Inscripciones:', inscripciones); 
+    console.log('Personal data:', personalData);
     setError('');
-    window.dispatchEvent(new CustomEvent('open-confirmation-modal', { detail: inscripciones.length }));
+  
+    let timerInterval: NodeJS.Timeout;
+    await Swal.fire({
+      title: 'Registrando...',
+      html: 'No cierre la ventana del navegador',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: async () => {
+        Swal.showLoading();
+        timerInterval = setInterval(() => {
+          const content = Swal.getHtmlContainer();
+          if (content) {
+            const b = content.querySelector('b');
+            if (b) {
+              b.textContent = Swal.getTimerLeft()?.toString() ?? '';
+            }
+          }
+        }, 100);
+  
+        try {
+          await registrarCompetidor(personalData, inscripciones, tutorAssignments);
+          clearInterval(timerInterval);
+          Swal.close();
+  
+          window.dispatchEvent(new CustomEvent('open-confirmation-modal', { detail: inscripciones.length }));
+        } catch (error) {
+          clearInterval(timerInterval);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al registrar',
+            text: 'Ocurrió un problema al registrar al competidor. Intenta nuevamente.',
+          });
+        }
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    });
   };
+  
 
   return (
     <form id="tutorForm" onSubmit={onSubmit} className="space-y-4">
