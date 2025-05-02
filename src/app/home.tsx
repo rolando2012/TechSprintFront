@@ -1,18 +1,29 @@
-// src/app/page.tsx
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 import { adlam } from '@/config/fonts'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import LoginModal from '@/components/Modals/LoginModal'
+
+type Role = 'admin' | 'tutor' | 'competidor' | 'cajero'
 
 export default function Home() {
+  const [showModal, setShowModal] = useState(false)
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null)
+
+  const handleOpenLogin = (role: Role) => {
+    setSelectedRole(role)
+    setShowModal(true)
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-900">
       <Header />
 
       <main className="flex-1 flex flex-col gap-24">
-        {/* Sección Bienvenida */}
+        {/* Bienvenida */}
         <section className="bg-[#434854] text-white px-6 py-12 flex flex-col md:flex-row gap-10 items-center w-full">
           <div className="container max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-10">
             <Image
@@ -49,14 +60,17 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-center mb-10">INICIA SESIÓN COMO:</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
               {[
-                { label: 'ADMINISTRADOR', img: 'admin.png' },
-                { label: 'TUTOR', img: 'tutor.png' },
-                { label: 'COMPETIDOR', img: 'competidor.png' },
-                { label: 'CAJERO', img: 'cajero.png' },
-              ].map(({ label, img }) => (
-                <div key={label}>
+                { label: 'ADMINISTRADOR', img: 'admin.png', value: 'admin' },
+                { label: 'TUTOR', img: 'tutor.png', value: 'tutor' },
+                { label: 'COMPETIDOR', img: 'competidor.png', value: 'competidor' },
+                { label: 'CAJERO', img: 'cajero.png', value: 'cajero' },
+              ].map(({ label, img, value }) => (
+                <div key={value}>
                   <Image src={`/images/${img}`} alt={label} width={100} height={100} className="mx-auto" />
-                  <button className="mt-4 bg-blue-500 text-white px-6 py-3 text-sm font-bold rounded-md hover:bg-blue-600 transition">
+                  <button
+                    onClick={() => handleOpenLogin(value as Role)}
+                    className="mt-4 bg-blue-500 text-white px-6 py-3 text-sm font-bold rounded-md hover:bg-blue-600 transition"
+                  >
                     {label}
                   </button>
                 </div>
@@ -112,6 +126,17 @@ export default function Home() {
       </main>
 
       <Footer />
+
+      {/* Modal de Login */}
+      {showModal && selectedRole && (
+        <LoginModal
+          role={selectedRole}
+          onClose={() => {
+            setShowModal(false)
+            setSelectedRole(null)
+          }}
+        />
+      )}
     </div>
   )
 }

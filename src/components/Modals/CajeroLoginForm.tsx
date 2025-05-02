@@ -1,15 +1,23 @@
 'use client'
 import Image from 'next/image'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   onClose: () => void
+  onLogin: () => void
 }
 
 export default function CajeroLoginForm({ onClose }: Props) {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    router.push('/cajero') // Redirige a la página del cajero
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
@@ -19,7 +27,6 @@ export default function CajeroLoginForm({ onClose }: Props) {
         </h2>
 
         <div className="flex flex-col md:flex-row items-center gap-8">
-          {/* Imagen del cajero */}
           <Image
             src="/images/cajero.png"
             alt="Cajero"
@@ -28,8 +35,7 @@ export default function CajeroLoginForm({ onClose }: Props) {
             className="object-contain"
           />
 
-          {/* Formulario */}
-          <form className="flex-1 space-y-4">
+          <form className="flex-1 space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block text-gray-800 font-semibold mb-1">Correo:</label>
               <input
@@ -63,7 +69,6 @@ export default function CajeroLoginForm({ onClose }: Props) {
               />
             </div>
 
-            {/* Botones */}
             <div className="flex justify-between pt-4">
               <button
                 type="submit"

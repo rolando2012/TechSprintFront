@@ -1,15 +1,25 @@
 'use client'
 import Image from 'next/image'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   onClose: () => void
+  onLogin: () => void
 }
 
 export default function TutorLoginForm({ onClose }: Props) {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // Simulación de login exitoso
+    router.push('/tutor')
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
@@ -29,7 +39,7 @@ export default function TutorLoginForm({ onClose }: Props) {
           />
 
           {/* Formulario */}
-          <form className="flex-1 space-y-4">
+          <form className="flex-1 space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block text-gray-800 font-semibold mb-1">Correo:</label>
               <input

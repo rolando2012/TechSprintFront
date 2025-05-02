@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 
 type Props = {
   onClose: () => void
+  onLogin: () => void
 }
 
 export default function AdminLoginForm({ onClose }: Props) {
