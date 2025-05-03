@@ -48,10 +48,10 @@ export default function LoginModal({ onClose, role }: Props) {
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl w-full max-w-4xl p-10 shadow-lg text-center">
-        <h2 className="text-2xl font-bold mb-8">¿Cómo deseas Ingresar?</h2>
+        <h2 className="text-2xl font-semibold mb-8">¿Cómo deseas Ingresar?</h2>
 
         <div className="bg-gray-100 rounded-xl p-6 flex flex-col items-center gap-6">
-          <p className="text-lg font-semibold">INICIA SESIÓN COMO:</p>
+          <p className="text-lg ">INICIA SESIÓN COMO:</p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
             {[
@@ -70,7 +70,8 @@ export default function LoginModal({ onClose, role }: Props) {
                 />
                 <button
                   onClick={() => setSelectedRole(value as Role)}
-                  className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg text-sm shadow"
+                  className="mt-4 bg-boton hover:bg-boton-hover text-white font-normal 
+                              py-2 px-6 rounded-full text-sm shadow cursor-pointer"
                 >
                   {label}
                 </button>
@@ -81,7 +82,8 @@ export default function LoginModal({ onClose, role }: Props) {
 
         <button
           onClick={onClose}
-          className="mt-10 bg-red-500 hover:bg-red-600 text-white py-3 px-8 rounded-full text-base font-semibold shadow-md"
+          className="mt-10 bg-boton-2 hover:bg-boton-2-hover cursor-pointer
+                  text-white py-3 px-8 rounded-full text-base font-normal shadow-md"
         >
           Cancelar
         </button>

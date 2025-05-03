@@ -25,7 +25,7 @@ export default function CompetidorLoginForm({ onClose }: Props) {
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
       <div className="bg-[#e2e5ea] rounded-2xl w-full max-w-3xl p-10 shadow-lg relative">
-        <h2 className="text-2xl font-bold text-center mb-6">
+        <h2 className="text-2xl font-semibold text-center mb-6">
           Bienvenido al servicio TechSprint para Competidor(es)
         </h2>
 
@@ -42,7 +42,7 @@ export default function CompetidorLoginForm({ onClose }: Props) {
           {/* Formulario */}
           <form className="flex-1 space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-gray-800 font-semibold mb-1">Correo:</label>
+              <label className="block text-gray-800 font-normal mb-1">Correo:</label>
               <input
                 type="email"
                 value={email}
@@ -53,7 +53,7 @@ export default function CompetidorLoginForm({ onClose }: Props) {
             </div>
 
             <div>
-              <label className="block text-gray-800 font-semibold mb-1">Contraseña:</label>
+              <label className="block text-gray-800 font-normal mb-1">Contraseña:</label>
               <input
                 type="password"
                 value={password}
@@ -64,7 +64,7 @@ export default function CompetidorLoginForm({ onClose }: Props) {
             </div>
 
             <div>
-              <label className="block text-gray-800 font-semibold mb-1">Código:</label>
+              <label className="block text-gray-800 font-normal mb-1">Código:</label>
               <input
                 type="text"
                 value={code}
@@ -78,14 +78,14 @@ export default function CompetidorLoginForm({ onClose }: Props) {
             <div className="flex justify-between pt-4">
               <button
                 type="submit"
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full"
+                className="bg-boton hover:bg-boton-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
               >
                 Ingresar
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full"
+                className="bg-boton-2 hover:bg-boton-2-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
               >
                 Cancelar
               </button>

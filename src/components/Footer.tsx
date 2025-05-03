@@ -26,7 +26,7 @@ const Footer = () => {
 
       {/* Redes Sociales */}
       <div>
-        <p className="mb-3 text-xl font-semibold">Redes Sociales:</p>
+        <p className="mb-3 text-xl ">Redes Sociales:</p>
         <div className="flex gap-6 text-5xl">
           <a href="https://www.facebook.com/UmssBolOficial/" target="_blank" rel="noopener noreferrer">
             <FaFacebook />
