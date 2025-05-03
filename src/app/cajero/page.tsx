@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import Footer from '@/components/Footer'
+
 import {
   FaMoneyCheckAlt,
   FaCashRegister,
@@ -42,8 +42,6 @@ export default function CajeroPage() {
           </div>
         ))}
       </section>
-
-      <Footer />
     </main>
   )
 }

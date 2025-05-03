@@ -3,7 +3,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { adlam } from '@/config/fonts'
-import Footer from '@/components/Footer'
 import LoginModal from '@/components/Modals/LoginModal'
 
 type Role = 'admin' | 'tutor' | 'competidor' | 'cajero'
@@ -122,9 +121,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      <Footer />
-
       {/* Modal de Login */}
       {showModal && selectedRole && (
         <LoginModal

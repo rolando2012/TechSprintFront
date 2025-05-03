@@ -1,9 +1,7 @@
-// src/app/competidor/page.tsx
 'use client'
 
 import Image from 'next/image'
 import { FaInfoCircle, FaFileAlt, FaCalendarAlt } from 'react-icons/fa'
-import Footer from '@/components/Footer'
 
 export default function CompetidorPage() {
   const options = [
@@ -39,8 +37,6 @@ export default function CompetidorPage() {
           ))}
         </section>
       </main>
-
-      <Footer />
     </>
   )
 }

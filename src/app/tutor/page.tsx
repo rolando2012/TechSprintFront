@@ -2,7 +2,6 @@
 
 import Image from 'next/image'
 import { FaUserCheck, FaCheckCircle, FaFileSignature } from 'react-icons/fa'
-import Footer from '@/components/Footer'
 
 export default function TutorPage() {
   const options = [
@@ -13,7 +12,6 @@ export default function TutorPage() {
 
   return (
     <>
-
       <main className="min-h-screen bg-gray-100">
         {/* Imagen UMSS */}
         <section className="w-full">
@@ -39,8 +37,6 @@ export default function TutorPage() {
           ))}
         </section>
       </main>
-
-      <Footer />
     </>
   )
 }

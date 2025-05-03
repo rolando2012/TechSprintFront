@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import Footer from '@/components/Footer'
+
 import {
   FaCalendarAlt,
   FaClipboardList,
@@ -43,8 +43,6 @@ export default function AdministradorPage() {
           </div>
         ))}
       </section>
-
-      <Footer />
     </main>
   )
 }
