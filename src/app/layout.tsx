@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import Navbar from '@/components/ui/navbar';
+import Header from '@/components/Header';
 
 export const metadata: Metadata = {
   title: "TechSprint",
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body >
+      <Header/>
       <Navbar />
         {children}
       </body>

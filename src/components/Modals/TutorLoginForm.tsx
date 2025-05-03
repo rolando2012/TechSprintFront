@@ -19,6 +19,7 @@ export default function TutorLoginForm({ onClose }: Props) {
 
     // Simulación de login exitoso
     router.push('/tutor')
+    onClose()
   }
 
   return (

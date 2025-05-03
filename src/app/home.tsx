@@ -3,7 +3,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { adlam } from '@/config/fonts'
-import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import LoginModal from '@/components/Modals/LoginModal'
 
@@ -20,7 +19,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-900">
-      <Header />
 
       <main className="flex-1 flex flex-col gap-24">
         {/* Bienvenida */}

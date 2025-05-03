@@ -17,6 +17,7 @@ export default function CajeroLoginForm({ onClose }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     router.push('/cajero') // Redirige a la página del cajero
+    onClose()
   }
 
   return (

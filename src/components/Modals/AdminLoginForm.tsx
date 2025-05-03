@@ -19,6 +19,7 @@ export default function AdminLoginForm({ onClose }: Props) {
 
     // Simulación de autenticación (puedes agregar validación si quieres)
     router.push('/administrador')
+    onClose();
   }
 
   return (

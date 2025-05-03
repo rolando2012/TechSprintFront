@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import {
   FaMoneyCheckAlt,
@@ -18,7 +17,6 @@ export default function CajeroPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 flex flex-col">
-      <Header />
 
       {/* Imagen de encabezado */}
       <section className="w-full">

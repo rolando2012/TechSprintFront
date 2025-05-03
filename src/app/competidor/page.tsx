@@ -3,7 +3,6 @@
 
 import Image from 'next/image'
 import { FaInfoCircle, FaFileAlt, FaCalendarAlt } from 'react-icons/fa'
-import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 export default function CompetidorPage() {
@@ -15,8 +14,6 @@ export default function CompetidorPage() {
 
   return (
     <>
-      <Header />
-
       <main className="min-h-screen bg-gray-100">
         {/* Imagen UMSS */}
         <section className="w-full">

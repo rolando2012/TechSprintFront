@@ -19,6 +19,7 @@ export default function CompetidorLoginForm({ onClose }: Props) {
 
     // Simulación de autenticación
     router.push('/competidor')
+    onClose()
   }
 
   return (

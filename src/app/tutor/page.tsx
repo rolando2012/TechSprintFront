@@ -1,9 +1,7 @@
-// src/app/tutor/page.tsx
 'use client'
 
 import Image from 'next/image'
 import { FaUserCheck, FaCheckCircle, FaFileSignature } from 'react-icons/fa'
-import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 export default function TutorPage() {
@@ -15,7 +13,6 @@ export default function TutorPage() {
 
   return (
     <>
-      <Header />
 
       <main className="min-h-screen bg-gray-100">
         {/* Imagen UMSS */}
