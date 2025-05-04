@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -22,6 +23,7 @@ interface Props {
 
 export default function AdminLoginForm({ onClose, onLogin }: Props) {
   const router = useRouter()
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -32,16 +34,37 @@ export default function AdminLoginForm({ onClose, onLogin }: Props) {
     },
   })
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    console.log(values)
-    // router.push('/administrador')
-    onLogin?.()
-    onClose()
-  }
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    setError(undefined);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',   
+        body: JSON.stringify(values),
+      });
+      const body = await res.json();
+
+      if (!res.ok) {
+        // cualquier status ≠ 200
+        setError(body.error || `Error desconocido (${res.status})`);
+        return;
+      }
+
+      // login exitoso
+      //onLogin?.();
+      router.push('/administrador');
+      onClose();
+    } catch (e) {
+      console.error(e);
+      setError('No se pudo conectar al servidor');
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
       <div className="bg-[#e2e5ea] rounded-2xl w-full max-w-3xl p-10 shadow-lg relative">
+        {error && <p className="bg-boton-2-hover text-md text-white text-center ">{error}</p>}
         <h2 className="text-2xl font-semibold text-center mb-6">
           Bienvenido al servicio TechSprint para administrador(es)
         </h2>
@@ -115,14 +138,14 @@ export default function AdminLoginForm({ onClose, onLogin }: Props) {
               <div className="flex justify-between pt-4">
                 <button
                   type="submit"
-                  className="bg-boton hover:bg-boton-hover text-white font-normal py-2 px-6 rounded-full"
+                  className="bg-boton hover:bg-boton-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
                 >
                   Ingresar
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-boton-2 hover:bg-boton-2-hover text-white font-normal py-2 px-6 rounded-full"
+                  className="bg-boton-2 hover:bg-boton-2-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
                 >
                   Cancelar
                 </button>

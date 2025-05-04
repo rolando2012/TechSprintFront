@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fa'
 
 export default function AdministradorPage() {
+  
   const features = [
     { icon: <FaCalendarAlt size={75} />, label: 'Calendario' },
     { icon: <FaListAlt size={75} />, label: 'Versiones' },
