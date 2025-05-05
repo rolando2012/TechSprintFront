@@ -1,17 +1,42 @@
 'use client'
 import Image from 'next/image'
 import { useState } from 'react'
-import LoginModal from '@/components/Modals/LoginModal';
-import {inter} from '@/config/fonts'
+import LoginModal from '@/components/Modals/LoginModal'
+import { inter } from '@/config/fonts'
+import { UserCircleIcon } from '@heroicons/react/24/outline'
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useRouter } from 'next/navigation'
 
 const Header = () => {
+  const router = useRouter();
   const [showModal, setShowModal] = useState(false)
+
+  const logout = async () => {
+    const resp = await fetch('/api/logout', {
+      method: 'POST',
+      credentials: 'include',    // <— obligatorio para recibir Set-Cookie
+    })
+
+    if (resp.ok) {
+      router.push('/')
+    } else {
+      console.error('Logout falló')
+    }
+  }
 
   return (
     <>
       <header className="relative bg-bright-gray-900 text-white px-4 md:px-12 py-6 md:py-10 flex items-center justify-between h-auto md:h-[150px]">
         {/* Fondo de aros olímpicos */}
-        <div className="absolute inset-0 z-0 opacity-100 flex justify-center items-center">
+        <div className="absolute inset-0 z-0 opacity-100 pointer-events-none flex justify-center items-center">
           <div className="relative w-full max-w-[300px] md:max-w-[750px] h-[80px] md:h-[150px]">
             <Image
               src="/images/aros.png"
@@ -37,18 +62,36 @@ const Header = () => {
           <span className="text-lg md:text-3xl tracking-wide">TechSprint</span>
         </div>
 
-        {/* Botón de inicio de sesión - Versión Responsive Mejorada */}
+        {/* Dropdown optimizado */}
+        <div className="relative z-10">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+            <button
+          className="p-1 rounded-full hover:bg-bright-gray-950 focus:outline-none focus:ring"
+        >
+          <UserCircleIcon className="h-8 w-8 text-white" />
+        </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-bright-gray-800  text-white z-50">
+              {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
+              {/* <DropdownMenuSeparator /> */}
+              <DropdownMenuItem onSelect={logout}>
+                Cerrar Sesion</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Botón de login */}
         <button
           onClick={() => setShowModal(true)}
-          className={`relative z-10 bg-white text-black 
-            text-xs xs:text-sm sm:text-base 
-            px-3 xs:px-4 sm:px-6 
-            py-1.5 xs:py-2 sm:py-3 
-            rounded-full hover:bg-gray-200 font-semibold 
-            transition-all duration-200 shadow 
-            cursor-pointer whitespace-nowrap
+          className={`
+            relative z-10 bg-white text-black text-xs xs:text-sm sm:text-base
+            px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 sm:py-3
+            rounded-full hover:bg-gray-200 font-semibold
+            transition-all duration-200 shadow cursor-pointer whitespace-nowrap
             ${inter.className}
-            transform hover:scale-105 active:scale-95`}
+            transform hover:scale-105 active:scale-95
+          `}
         >
           Iniciar Sesión
         </button>
