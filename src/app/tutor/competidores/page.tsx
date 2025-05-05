@@ -1,14 +1,28 @@
-import ParticipantesAsignados from '@/components/Tutor/ParticipantesAsignados';
+// app/tutor/participantes/page.tsx
+import ParticipantesAsignados from '@/components/Tutor/ParticipantesAsignados'
+import { cookies } from 'next/headers'
+import { jwtVerify } from 'jose'
 
+export default async function ParticipantesPage() {
+  const token = (await cookies()).get('access_token')?.value
 
-export default function ParticipantesPage() {
+  if (!token) {
+    return <p>No autenticado</p>
+  }
 
-  // In a real app, you'd get this ID from a session or URL parameter
-  const tutorId = "7";
+  try {
+    const { payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(process.env.JWT_SECRET!)
+    )
+    const tutorId = payload.id as string
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <ParticipantesAsignados tutorId={tutorId} />
-    </div>
-  );
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <ParticipantesAsignados tutorId={tutorId} />
+      </div>
+    )
+  } catch (e) {
+    return <p>Token inválido</p>
+  }
 }

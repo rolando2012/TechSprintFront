@@ -2,12 +2,13 @@
 
 import Image from 'next/image'
 import { FaUserCheck, FaCheckCircle, FaFileSignature } from 'react-icons/fa'
+import Link from 'next/link'
 
 export default function TutorPage() {
   const options = [
-    { icon: <FaUserCheck size={70} />, label: 'Participantes asignados' },
-    { icon: <FaCheckCircle size={70} />, label: 'Validar inscripciones' },
-    { icon: <FaFileSignature size={70} />, label: 'Proceso de inscripciones' },
+    { icon: <FaUserCheck size={70} />, label: 'Participantes asignados',ruta:'/tutor/competidores' },
+    // { icon: <FaCheckCircle size={70} />, label: 'Validar inscripciones' },
+    // { icon: <FaFileSignature size={70} />, label: 'Proceso de inscripciones' },
   ]
 
   return (
@@ -26,14 +27,16 @@ export default function TutorPage() {
 
         {/* Opciones del Tutor */}
         <section className="bg-gray-200 py-10 px-4 flex flex-col md:flex-row justify-center gap-8">
-          {options.map(({ icon, label }) => (
-            <div
+          {options.map(({ icon, label,ruta }) => (
+            <Link
+              href={ruta}
               key={label}
-              className="bg-[#B4B9C5] rounded-xl p-6 w-full max-w-[220px] flex flex-col items-center shadow hover:shadow-md transition"
+              className="bg-bright-gray-300  rounded-xl p-6 w-full max-w-[220px] flex flex-col items-center 
+                  shadow hover:shadow-md transition cursor-pointer hover:bg-bright-gray-400"
             >
               <div className="text-6xl mb-4 text-gray-800">{icon}</div>
               <p className="font-semibold text-center text-gray-800">{label}</p>
-            </div>
+            </Link>
           ))}
         </section>
       </main>

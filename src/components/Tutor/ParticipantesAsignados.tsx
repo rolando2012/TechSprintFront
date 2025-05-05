@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { getCompetidoresByTutor } from '@/lib/api/competidor';
 import { CompetidoresByTutor } from '@/lib/api/competidor';
+import Link from 'next/link'
+import { RiFileSettingsFill } from "react-icons/ri";
 
 interface ParticipantesAsignadosProps {
   tutorId: string;
@@ -52,8 +54,9 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center gap-2 mb-4">
+      <RiFileSettingsFill className='h-16 w-16'/>
         <div className="text-3xl font-bold">Participantes Asignados</div>
-        <img src="/api/placeholder/32/32" alt="Gear icon" className="w-8 h-8" />
+        
       </div>
       
       {loading ? (
@@ -95,11 +98,12 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
           </div>
           
           <div className="flex justify-end mt-4">
-            <button 
+            <Link 
+                href='/tutor'
               className="px-6 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700 transition-colors"
             >
               Volver
-            </button>
+            </Link>
           </div>
         </>
       )}
