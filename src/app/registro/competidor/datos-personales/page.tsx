@@ -23,6 +23,31 @@ export default function Page() {
   const [grados, setGrados] = useState<string[]>([]);
   const [niveles, setNiveles] = useState<string[]>([]);
 
+  const today = new Date();
+  const minDate = new Date(
+    today.getFullYear() - 20,
+    today.getMonth(),
+    today.getDate()
+  ).toISOString().split('T')[0]; // hace 20 años
+  const maxDate = new Date(
+    today.getFullYear() - 8,
+    today.getMonth(),
+    today.getDate()
+  ).toISOString().split('T')[0]; // hace 8 años
+
+  // helper para calcular edad a partir de localData.fechaNacimiento
+  const getAge = (born: string) => {
+    if (!born) return 0;
+    const [y, m, d] = born.split('-').map(Number);
+    const b = new Date(y, m - 1, d);
+    let age = today.getFullYear() - b.getFullYear();
+    const mm = today.getMonth() - b.getMonth();
+    if (mm < 0 || (mm === 0 && today.getDate() < b.getDate())) age--;
+    return age;
+  };
+
+  const age = getAge(localData.fechaNacimiento);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -255,11 +280,17 @@ export default function Page() {
               name="fechaNacimiento"
               type="date"
               value={localData.fechaNacimiento}
-              max={new Date().toISOString().split("T")[0]}
+              min={minDate}
+              max={maxDate}
               onChange={handleChange}
               className={`${formFieldStyle} ${errors.fechaNacimiento ? 'border border-red-500' : ''}`}
             />
             {errors.fechaNacimiento && <p className="text-red-500 text-xs mt-1">{errors.fechaNacimiento}</p>}
+            {localData.fechaNacimiento && (age < 8 || age > 20) && (
+          <p className="text-red-500 text-xs mt-1">
+            Debes tener entre 8 y 20 años (tienes {age}).
+          </p>
+        )}
           </div>
         </div>
       </div>

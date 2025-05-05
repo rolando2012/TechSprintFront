@@ -41,7 +41,7 @@ export default function CompetenciasPage() {
           <Cog6ToothIcon 
             className="w-6 h-6 " 
             viewBox="0 0 24 24" 
-           
+
           />
           
         </div>
@@ -85,7 +85,7 @@ export default function CompetenciasPage() {
       {/* Botones */}
       <div className="flex justify-between mt-12">
         <Link
-          href="/dashboard"
+          href="/administrador"
           className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
         >
           Volver

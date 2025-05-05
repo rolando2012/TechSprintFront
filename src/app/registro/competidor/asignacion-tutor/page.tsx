@@ -109,7 +109,7 @@ export default function TutorAssignmentPage() {
                     <select
                       value={selected}
                       onChange={e => onSelectTutor(insc.area, e.target.value,)}
-                      className="border rounded p-2 w-full"
+                      className="border-2 border-bright-gray-300 rounded p-2 w-full"
                     >
                       <option value="">Selecciona tutor</option>
                     {/* <!-- Filtra los tutores por área --> */}
