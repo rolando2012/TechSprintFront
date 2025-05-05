@@ -17,7 +17,7 @@ export default function AdministradorPage() {
     // { icon: <FaCalendarAlt size={75} />, label: 'Calendario' },
     // { icon: <FaListAlt size={75} />, label: 'Versiones' },
     // { icon: <FaClipboardCheck size={75} />, label: 'Gestionar inscripciones' },
-    { icon: <FaClipboardList size={75} />, label: 'Lista de competidores',ruta:'/administrador/lista' },
+    // { icon: <FaClipboardList size={75} />, label: 'Lista de competidores',ruta:'/administrador/lista' },
     { icon: <FaUsersCog size={75} />, label: 'Gestionar Competencia',ruta:'/administrador/lista' },
   ]
 
