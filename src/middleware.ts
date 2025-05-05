@@ -14,10 +14,10 @@ export async function middleware(request: NextRequest) {
                 return NextResponse.redirect(new URL('/',request.url))
             }
             const {payload} =  await jwtVerify(jwt.value,  new TextEncoder().encode(process.env.JWT_SECRET));
-            //console.log(payload)
             if(payload.rol==='Administrador'){
                 return NextResponse.next()
-            }
+            }else return NextResponse.redirect(new URL('/',request.url))
+            
         }else if(request.nextUrl.pathname.includes('/tutor')){
             if(jwt === undefined){
                 return NextResponse.redirect(new URL('/',request.url))
@@ -26,9 +26,8 @@ export async function middleware(request: NextRequest) {
             
             if(payload.rol==='Tutor'){
                 return NextResponse.next()
-            }
+            }else return NextResponse.redirect(new URL('/',request.url))
         }
-        
         
         
     }catch(error){

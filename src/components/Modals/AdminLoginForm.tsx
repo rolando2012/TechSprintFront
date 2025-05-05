@@ -51,8 +51,6 @@ export default function AdminLoginForm({ onClose, onLogin }: Props) {
         return;
       }
 
-      // login exitoso
-      //onLogin?.();
       router.push('/administrador');
       onClose();
     } catch (e) {
