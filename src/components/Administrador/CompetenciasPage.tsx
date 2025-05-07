@@ -91,13 +91,13 @@ export default function CompetenciasPage() {
           Volver
         </Link>
         
-        <button
-          onClick={agregarCompetencia}
-          className="flex items-center px-4 py-2 bg-gray-800 text-white rounded hover:bg-black transition-colors"
+        <Link
+          href='/administrador/lista/crear/datos-comp'
+          className="flex items-center px-4 py-2 bg-bright-gray-900 text-white rounded hover:bg-bright-gray-700 transition-colors cursor-pointer"
         >
           <Plus size={20} className="mr-1" />
           Agregar Competencia
-        </button>
+        </Link>
       </div>
     </div>
   );

@@ -66,7 +66,7 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
               ))}
               {/* círculos */}
               {steps.map((step, i) => (
-                <Link key={step.slug} href={`/registro/competidor/${step.slug}`}
+                <div key={step.slug} 
                   className="relative flex items-center justify-center z-10"
                 >
                   <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 cursor-pointer ${i <= stepIndex ? 'bg-black border-black text-white' : 'bg-white border-gray-300 text-black'}`}>  
@@ -75,7 +75,7 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
                       : <span className="text-lg font-medium">{i + 1}</span>
                     }
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>

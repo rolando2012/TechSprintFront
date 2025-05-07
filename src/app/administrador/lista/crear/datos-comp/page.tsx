@@ -2,7 +2,7 @@
 export default function NamePage() {
   return (
     <div>
-      <h1>Crear Compentencia</h1>
+      <h1>Datos</h1>
     </div>
   );
 }
