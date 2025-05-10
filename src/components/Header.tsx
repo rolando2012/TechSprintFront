@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import LoginModal from '@/components/Modals/LoginModal'
 import { inter } from '@/config/fonts'
 import { PiUserCircleFill } from "react-icons/pi";
+import { IoMdNotificationsOutline } from "react-icons/io";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -103,10 +104,17 @@ export default function Header() {
         </div>
 
         {/* Auth controls */}
-        <div className="relative z-10">
-          {isLogged ? (
+        
+          {isLogged ? (  
             <>
+            <div className="flex items-center">
+            {/* Otros elementos a la izquierda */}
+            <div className="relative z-10 ml-auto">
+                <IoMdNotificationsOutline className=" relative -top-3 h-14 w-14 text-white"/>
+            </div>
+          <div className="relative z-10">
             <div className="flex flex-col items-center justify-center">
+            
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="p-1 rounded-full hover:bg-bright-gray-950 focus:outline-none focus:ring">
@@ -121,8 +129,12 @@ export default function Header() {
               </DropdownMenu>
               <p className="text-white ">{role}</p>
             </div>
-          </>         
+            </div>  
+            </div>
+          </> 
+                
           ) : (
+            <div className="relative z-10">
             <button
               onClick={() => setShowModal(true)}
               className={
@@ -136,8 +148,9 @@ export default function Header() {
             >
               Iniciar Sesión
             </button>
+            </div>
           )}
-        </div>
+       
       </header>
 
       {showModal && <LoginModal onClose={() => setShowModal(false)} />}
