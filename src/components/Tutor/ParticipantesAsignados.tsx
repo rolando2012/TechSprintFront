@@ -30,25 +30,12 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
     fetchParticipantes();
   }, [tutorId]);
 
-  const getEstadoClass = (carnet: string, colegio: string) => {
-    if (!carnet || !colegio) return 'bg-gray-400 text-white';
-    
-    // This is a simplified logic - in a real app, you'd likely have a status field
-    const hash = (carnet.toString().charCodeAt(0) + colegio.charCodeAt(0)) % 3;
-    
-    if (hash === 0) return 'bg-blue-500 text-white';
-    if (hash === 1) return 'bg-gray-400 text-white';
-    return 'bg-red-500 text-white';
-  };
+  const getEstadoClass = (estadoInscripcion:string) => {
+    if(estadoInscripcion === 'Pendiente')  return 'bg-gray-400 text-white';
+    if(estadoInscripcion === 'Aceptado')  return 'bg-blue-500 text-white';
+    if(estadoInscripcion === 'Rechazado')  return 'bg-red-500text-white';
 
-  const getEstadoText = (carnet: string, colegio: string) => {
-    if (!carnet || !colegio) return 'PENDIENTE';
-    
-    const hash = (carnet.toString().charCodeAt(0) + colegio.charCodeAt(0)) % 3;
-    
-    if (hash === 0) return 'VERIFICADO';
-    if (hash === 1) return 'PENDIENTE';
-    return 'RECHAZADO';
+    return 'bg-red-500 text-white';
   };
 
   return (
@@ -87,8 +74,8 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
                     <td className="p-4">{participante.colegio || '-'}</td>
                     <td className="p-4">{participante.gradoRange}</td>
                     <td className="p-4">
-                      <div className={`px-4 py-2 rounded text-center ${getEstadoClass(participante.carnet, participante.colegio)}`}>
-                        {getEstadoText(participante.carnet, participante.colegio)}
+                      <div className={`px-4 py-2 rounded text-center ${getEstadoClass(participante.estadoInscripcion)}`}>
+                        {participante.estadoInscripcion}
                       </div>
                     </td>
                   </tr>

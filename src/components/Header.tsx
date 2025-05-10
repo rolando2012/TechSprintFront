@@ -119,7 +119,7 @@ export default function Header() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <p className="text-white mt-4">{role}</p>
+              <p className="text-white ">{role}</p>
             </div>
           </>         
           ) : (
