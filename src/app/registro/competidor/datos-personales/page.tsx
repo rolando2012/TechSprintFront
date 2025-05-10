@@ -24,16 +24,7 @@ export default function Page() {
   const [niveles, setNiveles] = useState<string[]>([]);
 
   const today = new Date();
-  const minDate = new Date(
-    today.getFullYear() - 20,
-    today.getMonth(),
-    today.getDate()
-  ).toISOString().split('T')[0]; // hace 20 años
-  const maxDate = new Date(
-    today.getFullYear() - 8,
-    today.getMonth(),
-    today.getDate()
-  ).toISOString().split('T')[0]; // hace 8 años
+
 
   // helper para calcular edad a partir de localData.fechaNacimiento
   const getAge = (born: string) => {
@@ -280,8 +271,7 @@ export default function Page() {
               name="fechaNacimiento"
               type="date"
               value={localData.fechaNacimiento}
-              min={minDate}
-              max={maxDate}
+              
               onChange={handleChange}
               className={`${formFieldStyle} ${errors.fechaNacimiento ? 'border border-red-500' : ''}`}
             />

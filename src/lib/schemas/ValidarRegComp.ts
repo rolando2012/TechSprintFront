@@ -21,18 +21,8 @@ export const personalDataSchema = z.object({
     .min(1, 'El correo electrónico es obligatorio'),
   fechaNacimiento: z
     .string()
-    .min(1, 'La fecha de nacimiento es obligatoria')
-    .refine(val => {
-      const [y, m, d] = val.split('-').map(Number);
-      const born = new Date(y, m - 1, d);
-      const today = new Date();
-      let age = today.getFullYear() - born.getFullYear();
-      const mm = today.getMonth() - born.getMonth();
-      if (mm < 0 || (mm === 0 && today.getDate() < born.getDate())) age--;
-      return age >= 8 && age <= 20;
-    }, {
-      message: 'La edad debe estar entre 8 y 20 años',
-    }),
+    .min(1, 'La fecha de nacimiento es obligatoria'),
+    
   departamento: z.string().min(1, 'Seleccione un departamento'),
   municipio: z.string().min(1, 'Seleccione un municipio'),
   colegio: z.string().min(1, 'El colegio es obligatorio'),
