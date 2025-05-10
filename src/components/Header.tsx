@@ -48,7 +48,7 @@ export default function Header() {
         <div className="absolute inset-0 z-0 opacity-100 pointer-events-none flex justify-center items-center">
           <div className="relative w-full max-w-[300px] md:max-w-[750px] h-[80px] md:h-[150px]">
             <Image
-              src="/images/aros.png"
+              src="/images/aros.svg"
               alt="Aros Olímpicos"
               fill
               className="object-contain"

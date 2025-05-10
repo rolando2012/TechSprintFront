@@ -69,7 +69,7 @@ export default function AdminLoginForm({ onClose, onLogin }: Props) {
 
         <div className="flex flex-col md:flex-row items-center gap-8">
           <Image
-            src="/images/admin.png"
+            src="/images/admin.svg"
             alt="Administrador"
             width={200}
             height={200}

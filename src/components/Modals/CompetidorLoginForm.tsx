@@ -32,7 +32,7 @@ export default function CompetidorLoginForm({ onClose }: Props) {
         <div className="flex flex-col md:flex-row items-center gap-8">
           {/* Imagen del competidor */}
           <Image
-            src="/images/competidor.png"
+            src="/images/competidor.svg"
             alt="Competidor"
             width={200}
             height={200}

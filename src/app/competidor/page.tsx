@@ -16,7 +16,7 @@ export default function CompetidorPage() {
         {/* Imagen UMSS */}
         <section className="w-full">
           <Image
-            src="/images/umss.png"
+            src="/images/umss.svg"
             alt="Universidad Mayor de San Simón"
             width={1200}
             height={500}

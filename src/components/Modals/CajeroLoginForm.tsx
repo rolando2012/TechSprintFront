@@ -29,7 +29,7 @@ export default function CajeroLoginForm({ onClose }: Props) {
 
         <div className="flex flex-col md:flex-row items-center gap-8">
           <Image
-            src="/images/cajero.png"
+            src="/images/cajero.svg"
             alt="Cajero"
             width={200}
             height={200}

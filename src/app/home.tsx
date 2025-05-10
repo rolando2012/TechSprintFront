@@ -24,7 +24,7 @@ export default function Home() {
         <section className="bg-bright-gray-700 text-white px-6 py-12 flex flex-col md:flex-row gap-10 items-center w-full">
           <div className="container max-w-screen-xl mx-auto flex flex-col md:flex-row items-center gap-10">
             <Image
-              src="/images/competencia.png"
+              src="/images/competencia.svg"
               alt="Competencia"
               width={600}
               height={400}
@@ -60,10 +60,10 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-center mb-10">INICIA SESIÓN COMO:</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
               {[
-                { label: 'ADMINISTRADOR', img: 'admin.png', value: 'admin' },
-                { label: 'TUTOR', img: 'tutor.png', value: 'tutor' },
-                { label: 'COMPETIDOR', img: 'competidor.png', value: 'competidor' },
-                { label: 'CAJERO', img: 'cajero.png', value: 'cajero' },
+                { label: 'ADMINISTRADOR', img: 'admin.svg', value: 'admin' },
+                { label: 'TUTOR', img: 'tutor.svg', value: 'tutor' },
+                { label: 'COMPETIDOR', img: 'competidor.svg', value: 'competidor' },
+                { label: 'CAJERO', img: 'cajero.svg', value: 'cajero' },
               ].map(({ label, img, value }) => (
                 <div key={value}>
                   <Image src={`/images/${img}`} alt={label} width={100} height={100} className="mx-auto" />
@@ -87,11 +87,11 @@ export default function Home() {
               <div className="text-center">
                 <h3 className="text-lg font-semibold mb-2">PERIODO DE INSCRIPCIÓN</h3>
                 <p className="mb-4">del 1 al 31 de Abril 2025</p>
-                <Image src="/images/calendario.png" alt="Calendario" width={250} height={200} />
+                <Image src="/images/calendario.svg" alt="Calendario" width={250} height={200} />
               </div>
               <div className="text-center">
                 <h3 className="text-lg font-semibold mb-2">CONVOCATORIA</h3>
-                <Image src="/images/convocatoria.png" alt="Convocatoria" width={250} height={200} />
+                <Image src="/images/convocatoria.svg" alt="Convocatoria" width={250} height={200} />
                 <a
                   href="/descargas/convocatoria.pdf"
                   download
@@ -110,10 +110,10 @@ export default function Home() {
             <h2 className="text-3xl font-bold text-center mb-10">NUESTRAS ÁREAS</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
               {[
-                { label: 'MATEMÁTICA', img: 'matematica.png' },
-                { label: 'ROBÓTICA', img: 'robotica.png' },
-                { label: 'COMPUTACIÓN', img: 'computacion.png' },
-                { label: 'ASTRONOMÍA', img: 'astronomia.png' },
+                { label: 'MATEMÁTICA', img: 'matematica.svg' },
+                { label: 'ROBÓTICA', img: 'robotica.svg' },
+                { label: 'COMPUTACIÓN', img: 'computacion.svg' },
+                { label: 'ASTRONOMÍA', img: 'astronomia.svg' },
               ].map(({ label, img }) => (
                 <div key={label} className="text-center">
                   <Image src={`/images/${img}`} alt={label} width={350} height={200} className="mx-auto rounded-md" />

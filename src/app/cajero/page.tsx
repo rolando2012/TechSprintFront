@@ -21,7 +21,7 @@ export default function CajeroPage() {
       {/* Imagen de encabezado */}
       <section className="w-full">
         <Image
-          src="/images/umss.png"
+          src="/images/umss.svg"
           alt="Universidad Mayor de San Simón"
           width={1200}
           height={500}

@@ -52,10 +52,10 @@ export default function LoginModal({ onClose, role }: Props) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 w-full">
             {[
-              { label: 'ADMINISTRADOR', img: 'admin.png', value: 'admin' },
-              { label: 'TUTOR', img: 'tutor.png', value: 'tutor' },
-              { label: 'COMPETIDOR', img: 'competidor.png', value: 'competidor' },
-              { label: 'CAJERO', img: 'cajero.png', value: 'cajero' },
+              { label: 'ADMINISTRADOR', img: 'admin.svg', value: 'admin' },
+              { label: 'TUTOR', img: 'tutor.svg', value: 'tutor' },
+              { label: 'COMPETIDOR', img: 'competidor.svg', value: 'competidor' },
+              { label: 'CAJERO', img: 'cajero.svg', value: 'cajero' },
             ].map(({ label, img, value }) => (
               <div key={value} className="text-center flex flex-col items-center">
                 <Image
