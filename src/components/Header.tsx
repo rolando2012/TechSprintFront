@@ -81,9 +81,9 @@ export default function Header() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-bright-gray-800 text-white z-50 w-40">
-                <DropdownMenuItem onSelect={() => router.push('/perfil')}>
+                {/*  <DropdownMenuItem onSelect={() => router.push('/perfil')}>
                   Perfil
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem onSelect={logout}>
                   Cerrar sesión
                 </DropdownMenuItem>
