@@ -9,8 +9,8 @@ interface Props {
 }
 
 const CATEGORIAS: Record<string, string[]> = {
-  INFORMATICA: ['guacamayo', 'guanaco', 'londra', 'jucumari', 'bufeo', 'puma'],
-  ROBOTICA: ['builders P', 'builders S', 'Lego P', 'Lego S'],
+  INFORMATICA: ['Guacamayo', 'Guanaco', 'Londra', 'Jucumari', 'Bufeo', 'Puma'],
+  ROBOTICA: ['Builders P', 'Builders S', 'Lego P', 'Lego S'],
 }
 
 export default function SelectCategoriasModal({ selected, onConfirm, onClose }: Props) {

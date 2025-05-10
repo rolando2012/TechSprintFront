@@ -10,13 +10,13 @@ type Props = {
   }
 
 const AREAS = [
-  'ASTRONOMIA - ASTROFISICA',
-  'BIOLOGIA',
-  'FISICA',
-  'INFORMATICA',
-  'MATEMATICAS',
-  'QUIMICA',
-  'ROBOTICA'
+  'Astronomía - astrofísica',
+  'Biología',
+  'Física',
+  'Informática',
+  'Matemáticas',
+  'Química',
+  'Robótica'
 ]
 
 export default function SelectAreasModal({ selected, onConfirm, onClose }: Props) {

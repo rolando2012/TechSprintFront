@@ -3,20 +3,27 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { IoFlask } from 'react-icons/io5'
-import { FaRegChartBar, FaCheck } from "react-icons/fa"
-import { BsFileRuled, BsCurrencyDollar, BsMenuApp } from "react-icons/bs"
+import { FaRegChartBar, FaCheck } from 'react-icons/fa'
+import { BsFileRuled, BsCurrencyDollar, BsMenuApp } from 'react-icons/bs'
 
 import SelectAreasModal from '@/components/Modals/regComp/SelectAreasModal'
 import SelectNivelesModal from '@/components/Modals/regComp/SelectNivelesModal'
 import SelectCategoriasModal from '@/components/Modals/regComp/SelectCategoriasModal'
+import { useRegistro } from '@/lib/context/RegistroContext'
 
 export default function DatosCompetenciaPage() {
-  const [selectedAreas, setSelectedAreas] = useState<string[]>([])
-  const [selectedNiveles, setSelectedNiveles] = useState<string[]>([])
-  const [selectedCategorias, setSelectedCategorias] = useState<string[]>([])
-  const [costo, setCosto] = useState('')
-  const [costoConfirmado, setCostoConfirmado] = useState('')
+  const {
+    selectedAreas,
+    selectedNiveles,
+    selectedCategorias,
+    costoConfirmado,
+    setSelectedAreas,
+    setSelectedNiveles,
+    setSelectedCategorias,
+    setCostoConfirmado,
+  } = useRegistro()
 
+  const [costoInput, setCostoInput] = useState('')
   const [showAreaModal, setShowAreaModal] = useState(false)
   const [showNivelModal, setShowNivelModal] = useState(false)
   const [showCategoriaModal, setShowCategoriaModal] = useState(false)
@@ -30,7 +37,7 @@ export default function DatosCompetenciaPage() {
 
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const newErrors = {
@@ -39,14 +46,36 @@ export default function DatosCompetenciaPage() {
       categorias: selectedCategorias.length === 0,
       costo: costoConfirmado.trim() === '',
     }
-
     setErrors(newErrors)
 
-    const hasErrors = Object.values(newErrors).some((v) => v)
+    if (Object.values(newErrors).some((v) => v)) return
 
-    if (!hasErrors) {
-      router.push('/administrador/lista/crear/fechas')
+    // 1) console.log de todos los datos
+    console.log({
+      selectedAreas,
+      selectedNiveles,
+      selectedCategorias,
+      costo: costoConfirmado,
+    })
+
+    // 2) Envío por POST
+    try {
+      await fetch('/api/competencia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          areas: selectedAreas,
+          niveles: selectedNiveles,
+          categorias: selectedCategorias,
+          costo: costoConfirmado,
+        }),
+      })
+    } catch (err) {
+      console.error('Error enviando datos:', err)
     }
+
+    // 3) Navegar al siguiente paso
+    router.push('/administrador/lista/crear/fechas')
   }
 
   return (
@@ -64,15 +93,23 @@ export default function DatosCompetenciaPage() {
               <label className="text-xl">Áreas de competencia</label>
             </div>
             <div
-              className={`w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200`}
+              className={`w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer ${
+                errors.areas ? 'bg-red-200' : 'bg-gray-200'
+              }`}
               onClick={() => setShowAreaModal(true)}
             >
               <span>
-                {selectedAreas.length > 0 ? selectedAreas.join(', ') : 'Ingrese un área'}
+                {selectedAreas.length > 0
+                  ? selectedAreas.join(', ')
+                  : 'Ingrese un área'}
               </span>
               <BsMenuApp className="text-lg" />
             </div>
-            {errors.areas && <p className="text-red-500 text-sm">Seleccione al menos una área.</p>}
+            {errors.areas && (
+              <p className="text-red-500 text-sm">
+                Seleccione al menos una área.
+              </p>
+            )}
           </div>
 
           <hr className="my-1 border-b-2 border-gray-300" />
@@ -88,11 +125,17 @@ export default function DatosCompetenciaPage() {
               onClick={() => setShowNivelModal(true)}
             >
               <span>
-                {selectedNiveles.length > 0 ? selectedNiveles.join(', ') : 'Ingrese un nivel'}
+                {selectedNiveles.length > 0
+                  ? selectedNiveles.join(', ')
+                  : 'Ingrese un nivel'}
               </span>
               <BsMenuApp className="text-lg" />
             </div>
-            {errors.niveles && <p className="text-red-500 text-sm">Seleccione al menos un nivel.</p>}
+            {errors.niveles && (
+              <p className="text-red-500 text-sm">
+                Seleccione al menos un nivel.
+              </p>
+            )}
           </div>
 
           <hr className="my-1 border-b-2 border-gray-300" />
@@ -104,15 +147,21 @@ export default function DatosCompetenciaPage() {
               <label className="text-xl">Categorías</label>
             </div>
             <div
-              className={`w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200`}
+              className={`w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200 `}
               onClick={() => setShowCategoriaModal(true)}
             >
               <span>
-                {selectedCategorias.length > 0 ? selectedCategorias.join(', ') : 'Ingrese una categoría'}
+                {selectedCategorias.length > 0
+                  ? selectedCategorias.join(', ')
+                  : 'Ingrese una categoría'}
               </span>
               <BsMenuApp className="text-lg" />
             </div>
-            {errors.categorias && <p className="text-red-500 text-sm">Seleccione al menos una categoría.</p>}
+            {errors.categorias && (
+              <p className="text-red-500 text-sm">
+                Seleccione al menos una categoría.
+              </p>
+            )}
           </div>
 
           <hr className="my-1 border-b-2 border-gray-300" />
@@ -126,14 +175,14 @@ export default function DatosCompetenciaPage() {
             <div className="flex items-center gap-2">
               <input
                 placeholder="Ingrese el costo"
-                value={costo}
-                onChange={(e) => setCosto(e.target.value)}
-                className={`w-full px-4 py-2 rounded-md focus:outline-none bg-gray-200`}
+                value={costoInput}
+                onChange={(e) => setCostoInput(e.target.value)}
+                className={`w-full px-4 py-2 rounded-md focus:outline-none bg-gray-200 `}
               />
               <button
                 type="button"
                 className="bg-boton hover:bg-boton-hover text-white p-2 rounded-full"
-                onClick={() => setCostoConfirmado(costo)}
+                onClick={() => setCostoConfirmado(costoInput)}
               >
                 <FaCheck />
               </button>
@@ -141,7 +190,11 @@ export default function DatosCompetenciaPage() {
             {costoConfirmado && (
               <p className="mt-1 text-xl">{costoConfirmado} Bs.</p>
             )}
-            {errors.costo && <p className="text-red-500 text-sm">El campo de costo es obligatorio.</p>}
+            {errors.costo && (
+              <p className="text-red-500 text-sm">
+                El campo de costo es obligatorio.
+              </p>
+            )}
           </div>
         </div>
       </form>
@@ -151,30 +204,28 @@ export default function DatosCompetenciaPage() {
         <SelectAreasModal
           selected={selectedAreas}
           onClose={() => setShowAreaModal(false)}
-          onConfirm={(values) => {
-            setSelectedAreas(values)
+          onConfirm={(vals) => {
+            setSelectedAreas(vals)
             setShowAreaModal(false)
           }}
         />
       )}
-
       {showNivelModal && (
         <SelectNivelesModal
           selected={selectedNiveles}
           onClose={() => setShowNivelModal(false)}
-          onConfirm={(values) => {
-            setSelectedNiveles(values)
+          onConfirm={(vals) => {
+            setSelectedNiveles(vals)
             setShowNivelModal(false)
           }}
         />
       )}
-
       {showCategoriaModal && (
         <SelectCategoriasModal
           selected={selectedCategorias}
           onClose={() => setShowCategoriaModal(false)}
-          onConfirm={(values) => {
-            setSelectedCategorias(values)
+          onConfirm={(vals) => {
+            setSelectedCategorias(vals)
             setShowCategoriaModal(false)
           }}
         />

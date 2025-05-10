@@ -10,14 +10,14 @@ type Props = {
 }
 
 const NIVELES: Record<string, string[]> = {
-  'ASTRONOMIA - ASTROFISICA': [
-    '3 P', '4 P', '5 P', '6 P',
-    '1 sec', '2 sec', '3 sec', '4 sec', '5 sec', '6 sec'
+  'Astronomía - astrofísica': [
+    '3P', '4P', '5P', '6P',
+    '1ro Secundaria', '2do Secundaria', '3ro Secundaria', '4to Secundaria', '5to Secundaria', '6to Secundaria'
   ],
-  'BIOLOGIA': ['2 sec', '3 sec', '4 sec', '5 sec', '6 sec'],
-  'FISICA': ['4 sec', '5 sec', '6 sec'],
-  'MATEMATICAS': ['1 sec', '2 sec', '3 sec', '4 sec', '5 sec', '6 sec'],
-  'QUIMICA': ['2 sec', '3 sec', '4 sec', '5 sec', '6 sec']
+  'Biología': ['2do Secundaria', '3ro Secundaria', '4to Secundaria', '5to Secundaria', '6to Secundaria'],
+  'Física': ['4to Secundaria', '5to Secundaria', '6to Secundaria'],
+  'Matemáticas': ['1ro Secundari', '2do Secundaria', '3ro Secundaria', '4to Secundaria', '5to Secundaria', '6to Secundaria'],
+  'Química': ['2do Secundaria', '3ro Secundaria', '4to Secundaria', '5to Secundaria', '6to Secundaria']
 }
 
 export default function SelectNivelesModal({ selected, onConfirm, onClose }: Props) {

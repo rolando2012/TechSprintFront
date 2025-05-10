@@ -5,11 +5,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CheckIcon } from '@heroicons/react/24/solid';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
-//import { RegistroProvider } from './context';
 import Modal from '@/components/Modals/ModalProps';
 import ConfirmationModal from '@/components/Modals/regComp/ConfirmationModal';
 import {inter} from '@/config/fonts'
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
+import { RegistroProvider } from '@/lib/context/RegistroContext'
 
 const steps = [
     { slug: 'datos-comp', label: 'Datos de Competencia', titulo:'Estructura de la competencia' },
@@ -46,7 +46,7 @@ useEffect(() => {
     'inscripcionForm';
 
     return (
-
+      <RegistroProvider>
           <main >
             <div >
             <div className="flex items-center justify-center mb-4">
@@ -150,7 +150,7 @@ useEffect(() => {
               </div>
             </div>
           </main>
-      
+        </RegistroProvider>
       );
     }
     
