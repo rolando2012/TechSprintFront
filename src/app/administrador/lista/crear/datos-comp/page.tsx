@@ -66,6 +66,7 @@ export default function DatosCompetenciaPage() {
               <BsMenuApp className="text-lg" />
             </div>
           </div>
+          <hr className="my-1 border-b-2 border-gray-300" />
 
           {/* Niveles */}
           <div>
@@ -81,6 +82,7 @@ export default function DatosCompetenciaPage() {
               <BsMenuApp className="text-lg" />
             </div>
           </div>
+          <hr className="my-1 border-b-2 border-gray-300" />
 
           {/* Categorías */}
           <div>
@@ -96,6 +98,7 @@ export default function DatosCompetenciaPage() {
               <BsMenuApp className="text-lg" />
             </div>
           </div>
+          <hr className="my-1 border-b-2 border-gray-300" />
 
           {/* Costos */}
           <div>
@@ -120,8 +123,7 @@ export default function DatosCompetenciaPage() {
             {costoConfirmado && <p className="mt-1 text-xl ">{costoConfirmado} Bs.</p>}
           </div>
         </div>
-
-        <hr className="my-8 border-gray-300" />
+        <hr className="my-1 border-b-2 border-gray-300" />
 
         <h3 className="text-2xl text-center text-gray-700 mb-4">Campos necesarios para el registro</h3>
 
