@@ -59,7 +59,7 @@ useEffect(() => {
               {/* Stepper */}
               <div className="flex justify-center items-center ">
                 {/* línea entre pasos */}
-                <div className="relative flex items-center w-full max-w-md justify-between">
+                <div className="relative flex items-center w-full max-w-3xs justify-between">
                   {steps.map((step, i) => i < steps.length - 1 && (
                     <div key={i}
                       className={`absolute h-1 top-1/2 -translate-y-1/2 z-0 ${i < stepIndex ? 'bg-black' : 'bg-gray-200'}`}
