@@ -40,8 +40,8 @@ export default function SelectAreasModal({ selected, onConfirm, onClose }: Props
               className="flex items-center justify-between px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer"
               onClick={() => toggleArea(area)}
             >
-              <span className="font-semibold text-gray-800">{area}</span>
-              <span className="text-2xl text-blue-500">
+              <span className=" text-gray-800">{area}</span>
+              <span className="text-2xl text-boton">
                 {selectedAreas.includes(area) ? <FaCheckSquare /> : <FaRegSquare />}
               </span>
             </div>
@@ -51,13 +51,13 @@ export default function SelectAreasModal({ selected, onConfirm, onClose }: Props
         <div className="flex justify-between gap-4">
           <button
             onClick={() => onConfirm(selectedAreas)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full w-full"
+            className="bg-boton hover:bg-boton-hover text-white  py-2 px-6 rounded-full w-full"
           >
             Aceptar
           </button>
           <button
             onClick={onClose}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full w-full"
+            className="bg-boton-2 hover:bg-boton-2-hover text-white  py-2 px-6 rounded-full w-full"
           >
             Cancelar
           </button>

@@ -30,7 +30,7 @@ export default function SelectCategoriasModal({ selected, onConfirm, onClose }: 
         <div className="space-y-6">
           {Object.entries(CATEGORIAS).map(([area, categorias]) => (
             <div key={area}>
-              <h3 className="font-bold text-gray-800 mb-2 uppercase">{area}</h3>
+              <h3 className=" text-gray-800 mb-2 uppercase">{area}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-100 p-4 rounded-lg">
                 {categorias.map((cat) => (
                   <label
@@ -41,7 +41,7 @@ export default function SelectCategoriasModal({ selected, onConfirm, onClose }: 
                       type="checkbox"
                       checked={selectedCategories.includes(cat)}
                       onChange={() => toggleCategory(cat)}
-                      className="accent-blue-500"
+                      className=" accent-boton "
                     />
                     {cat}
                   </label>
@@ -54,13 +54,13 @@ export default function SelectCategoriasModal({ selected, onConfirm, onClose }: 
         <div className="flex justify-between gap-4 mt-8">
           <button
             onClick={() => onConfirm(selectedCategories)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full w-full"
+            className="bg-boton hover:bg-boton-hover text-white  py-2 px-6 rounded-full w-full"
           >
             Aceptar
           </button>
           <button
             onClick={onClose}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full w-full"
+            className="bg-boton-2 hover:bg-boton-2-hover text-white  py-2 px-6 rounded-full w-full"
           >
             Cancelar
           </button>

@@ -59,13 +59,13 @@ export default function SelectNivelesModal({ selected, onConfirm, onClose }: Pro
         <div className="flex justify-between gap-4">
           <button
             onClick={() => onConfirm(selectedNiveles)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-full w-full"
+            className="bg-boton hover:bg-boton-hover text-white  py-2 px-6 rounded-full w-full"
           >
             Aceptar
           </button>
           <button
             onClick={onClose}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full w-full"
+            className="bg-boton-2 hover:bg-boton-2-hover text-white  py-2 px-6 rounded-full w-full"
           >
             Cancelar
           </button>

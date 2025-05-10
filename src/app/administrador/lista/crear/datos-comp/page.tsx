@@ -6,12 +6,10 @@ import { FaRegChartBar, FaCheck } from "react-icons/fa";
 import { BsFileRuled } from "react-icons/bs";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { BsMenuApp } from "react-icons/bs";
-import { FaCircleCheck } from "react-icons/fa6";
 
 import SelectAreasModal from '@/components/Modals/regComp/SelectAreasModal'
 import SelectNivelesModal from '@/components/Modals/regComp/SelectNivelesModal'
 import SelectCategoriasModal from '@/components/Modals/regComp/SelectCategoriasModal'
-import { inter } from '@/config/fonts'
 
 export default function DatosCompetenciaPage() {
   const [selectedAreas, setSelectedAreas] = useState<string[]>([])
@@ -43,10 +41,6 @@ export default function DatosCompetenciaPage() {
     'Areas Seleccionadas': true,
     'Tutor Responsable': true,
   })
-
-  const toggleObligatorio = (campo: string) => {
-    setObligatorios(prev => ({ ...prev, [campo]: !prev[campo] }))
-  }
 
   return (
     <div className="min-h-screen w-full flex justify-center">
