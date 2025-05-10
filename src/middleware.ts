@@ -8,11 +8,13 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET as string)
 enum Role {
   Administrador = 'Administrador',
   Tutor = 'Tutor',
+  Cajero = 'Cajero',
 }
 
 const roleRedirects: Record<Role, string> = {
   [Role.Administrador]: '/administrador',
   [Role.Tutor]: '/tutor',
+  [Role.Cajero]: '/cajero',
 }
 
 // Helper: verify JWT and return payload or null
@@ -58,6 +60,14 @@ export async function middleware(request: NextRequest) {
   // Tutor routes
   if (pathname.startsWith('/tutor')) {
     if (role === Role.Tutor) {
+      return NextResponse.next()
+    }
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  // Tutor routes
+  if (pathname.startsWith('/cajero')) {
+    if (role === Role.Cajero) {
       return NextResponse.next()
     }
     return NextResponse.redirect(new URL('/', request.url))

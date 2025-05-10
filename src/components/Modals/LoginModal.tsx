@@ -71,7 +71,8 @@ export default function LoginModal({ onClose, role }: Props) {
                             font-normal py-1.5 sm:py-2 px-4 sm:px-6 rounded-full 
                             text-xs sm:text-sm shadow cursor-pointer transition-colors
                             duration-200 whitespace-nowrap w-full max-w-[150px] 
-                            text-center flex items-center justify-center"
+                            text-center flex items-center justify-center
+                            transform hover:scale-105 active:scale-95"
                 >
                   {label}
                 </button>
@@ -84,7 +85,8 @@ export default function LoginModal({ onClose, role }: Props) {
           onClick={onClose}
           className="mt-6 sm:mt-8 md:mt-10 bg-boton-2 hover:bg-boton-2-hover 
                   text-white py-2 sm:py-3 px-6 sm:px-8 rounded-full text-sm sm:text-base 
-                  font-normal shadow-md transition-colors duration-200"
+                  font-normal shadow-md transition-colors duration-200
+                  transform hover:scale-105 active:scale-95"
         >
           Cancelar
         </button>

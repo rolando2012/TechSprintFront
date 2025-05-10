@@ -67,7 +67,7 @@ useEffect(() => {
                     <div key={step.slug} 
                       className="relative flex items-center justify-center z-10"
                     >
-                      <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 cursor-pointer ${i <= stepIndex ? 'bg-black border-black text-white' : 'bg-white border-gray-300 text-black'}`}>  
+                      <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 ${i <= stepIndex ? 'bg-black border-black text-white' : 'bg-white border-gray-300 text-black'}`}>  
                         {i < stepIndex
                           ? <CheckIcon className="w-6 h-6" />
                           : <span className="text-lg font-medium">{i + 1}</span>

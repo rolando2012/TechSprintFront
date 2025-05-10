@@ -45,7 +45,7 @@ export default function Home() {
               <Link
                 href="/registro/competidor/datos-personales"
                 className={`bg-boton hover:bg-boton-hover text-white ${adlam.className} 
-                            text-lg font-semibold px-6 py-3 rounded-full `}
+                            text-lg font-semibold px-6 py-3 rounded-full transition-all transform hover:scale-105 active:scale-95`}
               >
                 Comienza el desafío
               </Link>
@@ -69,7 +69,8 @@ export default function Home() {
                   <Image src={`/images/${img}`} alt={label} width={100} height={100} className="mx-auto" />
                   <button
                     onClick={() => handleOpenLogin(value as Role)}
-                    className="mt-4 bg-boton text-white px-6 py-3 text-sm font-bold rounded-full hover:bg-boton-hover transition "
+                    className="mt-4 bg-boton text-white px-6 py-3 text-sm font-bold rounded-full hover:bg-boton-hover 
+                    transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
                   >
                     {label}
                   </button>

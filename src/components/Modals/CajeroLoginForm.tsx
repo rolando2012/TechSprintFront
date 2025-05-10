@@ -1,28 +1,69 @@
 'use client'
 import Image from 'next/image'
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { LoginSchema } from '@/lib/schemas/zood'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useState } from 'react'
 
-type Props = {
+interface Props {
   onClose: () => void
-  onLogin: () => void
+  onLogin?: () => void
 }
 
-export default function CajeroLoginForm({ onClose }: Props) {
+export default function CajeroLoginForm({ onClose, onLogin }: Props) {
   const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [code, setCode] = useState('')
+  const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    router.push('/cajero') // Redirige a la página del cajero
-    onClose()
-  }
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      code: '',
+    },
+  })
+
+
+    const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+      setError(undefined);
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',   
+          body: JSON.stringify(values),
+        });
+        const body = await res.json();
+  
+        if (!res.ok) {
+          // cualquier status ≠ 200
+          setError(body.error || `Error desconocido (${res.status})`);
+          return;
+        }
+  
+        router.push('/cajero');
+        onClose();
+      } catch (e) {
+        console.error(e);
+        setError('No se pudo conectar al servidor');
+      }
+    };
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
       <div className="bg-[#e2e5ea] rounded-2xl w-full max-w-3xl p-10 shadow-lg relative">
+      {error && <p className="bg-boton-2-hover text-md text-white text-center ">{error}</p>}
         <h2 className="text-2xl font-semibold text-center mb-6">
           Bienvenido al servicio TechSprint para Cajero(es)
         </h2>
@@ -36,56 +77,73 @@ export default function CajeroLoginForm({ onClose }: Props) {
             className="object-contain"
           />
 
-          <form className="flex-1 space-y-4" onSubmit={handleSubmit}>
-            <div>
-              <label className="block text-gray-800 font-normal mb-1">Correo:</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Example@something.domain"
-                className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:outline-none"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-gray-800 font-normal text-md'>Correo:</FormLabel>
+                    <FormControl>
+                      <Input 
+                      className='bg-white text-gray-800 font-normal text-lg'
+                      placeholder="Example@something.domain" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label className="block text-gray-800 font-normal mb-1">Contraseña:</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="************"
-                className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:outline-none"
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-gray-800 font-normal text-md'>Contraseña:</FormLabel>
+                    <FormControl>
+                      <Input 
+                      className='bg-white text-gray-800 font-normal text-lg'
+                      type="password" placeholder="************" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label className="block text-gray-800 font-normal mb-1">Código:</label>
-              <input
-                type="text"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="CodCajero123"
-                className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:outline-none"
+              <FormField
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-gray-800 font-normal text-md'>Código:</FormLabel>
+                    <FormControl>
+                      <Input 
+                      className='bg-white text-gray-800 font-normal text-lg'
+                      placeholder="CodCajero123" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="flex justify-between pt-4">
-              <button
-                type="submit"
-                className="bg-boton hover:bg-boton-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
-              >
-                Ingresar
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="bg-boton-2 hover:bg-boton-2-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
+              <div className="flex justify-between pt-4">
+                <button
+                  type="submit"
+                  className="bg-boton hover:bg-boton-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
+                >
+                  Ingresar
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="bg-boton-2 hover:bg-boton-2-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
     </div>
