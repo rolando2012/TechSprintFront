@@ -17,13 +17,19 @@ export default function Header() {
   const pathname = usePathname()
   const [showModal, setShowModal] = useState(false)
   const [isLogged, setIsLogged] = useState<boolean | null>(null)
+  const [role, setRole] = useState<string | null>(null)
 
-  // Check login status on mount and when path changes
   useEffect(() => {
     fetch('/api/me', { credentials: 'include' })
       .then(res => res.json())
-      .then(data => setIsLogged(Boolean(data.logged)))
-      .catch(() => setIsLogged(false))
+      .then(data => {
+        setIsLogged(Boolean(data.logged))
+        setRole(data.logged ? data.role : null)   
+      })
+      .catch(() => {
+        setIsLogged(false)
+        setRole(null)
+      })
   }, [pathname])
 
   const logout = async () => {
@@ -37,6 +43,31 @@ export default function Header() {
     return (
       <header className="relative bg-bright-gray-900 text-white px-4 md:px-12 py-6 md:py-10 flex items-center justify-between">
         {/* Placeholder while checking auth */}
+        <div className="absolute inset-0 z-0 opacity-100 pointer-events-none flex justify-center items-center">
+          <div className="relative w-full max-w-[300px] md:max-w-[750px] h-[80px] md:h-[150px]">
+            <Image
+              src="/images/aros.svg"
+              alt="Aros Olímpicos"
+              fill
+              className="object-contain"
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+        </div>
+
+        {/* Logo & name */}
+        <div className="relative z-10 flex items-center gap-2 md:gap-5 flex-shrink-0">
+          <Image
+            src="/images/logo.svg"
+            alt="Logo TechSprint"
+            width={120}
+            height={120}
+            className="w-[60px] md:w-[200px]"
+            priority
+          />
+          <span className="text-lg md:text-3xl tracking-wide">TechSprint</span>
+        </div>
       </header>
     )
   }
@@ -74,21 +105,23 @@ export default function Header() {
         {/* Auth controls */}
         <div className="relative z-10">
           {isLogged ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="p-1 rounded-full hover:bg-bright-gray-950 focus:outline-none focus:ring">
-                  <PiUserCircleFill className="h-18 w-18 text-white" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-bright-gray-800 text-white z-50 w-40">
-                {/*  <DropdownMenuItem onSelect={() => router.push('/perfil')}>
-                  Perfil
-                </DropdownMenuItem> */}
-                <DropdownMenuItem onSelect={logout}>
-                  Cerrar sesión
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <>
+            <div className="flex flex-col items-center justify-center">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="p-1 rounded-full hover:bg-bright-gray-950 focus:outline-none focus:ring">
+                    <PiUserCircleFill className="h-18 w-18 text-white" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-bright-gray-800 text-white z-50 w-40">
+                  <DropdownMenuItem onSelect={logout}>
+                    Cerrar sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <p className="text-white mt-4">{role}</p>
+            </div>
+          </>         
           ) : (
             <button
               onClick={() => setShowModal(true)}

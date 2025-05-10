@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     const res = NextResponse.json({ success: true });
     res.cookies.set('access_token', data.token, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24, // 1 día
+      maxAge: 60 * 60 * 24,
       sameSite: 'strict',
       //path: '/',
     });
