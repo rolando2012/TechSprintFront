@@ -39,7 +39,6 @@ export default function Header() {
     router.push('/')
   }
 
-  // Don't render until we know login state
   if (isLogged === null) {
     return (
       <header className="relative bg-bright-gray-900 text-white px-4 md:px-12 py-6 md:py-10 flex items-center justify-between">
@@ -104,53 +103,49 @@ export default function Header() {
         </div>
 
         {/* Auth controls */}
-        
-          {isLogged ? (  
-            <>
-            <div className="flex items-center">
-            {/* Otros elementos a la izquierda */}
-            <div className="relative z-10 ml-auto">
-                <IoMdNotificationsOutline className=" relative -top-3 h-14 w-14 text-white"/>
-            </div>
-          <div className="relative z-10">
-            <div className="flex flex-col items-center justify-center">
-            
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="p-1 rounded-full hover:bg-bright-gray-950 focus:outline-none focus:ring">
-                    <PiUserCircleFill className="h-18 w-18 text-white" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-bright-gray-800 text-white z-50 w-40">
-                  <DropdownMenuItem onSelect={logout}>
-                    Cerrar sesión
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <p className="text-white ">{role}</p>
-            </div>
-            </div>  
-            </div>
-          </> 
-                
-          ) : (
+        {isLogged ? (  
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Notification Icon */}
             <div className="relative z-10">
+              <IoMdNotificationsOutline className="-top-1 h-8 w-8 md:h-16 md:w-16 text-white hover:text-gray-200 transition-colors cursor-pointer"/>
+            </div>
+            
+            {/* User Menu */}
+            <div className="relative z-10 flex items-center gap-2">
+              <div className="flex flex-col items-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-1 rounded-full hover:bg-bright-gray-950 focus:outline-none focus:ring transition-colors">
+                      <PiUserCircleFill className=" h-10 w-10 md:h-18 md:w-18 text-white hover:text-gray-200" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-bright-gray-800 text-white z-50 w-40">
+                    <DropdownMenuItem onSelect={logout} className="cursor-pointer hover:bg-bright-gray-700">
+                      Cerrar sesión
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <p className="text-white text-sm md:text-base ">{role}</p>
+              </div>
+            </div>  
+          </div>
+        ) : (
+          <div className="relative z-10">
             <button
               onClick={() => setShowModal(true)}
               className={
-                `relative z-10 bg-white text-black text-xs xs:text-sm sm:text-base
-                px-3 xs:px-4 sm:px-6 py-1.5 xs:py-2 sm:py-3
+                `bg-white text-black text-sm md:text-base
+                px-4 md:px-6 py-2 md:py-3
                 rounded-full hover:bg-gray-200 font-semibold
-                transition-all duration-200 shadow cursor-pointer whitespace-nowrap
+                transition-all duration-200 shadow cursor-pointer
                 ${inter.className}
-                transform hover:scale-105 active:scale-95`
+                hover:scale-105 active:scale-95`
               }
             >
               Iniciar Sesión
             </button>
-            </div>
-          )}
-       
+          </div>
+        )}
       </header>
 
       {showModal && <LoginModal onClose={() => setShowModal(false)} />}
