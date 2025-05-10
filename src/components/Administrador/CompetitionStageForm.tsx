@@ -14,6 +14,7 @@ interface Stage {
     }
 
     export default function CompetitionStageForm() {
+    const [errors, setErrors] = useState<Record<number, Partial<Record<keyof Stage | 'nameUnique', string>>>>({});
     const [stages, setStages] = useState<Stage[]>([
         {
         id: 1,
@@ -50,13 +51,63 @@ interface Stage {
             stage.id === id ? { ...stage, [field]: value } : stage
         )
         );
+        setErrors(prev => {
+            const e = { ...prev[id] };
+            delete e[field];
+            delete e.nameUnique;  // si cambió el nombre, vuelve a chequear unicidad
+            return { ...prev, [id]: e };
+          });
     };
 
     const saveConfiguration = () => {
-        console.log("Saving configuration:", stages);
-        // Here you would implement the actual save logic
-        // e.g., API call to save the stages data
-    };
+        const newErrors: typeof errors = {};
+      
+        // 1) nombres únicos
+        const names = stages.map(s => s.name.trim());
+        const dupes = names.filter((n, i) => n && names.indexOf(n) !== i);
+        
+        stages.forEach((stage, idx) => {
+          const e: Partial<Record<keyof Stage | 'nameUnique', string>> = {};
+      
+          // Nombre no vacío y único
+          if (!stage.name.trim()) {
+            e.name = 'El nombre es obligatorio';
+          } else if (dupes.includes(stage.name.trim())) {
+            e.nameUnique = 'Ya existe otra etapa con este nombre';
+          }
+      
+          // Fecha final ≥ fecha inicial
+          if (stage.endDate < stage.startDate) {
+            e.endDate = 'La fecha final no puede ser anterior a la inicial';
+          }
+      
+          // Fecha inicio de este ≥ fecha fin de la etapa anterior
+          if (idx > 0 && stage.startDate < stages[idx - 1].endDate) {
+            e.startDate = `No puede iniciar antes de ${formatDate(stages[idx - 1].endDate)}`;
+          }
+      
+          // Si es el mismo día, hora final ≥ hora inicial
+          if (
+            stage.startDate === stage.endDate &&
+            stage.endTime < stage.startTime
+          ) {
+            e.endTime = 'La hora final no puede ser anterior a la inicial';
+          }
+      
+          if (Object.keys(e).length > 0) {
+            newErrors[stage.id] = e;
+          }
+        });
+      
+        if (Object.keys(newErrors).length > 0) {
+          setErrors(newErrors);
+          return;  // no guardamos
+        }
+      
+        // ... aquí tu lógica de guardado real
+        console.log('Guardando:', stages);
+      };
+      
 
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
@@ -97,6 +148,10 @@ interface Stage {
                 placeholder="Ej: Fase clasificatoria, Semifinal, Final"
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
                 />
+                {errors[stage.id]?.nameUnique && (
+                <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.nameUnique}</p>
+                )}
+
             </div>
 
             <div className="mb-6">
@@ -115,6 +170,10 @@ interface Stage {
                     onChange={(e) => updateStage(stage.id, "startDate", e.target.value)}
                     className="w-full pl-10 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
                     />
+                    {errors[stage.id]?.startDate && (
+                    <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.startDate}</p>
+                    )}
+
                 </div>
                 {/* Texto de fecha formateada fuera del relative */}
                 <div className="mt-1 text-sm text-gray-500 pl-2">
@@ -138,6 +197,9 @@ interface Stage {
                     onChange={(e) => updateStage(stage.id, "endDate", e.target.value)}
                     className="w-full pl-10 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
                     />
+                    {errors[stage.id]?.endDate && (
+                <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.endDate}</p>
+                )}
                 </div>
                 <div className="mt-1 text-sm text-gray-500 pl-2">
                     {stage.endDate ? formatDate(stage.endDate) : ""}
@@ -161,6 +223,9 @@ interface Stage {
                     onChange={(e) => updateStage(stage.id, "startTime", e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
                     />
+                    {errors[stage.id]?.startTime && (
+                <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.startTime}</p>
+                )}
                 </div>
                 </div>
 
@@ -179,6 +244,9 @@ interface Stage {
                     onChange={(e) => updateStage(stage.id, "endTime", e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
                     />
+                    {errors[stage.id]?.endTime && (
+                <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.endTime}</p>
+                )}
                 </div>
                 </div>
             </div>
