@@ -99,13 +99,17 @@ useEffect(() => {
                 )}
     
                 {stepIndex < steps.length - 1 && (
-                  <button 
-                //   onClick={() => formId && (document.getElementById(formId) as HTMLFormElement)?.requestSubmit()}
-                    onClick={() => router.push(`/administrador/lista/crear/fechas`)}
-                className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl"
-                  >Siguiente</button>
-                )}
-    
+                    <button 
+                      onClick={() => {
+                        const form = document.getElementById(formId) as HTMLFormElement;
+                        form?.requestSubmit();
+                      }}
+                      className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl"
+                    >
+                      Siguiente
+                    </button>
+                  )}
+
                 {stepIndex === steps.length - 1 && (
                   <button type="submit" form="tutorForm"
                     className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl"
