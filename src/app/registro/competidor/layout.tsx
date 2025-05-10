@@ -52,7 +52,8 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
           <h1 className="text-4xl font-extralight text-center mb-6">Registro para Competencia</h1>
 
           {/* Stepper */}
-          <div className="flex justify-center items-center mb-12">
+          <div className="flex justify-center items-center ">
+          
             {/* línea entre pasos */}
             <div className="relative flex items-center w-full max-w-md justify-between">
               {steps.map((_, i) => i < steps.length - 1 && (

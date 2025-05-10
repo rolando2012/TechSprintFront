@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Edit, Icon } from 'lucide-react';
+import { Edit, } from 'lucide-react';
+import { GoPlusCircle } from "react-icons/go";
 import Link from 'next/link';
 import {inter} from '@/config/fonts';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
@@ -23,79 +24,67 @@ export default function CompetenciasPage() {
     },
   ]);
 
-  const agregarCompetencia = () => {
-    const nuevaCompetencia: Competencia = {
-      id: Date.now().toString(),
-      version: '--',
-      fecha: '01-04-25/10-04-25',
-      costo: '--',
-    };
-    setCompetencias([...competencias, nuevaCompetencia]);
-  };
-
   return (
-    <div className="max-w-screen-md mx-auto p-4 bg-gray-100 min-h-screen">
+    <div className="p-2 sm:p-4 bg-gray-100 ">
       {/* Encabezado */}
-      <div className="flex items-center mb-6">
-        <div className="rounded-full p-2 mr-2">
-          <Cog6ToothIcon 
-            className="w-6 h-6 " 
-            viewBox="0 0 24 24" 
-
-          />
-          
-        </div>
-        <h1 className={`${inter.className} text-3xl font-bold text-center mb-4`}>Gestion de Competencias</h1>
+      <div className="flex flex-col sm:flex-row items-center justify-center mb-4 space-y-2 sm:space-y-0">     
+        <Cog6ToothIcon 
+          className="w-10 h-10 sm:w-12 sm:h-12 mr-0 sm:mr-4" 
+        />
+        <h1 className={`${inter.className} text-2xl sm:text-3xl font-bold text-center`}>
+          Gestion de Competencias
+        </h1>
       </div>
 
-      {/* Tabla */}
-      <div className="overflow-hidden rounded-lg shadow mb-6">
-        {/* Encabezados de tabla */}
-        <div className="grid grid-cols-12 bg-gray-800 text-white">
-          <div className="col-span-4 p-3 font-semibold">Version</div>
-          <div className="col-span-5 p-3 font-semibold">Fecha</div>
-          <div className="col-span-2 p-3 font-semibold">Costo</div>
-          <div className="col-span-1 p-3 font-semibold">Editar</div>
-        </div>
-
-        {/* Filas de datos */}
-        {competencias.map((competencia) => (
-          <div 
-            key={competencia.id} 
-            className="grid grid-cols-12 bg-gray-200 border-b border-gray-300"
-          >
-            <div className="col-span-4 p-3">{competencia.version}</div>
-            <div className="col-span-5 p-3">{competencia.fecha}</div>
-            <div className="col-span-2 p-3">{competencia.costo}</div>
-            <div className="col-span-1 p-3 flex justify-center">
-              <button 
-                className="text-gray-700 hover:text-black"
-                aria-label="Editar"
-              >
-                <Edit size={18} />
-              </button>
-            </div>
+      {/* Tabla responsive */}
+      <div className="overflow-x-auto rounded-lg shadow mb-6">
+        <div className="min-w-[600px]">
+          {/* Encabezados de tabla */}
+          <div className="grid grid-cols-12 bg-gray-800 text-white text-sm sm:text-base">
+            <div className="col-span-4 p-2 sm:p-3 font-semibold">Version</div>
+            <div className="col-span-5 p-2 sm:p-3 font-semibold">Fecha</div>
+            <div className="col-span-2 p-2 sm:p-3 font-semibold">Costo</div>
+            <div className="col-span-1 p-2 sm:p-3 font-semibold">Editar</div>
           </div>
-        ))}
+
+          {/* Filas de datos */}
+          {competencias.map((competencia) => (
+            <div 
+              key={competencia.id} 
+              className="grid grid-cols-12 bg-gray-200 border-b border-gray-300 text-sm sm:text-base"
+            >
+              <div className="col-span-4 p-2 sm:p-3">{competencia.version}</div>
+              <div className="col-span-5 p-2 sm:p-3">{competencia.fecha}</div>
+              <div className="col-span-2 p-2 sm:p-3">{competencia.costo}</div>
+              <div className="col-span-1 p-2 sm:p-3 flex justify-center">
+                <button 
+                  className="text-gray-700 hover:text-black"
+                  aria-label="Editar"
+                >
+                  <Edit size={18} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Separador */}
-      <div className="border-t border-gray-300 my-6"></div>
+      <div className="border-t border-gray-300 my-4 sm:my-6"></div>
 
-      {/* Botones */}
-      <div className="flex justify-between mt-12">
+      {/* Botones ajustados */}
+      <div className="relative flex flex-col sm:flex-row items-start sm:items-center mt-8 sm:mt-12 w-full gap-4">
         <Link
           href="/administrador"
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+          className="sm:mr-auto px-4 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-600 transition-colors"
         >
           Volver
         </Link>
-        
         <Link
-          href='/administrador/lista/crear/datos-comp'
-          className="flex items-center px-4 py-2 bg-bright-gray-900 text-white rounded hover:bg-bright-gray-700 transition-colors cursor-pointer"
+          href="/administrador/lista/crear/datos-comp"
+          className="sm:absolute sm:left-1/2 sm:transform sm:-translate-x-1/2 w-full sm:w-auto flex items-center justify-center text-lg sm:text-xl px-6 sm:px-12 py-2 bg-bright-gray-900 text-white rounded-xl hover:bg-bright-gray-700 transition-colors"
         >
-          <Plus size={20} className="mr-1" />
+          <GoPlusCircle className="h-6 w-6 sm:h-8 sm:w-8 mr-2" />
           Agregar Competencia
         </Link>
       </div>

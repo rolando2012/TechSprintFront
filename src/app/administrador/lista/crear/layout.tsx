@@ -8,10 +8,12 @@ import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 //import { RegistroProvider } from './context';
 import Modal from '@/components/Modals/ModalProps';
 import ConfirmationModal from '@/components/Modals/regComp/ConfirmationModal';
+import {inter} from '@/config/fonts'
+import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 
 const steps = [
-    { slug: 'datos-comp', label: 'Datos de Competencia' },
-    { slug: 'fechas', label: 'Fechas' },
+    { slug: 'datos-comp', label: 'Datos de Competencia', titulo:'Estructura de la competencia' },
+    { slug: 'fechas', label: 'Fechas', titulo:'Fechas de la competencia' },
 ];
 
 export default function CrearLayout({ children }: { children: React.ReactNode }) {
@@ -47,13 +49,18 @@ useEffect(() => {
 
           <main >
             <div >
-              <h1 className="text-4xl font-extralight text-center mb-6">Registro Y Configuracion</h1>
-    
+            <div className="flex items-center justify-center mb-4">
+            <Cog6ToothIcon 
+                className="w-12 h-12 " 
+              />
+              <h1 className={`${inter.className} text-5xl  font-bold text-center `}>Registro Y Configuracion</h1>
+              </div>
+              <h2 className="text-2xl text-center text-gray-700 mb-4">{steps[stepIndex].titulo}</h2>
               {/* Stepper */}
-              <div className="flex justify-center items-center mb-12">
+              <div className="flex justify-center items-center ">
                 {/* línea entre pasos */}
                 <div className="relative flex items-center w-full max-w-md justify-between">
-                  {steps.map((_, i) => i < steps.length - 1 && (
+                  {steps.map((step, i) => i < steps.length - 1 && (
                     <div key={i}
                       className={`absolute h-1 top-1/2 -translate-y-1/2 z-0 ${i < stepIndex ? 'bg-black' : 'bg-gray-200'}`}
                       style={{
@@ -61,9 +68,11 @@ useEffect(() => {
                         right: `${100 - ((100 / (steps.length - 1)) * (i + 1))}%`,
                       }}
                     />
+                    
                   ))}
                   {/* círculos */}
                   {steps.map((step, i) => (
+                    
                     <div key={step.slug} 
                       className="relative flex items-center justify-center z-10"
                     >

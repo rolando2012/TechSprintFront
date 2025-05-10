@@ -1,10 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { FaFlask, FaChartBar, FaLayerGroup, FaDollarSign, FaBars, FaCheck } from 'react-icons/fa'
+import { IoFlask } from 'react-icons/io5'
+import { FaRegChartBar, FaCheck } from "react-icons/fa";
+import { BsFileRuled } from "react-icons/bs";
+import { BsCurrencyDollar } from "react-icons/bs";
+import { BsMenuApp } from "react-icons/bs";
+import { FaCircleCheck } from "react-icons/fa6";
+
 import SelectAreasModal from '@/components/Modals/regComp/SelectAreasModal'
 import SelectNivelesModal from '@/components/Modals/regComp/SelectNivelesModal'
 import SelectCategoriasModal from '@/components/Modals/regComp/SelectCategoriasModal'
+import { inter } from '@/config/fonts'
 
 export default function DatosCompetenciaPage() {
   const [selectedAreas, setSelectedAreas] = useState<string[]>([])
@@ -42,64 +49,59 @@ export default function DatosCompetenciaPage() {
   }
 
   return (
-    <section className="bg-[#e5e5e5] py-10 px-4 flex justify-center">
-      <div className="bg-white rounded-2xl shadow-lg w-full max-w-2xl p-8">
-        <h2 className="text-2xl font-bold mb-1 flex items-center gap-2">
-          <span className="text-black">⚙</span> Registro y configuración
-        </h2>
-        <p className="text-sm mb-6">Estructura de la competencia</p>
-
+    <div className="min-h-screen w-full flex justify-center">
+      <div className=" rounded-2xl  w-full max-w-4xl p-8">
         <div className="space-y-4">
           {/* Áreas */}
           <div>
             <div className="flex items-center gap-2">
-              <FaFlask />
-              <label className="text-sm font-semibold">Áreas de competencia</label>
+              <IoFlask className='w-4 h-4'/>
+              <label className="text-xl ">Áreas de competencia</label>
             </div>
             <div
               className="w-full flex justify-between items-center bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
               onClick={() => setShowAreaModal(true)}
             >
-              <span className="font-semibold">{selectedAreas.length > 0 ? selectedAreas.join(', ') : 'Ingrese un área'}</span>
-              <FaBars className="text-lg" />
+              <span >{selectedAreas.length > 0 ? selectedAreas.join(', ') : 'Ingrese un área'}</span>
+              <BsMenuApp className="text-lg" />
             </div>
           </div>
 
           {/* Niveles */}
           <div>
             <div className="flex items-center gap-2">
-              <FaChartBar />
-              <label className="text-sm font-semibold">Niveles</label>
+              <FaRegChartBar />
+              <label className="text-xl">Niveles</label>
             </div>
             <div
               className="w-full flex justify-between items-center bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
               onClick={() => setShowNivelModal(true)}
             >
-              <span className="font-semibold">{selectedNiveles.length > 0 ? selectedNiveles.join(', ') : 'Ingrese un nivel'}</span>
-              <FaBars className="text-lg" />
+              <span >{selectedNiveles.length > 0 ? selectedNiveles.join(', ') : 'Ingrese un nivel'}</span>
+              <BsMenuApp className="text-lg" />
             </div>
           </div>
 
           {/* Categorías */}
           <div>
             <div className="flex items-center gap-2">
-              <FaLayerGroup />
-              <label className="text-sm font-semibold">Categorías</label>
+              <BsFileRuled />
+              <label className="text-xl ">Categorías</label>
             </div>
             <div
               className="w-full flex justify-between items-center bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
               onClick={() => setShowCategoriaModal(true)}
             >
-              <span className="font-semibold">{selectedCategorias.length > 0 ? selectedCategorias.join(', ') : 'Ingrese una categoría'}</span>
-              <FaBars className="text-lg" />
+              <span >{selectedCategorias.length > 0 ? selectedCategorias.join(', ') : 'Ingrese una categoría'}</span>
+              <BsMenuApp className="text-lg" />
             </div>
           </div>
 
           {/* Costos */}
           <div>
             <div className="flex items-center gap-2">
-              <FaDollarSign />
-              <label className="text-sm font-semibold">Costos</label>
+              <BsCurrencyDollar />
+              <label className="text-xl ">Costos</label>
             </div>
             <div className="flex items-center gap-2">
               <input
@@ -115,7 +117,7 @@ export default function DatosCompetenciaPage() {
                 <FaCheck />
               </button>
             </div>
-            {costoConfirmado && <p className="mt-1 text-sm font-semibold">{costoConfirmado} Bs.</p>}
+            {costoConfirmado && <p className="mt-1 text-xl ">{costoConfirmado} Bs.</p>}
           </div>
         </div>
 
@@ -188,6 +190,6 @@ export default function DatosCompetenciaPage() {
           }}
         />
       )}
-    </section>
+    </div>
   )
 }
