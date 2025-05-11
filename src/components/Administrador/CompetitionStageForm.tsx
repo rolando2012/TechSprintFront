@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { Calendar, Clock, Trash2 } from "lucide-react";
 import { FaRegPlusSquare } from "react-icons/fa";
 import { useStageContext, Stage } from '@/lib/context/StageContext';
 import { useRegistro } from '@/lib/context/RegistroContext'
+import Swal from 'sweetalert2'
+import { registrarCompetencia } from '@/lib/api/competencia'
+
 
 export default function CompetitionStageForm() {
     const { stages, setStages } = useStageContext();
@@ -62,7 +65,7 @@ export default function CompetitionStageForm() {
           });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const newErrors: Record<number, any> = {};
         const names = stages.map(s => s.name.trim());
@@ -89,10 +92,58 @@ export default function CompetitionStageForm() {
           setErrors(newErrors);
           return;
         }
+
+        const costoNum = Number(costoConfirmado);     // o parseInt(costoConfirmado, 10)
+        
+
+        let timerInterval: NodeJS.Timeout
+        await Swal.fire({
+          title: 'Registrando competencia…',
+          html: 'Por favor, no cierre esta ventana.',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: async () => {
+            Swal.showLoading()
+            timerInterval = setInterval(() => {
+              const content = Swal.getHtmlContainer()
+              if (content) {
+                const b = content.querySelector('b')
+                if (b) {
+                  b.textContent = (Swal.getTimerLeft()?.toString() ?? '')
+                }
+              }
+            }, 100)
+    
+            try {
+              await registrarCompetencia(
+                selectedAreas,
+                nivelesMap,
+                categoriasMap,
+                costoNum,
+                stages
+              )
+              clearInterval(timerInterval)
+              Swal.close()
+              // por ejemplo, abrir modal de éxito:
+              window.dispatchEvent(new CustomEvent('open-confirmation-modal', {
+                detail: stages.length
+              }))
+
+            } catch (err: any) {
+              clearInterval(timerInterval)
+              Swal.fire({
+                icon: 'error',
+                title: 'Error al registrar',
+                text: err.message || 'Intenta nuevamente más tarde.'
+              })
+            }
+          },
+          willClose: () => clearInterval(timerInterval)
+        })
     
         // Aquí ya tienes `stages` actualizado en tu Context
-        console.log('Guardando configuración:', stages);
-        console.log("datos: ", selectedAreas, nivelesMap, categoriasMap, costoConfirmado )
+        // console.log('Guardando configuración:', stages);
+        // console.log("datos: ", selectedAreas, nivelesMap, categoriasMap, costoConfirmado )
       };
 
 
