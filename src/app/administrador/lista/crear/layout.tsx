@@ -94,7 +94,7 @@ useEffect(() => {
               <div className="flex justify-center gap-4 w-full mt-6">
                 {stepIndex > 0 && (
                   <button onClick={() => router.push(`/administrador/lista/crear/${steps[stepIndex - 1].slug}`)}
-                    className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl"
+                    className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl cursor-pointer"
                   >Anterior</button>
                 )}
     
@@ -104,7 +104,7 @@ useEffect(() => {
                         const form = document.getElementById(formId) as HTMLFormElement;
                         form?.requestSubmit();
                       }}
-                      className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl"
+                      className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl cursor-pointer"
                     >
                       Siguiente
                     </button>
@@ -112,12 +112,12 @@ useEffect(() => {
 
                 {stepIndex === steps.length - 1 && (
                   <button type="submit" form="tutorForm"
-                    className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl"
+                    className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl cursor-pointer"
                   >Guardar</button>
                 )}
     
                 <a href="#" onClick={openCancelModal}
-                  className="px-6 py-2 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl"
+                  className="px-6 py-2 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl cursor-pointer"
                 >Cancelar</a>
     
                 {/* Modal de cancelar */}

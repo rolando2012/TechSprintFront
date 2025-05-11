@@ -1,39 +1,38 @@
 'use client'
-
 import { createContext, useContext, useState, ReactNode } from 'react'
 
-interface RegistroData {
+export interface RegistroData {
   selectedAreas: string[]
-  selectedNiveles: string[]
-  selectedCategorias: string[]
+  nivelesMap: Record<string, string[]>
+  categoriasMap: Record<string, string[]>
   costoConfirmado: string
 }
 
 interface RegistroContextProps extends RegistroData {
-  setSelectedAreas: (v: string[]) => void
-  setSelectedNiveles: (v: string[]) => void
-  setSelectedCategorias: (v: string[]) => void
-  setCostoConfirmado: (v: string) => void
+  setSelectedAreas: (areas: string[]) => void
+  setNivelesMap: (m: Record<string, string[]>) => void
+  setCategoriasMap: (m: Record<string, string[]>) => void
+  setCostoConfirmado: (c: string) => void
 }
 
 const RegistroContext = createContext<RegistroContextProps | undefined>(undefined)
 
 export function RegistroProvider({ children }: { children: ReactNode }) {
   const [selectedAreas, setSelectedAreas] = useState<string[]>([])
-  const [selectedNiveles, setSelectedNiveles] = useState<string[]>([])
-  const [selectedCategorias, setSelectedCategorias] = useState<string[]>([])
+  const [nivelesMap, setNivelesMap] = useState<Record<string, string[]>>({})
+  const [categoriasMap, setCategoriasMap] = useState<Record<string, string[]>>({})
   const [costoConfirmado, setCostoConfirmado] = useState('')
 
   return (
     <RegistroContext.Provider
       value={{
         selectedAreas,
-        selectedNiveles,
-        selectedCategorias,
+        nivelesMap,
+        categoriasMap,
         costoConfirmado,
         setSelectedAreas,
-        setSelectedNiveles,
-        setSelectedCategorias,
+        setNivelesMap,
+        setCategoriasMap,
         setCostoConfirmado,
       }}
     >

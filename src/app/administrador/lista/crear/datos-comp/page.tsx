@@ -31,15 +31,17 @@ function groupedText(grouped: Record<string, string[]>): string {
 export default function DatosCompetenciaPage() {
   const {
     selectedAreas,
-    selectedNiveles,
-    selectedCategorias,
+    nivelesMap,
+    categoriasMap,
     costoConfirmado,
     setSelectedAreas,
-    setSelectedNiveles,
-    setSelectedCategorias,
+    setNivelesMap,
+    setCategoriasMap,
     setCostoConfirmado,
   } = useRegistro()
 
+  const [tmpNiveles, setTmpNiveles] = useState<string[]>([])
+  const [tmpCategorias, setTmpCategorias] = useState<string[]>([])
   const [costoInput, setCostoInput] = useState('')
   const [showAreaModal, setShowAreaModal] = useState(false)
   const [showNivelModal, setShowNivelModal] = useState(false)
@@ -54,23 +56,49 @@ export default function DatosCompetenciaPage() {
 
   const router = useRouter()
 
-  const nivelesGrouped = groupByArea(selectedNiveles)
-  const nivelesDisplay = Object.keys(nivelesGrouped).length
-    ? groupedText(nivelesGrouped)
-    : 'Ingrese un nivel'
+  const nivelesGrouped = Object.keys(nivelesMap).length
+  ? nivelesMap
+  : {} as Record<string, string[]>
+const nivelesDisplay = Object.keys(nivelesGrouped).length
+  ? groupedText(nivelesGrouped)
+  : 'Ingrese un nivel'
 
-  const categoriasGrouped = groupByArea(selectedCategorias)
-  const categoriasDisplay = Object.keys(categoriasGrouped).length
-    ? groupedText(categoriasGrouped)
-    : 'Ingrese una categoría'
+const categoriasGrouped = Object.keys(categoriasMap).length
+  ? categoriasMap
+  : {} as Record<string, string[]>
+const categoriasDisplay = Object.keys(categoriasGrouped).length
+  ? groupedText(categoriasGrouped)
+  : 'Ingrese una categoría'
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    const handleConfirmNiveles = (vals: string[]) => {
+      setTmpNiveles(vals)
+      setShowNivelModal(false)
+      setNivelesMap(groupByArea(vals))
+    }
+
+    const handleConfirmCategorias = (vals: string[]) => {
+      setTmpCategorias(vals)
+      setShowCategoriaModal(false)
+      setCategoriasMap(groupByArea(vals))
+    }
+  
+    const handleConfirmAreas = (vals: string[]) => {
+      setSelectedAreas(vals)
+      setShowAreaModal(false)
+      // resetea niveles y categorías si quitas un área
+      setTmpNiveles([])
+      setNivelesMap({})
+      setTmpCategorias([])
+      setCategoriasMap({})
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const newErrors = {
       areas: selectedAreas.length === 0,
-      niveles: selectedNiveles.length === 0,
-      categorias: selectedCategorias.length === 0,
+      niveles: Object.keys(nivelesMap).length === 0,
+      categorias: Object.keys(categoriasMap).length === 0,
       costo: costoConfirmado.trim() === '',
     }
     setErrors(newErrors)
@@ -78,25 +106,15 @@ export default function DatosCompetenciaPage() {
     if (Object.values(newErrors).some((v) => v)) return
 
     // 1) console.log de todos los datos
-    console.log({
-      selectedAreas,
-      selectedNiveles,
-      selectedCategorias,
-      costo: costoConfirmado,
-    })
+    console.log({ selectedAreas, nivelesMap, categoriasMap, costoConfirmado })
 
     // 2) Envío por POST
     // try {
     //   await fetch('/api/competencia', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({
-    //       areas: selectedAreas,
-    //       niveles: selectedNiveles,
-    //       categorias: selectedCategorias,
-    //       costo: costoConfirmado,
-    //     }),
-    //   })
+        //   method: 'POST',
+        //   headers: {'Content-Type': 'application/json'},
+        //   body: JSON.stringify({ selectedAreas, nivelesMap, categoriasMap, costoConfirmado }),
+        // })
     // } catch (err) {
     //   console.error('Error enviando datos:', err)
     // }
@@ -120,9 +138,7 @@ export default function DatosCompetenciaPage() {
               <label className="text-xl">Áreas de competencia</label>
             </div>
             <div
-              className={`w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer ${
-                errors.areas ? 'bg-red-200' : 'bg-gray-200'
-              }`}
+              className={`w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200`}
               onClick={() => setShowAreaModal(true)}
             >
               <span>
@@ -134,7 +150,7 @@ export default function DatosCompetenciaPage() {
             </div>
             {errors.areas && (
               <p className="text-red-500 text-sm">
-                Seleccione al menos una área.
+                Seleccione una área.
               </p>
             )}
           </div>
@@ -147,17 +163,18 @@ export default function DatosCompetenciaPage() {
               <FaRegChartBar />
               <label className="text-xl">Niveles</label>
             </div>
-            <div onClick={() => setShowNivelModal(true)}>
+            <div
+              className={errors.niveles ? 'bg-red-200' : 'bg-gray-200'}
+              onClick={() => setShowNivelModal(true)}
+            >
               <pre className={` ${adlam.className} w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200`}>
                 {nivelesDisplay}
                 <BsMenuApp className="text-lg" />
-              </pre>
-      
-              
+              </pre>         
             </div>
             {errors.niveles && (
               <p className="text-red-500 text-sm">
-                Seleccione al menos un nivel.
+                Seleccione un nivel.
               </p>
             )}
           </div>
@@ -170,7 +187,10 @@ export default function DatosCompetenciaPage() {
               <BsFileRuled />
               <label className="text-xl">Categorías</label>
             </div>
-            <div onClick={() => setShowCategoriaModal(true)}>
+            <div
+                className={errors.categorias ? 'bg-red-200' : 'bg-gray-200'}
+                onClick={() => setShowCategoriaModal(true)}
+              >
               <pre className={` ${adlam.className} w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200`}>
                 {categoriasDisplay}
                 <BsMenuApp className="text-lg" />
@@ -178,7 +198,7 @@ export default function DatosCompetenciaPage() {
             </div>
             {errors.categorias && (
               <p className="text-red-500 text-sm">
-                Seleccione al menos una categoría.
+                Seleccione una categoría.
               </p>
             )}
           </div>
@@ -223,32 +243,25 @@ export default function DatosCompetenciaPage() {
         <SelectAreasModal
           selected={selectedAreas}
           onClose={() => setShowAreaModal(false)}
-          onConfirm={(vals) => {
-            setSelectedAreas(vals)
-            setShowAreaModal(false)
-          }}
+          onConfirm={handleConfirmAreas}
         />
       )}
+      
       {showNivelModal && (
         <SelectNivelesModal
           areas={selectedAreas} 
-          selected={selectedNiveles}
+          selected={tmpNiveles}
           onClose={() => setShowNivelModal(false)}
-          onConfirm={(vals) => {
-            setSelectedNiveles(vals)
-            setShowNivelModal(false)
-          }}
+          onConfirm={handleConfirmNiveles}
         />
       )}
+      
       {showCategoriaModal && (
         <SelectCategoriasModal
           areas={selectedAreas} 
-          selected={selectedCategorias}
+          selected={tmpCategorias}
           onClose={() => setShowCategoriaModal(false)}
-          onConfirm={(vals) => {
-            setSelectedCategorias(vals)
-            setShowCategoriaModal(false)
-          }}
+          onConfirm={handleConfirmCategorias}
         />
       )}
     </div>
