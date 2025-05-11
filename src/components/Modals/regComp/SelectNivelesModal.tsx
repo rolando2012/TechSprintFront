@@ -1,11 +1,12 @@
+// components/Modals/regComp/SelectNivelesModal.tsx
 'use client'
 
 import { useState } from 'react'
 import { FaCheckSquare, FaRegSquare } from 'react-icons/fa'
 
-type Props = {
-  areas: string[]
-  selected: string[]
+interface Props {
+  areas: string[]               // Áreas seleccionadas en page.tsx
+  selected: string[]            // Niveles ya seleccionados
   onConfirm: (values: string[]) => void
   onClose: () => void
 }
@@ -21,7 +22,12 @@ const NIVELES: Record<string, string[]> = {
   Química: ['2do Secundaria','3ro Secundaria','4to Secundaria','5to Secundaria','6to Secundaria']
 }
 
-export default function SelectNivelesModal({ areas, selected, onConfirm, onClose }: Props) {
+export default function SelectNivelesModal({
+  areas,
+  selected,
+  onConfirm,
+  onClose,
+}: Props) {
   const [selectedNiveles, setSelectedNiveles] = useState<string[]>(selected)
 
   const toggleNivel = (key: string, enabled: boolean) => {
@@ -34,10 +40,14 @@ export default function SelectNivelesModal({ areas, selected, onConfirm, onClose
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl flex flex-col">
-        <h2 className="text-2xl font-bold p-6 text-center">Niveles</h2>
+        {/* Header */}
+        <h2 className="text-2xl font-bold p-6 text-center">Selecciona Niveles</h2>
 
-        {/* Contenido con scroll */}
-        <div className="px-6 overflow-y-auto flex-1 space-y-6 mb-4" style={{ maxHeight: '60vh' }}>
+        {/* Body con scroll */}
+        <div
+          className="px-6 overflow-y-auto flex-1 space-y-6"
+          style={{ maxHeight: '60vh' }}
+        >
           {Object.entries(NIVELES).map(([area, niveles]) => {
             const enabled = areas.includes(area)
             return (
@@ -68,15 +78,17 @@ export default function SelectNivelesModal({ areas, selected, onConfirm, onClose
           })}
         </div>
 
-        {/* Botones siempre al fondo */}
+        {/* Footer */}
         <div className="flex gap-4 p-6 border-t">
           <button
+            type="button"
             onClick={() => onConfirm(selectedNiveles)}
             className="bg-boton hover:bg-boton-hover text-white py-2 px-6 rounded-full flex-1"
           >
             Aceptar
           </button>
           <button
+            type="button"
             onClick={onClose}
             className="bg-boton-2 hover:bg-boton-2-hover text-white py-2 px-6 rounded-full flex-1"
           >

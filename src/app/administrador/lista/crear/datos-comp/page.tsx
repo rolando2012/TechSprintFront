@@ -10,6 +10,23 @@ import SelectAreasModal from '@/components/Modals/regComp/SelectAreasModal'
 import SelectNivelesModal from '@/components/Modals/regComp/SelectNivelesModal'
 import SelectCategoriasModal from '@/components/Modals/regComp/SelectCategoriasModal'
 import { useRegistro } from '@/lib/context/RegistroContext'
+import { adlam } from '@/config/fonts'
+
+function groupByArea(items: string[]): Record<string, string[]> {
+  return items.reduce((acc, key) => {
+    const [area, ...rest] = key.split('-')
+    const val = rest.join('-')
+    if (!acc[area]) acc[area] = []
+    acc[area].push(val)
+    return acc
+  }, {} as Record<string, string[]>)
+}
+
+function groupedText(grouped: Record<string, string[]>): string {
+  return Object.entries(grouped)
+    .map(([area, vals]) => `${area}: ${vals.join(', ')}`)
+    .join('\n')
+}
 
 export default function DatosCompetenciaPage() {
   const {
@@ -37,6 +54,16 @@ export default function DatosCompetenciaPage() {
 
   const router = useRouter()
 
+  const nivelesGrouped = groupByArea(selectedNiveles)
+  const nivelesDisplay = Object.keys(nivelesGrouped).length
+    ? groupedText(nivelesGrouped)
+    : 'Ingrese un nivel'
+
+  const categoriasGrouped = groupByArea(selectedCategorias)
+  const categoriasDisplay = Object.keys(categoriasGrouped).length
+    ? groupedText(categoriasGrouped)
+    : 'Ingrese una categoría'
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -59,20 +86,20 @@ export default function DatosCompetenciaPage() {
     })
 
     // 2) Envío por POST
-    try {
-      await fetch('/api/competencia', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          areas: selectedAreas,
-          niveles: selectedNiveles,
-          categorias: selectedCategorias,
-          costo: costoConfirmado,
-        }),
-      })
-    } catch (err) {
-      console.error('Error enviando datos:', err)
-    }
+    // try {
+    //   await fetch('/api/competencia', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({
+    //       areas: selectedAreas,
+    //       niveles: selectedNiveles,
+    //       categorias: selectedCategorias,
+    //       costo: costoConfirmado,
+    //     }),
+    //   })
+    // } catch (err) {
+    //   console.error('Error enviando datos:', err)
+    // }
 
     // 3) Navegar al siguiente paso
     router.push('/administrador/lista/crear/fechas')
@@ -120,16 +147,13 @@ export default function DatosCompetenciaPage() {
               <FaRegChartBar />
               <label className="text-xl">Niveles</label>
             </div>
-            <div
-              className={`w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200`}
-              onClick={() => setShowNivelModal(true)}
-            >
-              <span>
-                {selectedNiveles.length > 0
-                  ? selectedNiveles.join(', ')
-                  : 'Ingrese un nivel'}
-              </span>
-              <BsMenuApp className="text-lg" />
+            <div onClick={() => setShowNivelModal(true)}>
+              <pre className={` ${adlam.className} w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200`}>
+                {nivelesDisplay}
+                <BsMenuApp className="text-lg" />
+              </pre>
+      
+              
             </div>
             {errors.niveles && (
               <p className="text-red-500 text-sm">
@@ -146,16 +170,11 @@ export default function DatosCompetenciaPage() {
               <BsFileRuled />
               <label className="text-xl">Categorías</label>
             </div>
-            <div
-              className={`w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200 `}
-              onClick={() => setShowCategoriaModal(true)}
-            >
-              <span>
-                {selectedCategorias.length > 0
-                  ? selectedCategorias.join(', ')
-                  : 'Ingrese una categoría'}
-              </span>
-              <BsMenuApp className="text-lg" />
+            <div onClick={() => setShowCategoriaModal(true)}>
+              <pre className={` ${adlam.className} w-full flex justify-between items-center px-4 py-2 rounded-md cursor-pointer bg-gray-200`}>
+                {categoriasDisplay}
+                <BsMenuApp className="text-lg" />
+              </pre>     
             </div>
             {errors.categorias && (
               <p className="text-red-500 text-sm">
