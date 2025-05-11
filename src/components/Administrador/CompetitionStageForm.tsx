@@ -62,31 +62,33 @@ interface Stage {
     const saveConfiguration = () => {
         const newErrors: typeof errors = {};
       
-        // 1) nombres únicos
+        // 1) nombres únicos y obligatorios
         const names = stages.map(s => s.name.trim());
         const dupes = names.filter((n, i) => n && names.indexOf(n) !== i);
-        
+      
         stages.forEach((stage, idx) => {
           const e: Partial<Record<keyof Stage | 'nameUnique', string>> = {};
       
-          // Nombre no vacío y único
+          // -- Nombre obligatorio
           if (!stage.name.trim()) {
             e.name = 'El nombre es obligatorio';
-          } else if (dupes.includes(stage.name.trim())) {
+          }
+          // -- Nombre único
+          else if (dupes.includes(stage.name.trim())) {
             e.nameUnique = 'Ya existe otra etapa con este nombre';
           }
       
-          // Fecha final ≥ fecha inicial
+          // -- Fecha final ≥ Fecha inicial
           if (stage.endDate < stage.startDate) {
             e.endDate = 'La fecha final no puede ser anterior a la inicial';
           }
       
-          // Fecha inicio de este ≥ fecha fin de la etapa anterior
-          if (idx > 0 && stage.startDate < stages[idx - 1].endDate) {
-            e.startDate = `No puede iniciar antes de ${formatDate(stages[idx - 1].endDate)}`;
+          // -- No empezar el mismo día que termina la etapa anterior
+          if (idx > 0 && stage.startDate <= stages[idx - 1].endDate) {
+            e.startDate = `Debe iniciar después de ${formatDate(stages[idx - 1].endDate)}`;
           }
       
-          // Si es el mismo día, hora final ≥ hora inicial
+          // -- Si es el mismo día, hora final ≥ hora inicial
           if (
             stage.startDate === stage.endDate &&
             stage.endTime < stage.startTime
@@ -101,11 +103,11 @@ interface Stage {
       
         if (Object.keys(newErrors).length > 0) {
           setErrors(newErrors);
-          return;  // no guardamos
+          return; // aborta, muestra errores
         }
       
-        // ... aquí tu lógica de guardado real
-        console.log('Guardando:', stages);
+        // TODO: tu lógica real de guardado (API, etc.)
+        console.log('Guardando configuración:', stages);
       };
       
 
@@ -148,10 +150,12 @@ interface Stage {
                 placeholder="Ej: Fase clasificatoria, Semifinal, Final"
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
                 />
+                {errors[stage.id]?.name && (
+                        <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.name}</p>
+                    )}
                 {errors[stage.id]?.nameUnique && (
                 <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.nameUnique}</p>
                 )}
-
             </div>
 
             <div className="mb-6">
