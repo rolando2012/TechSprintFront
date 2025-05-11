@@ -125,9 +125,7 @@ export default function CompetitionStageForm() {
               clearInterval(timerInterval)
               Swal.close()
               // por ejemplo, abrir modal de éxito:
-              window.dispatchEvent(new CustomEvent('open-confirmation-modal', {
-                detail: stages.length
-              }))
+              window.dispatchEvent(new CustomEvent('open-confirmation-modal'))
 
             } catch (err: any) {
               clearInterval(timerInterval)

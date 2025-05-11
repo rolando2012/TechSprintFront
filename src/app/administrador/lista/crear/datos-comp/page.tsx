@@ -107,19 +107,6 @@ const categoriasDisplay = Object.keys(categoriasGrouped).length
 
     // 1) console.log de todos los datos
     console.log({ selectedAreas, nivelesMap, categoriasMap, costoConfirmado })
-
-    // 2) Envío por POST
-    // try {
-    //   await fetch('/api/competencia', {
-        //   method: 'POST',
-        //   headers: {'Content-Type': 'application/json'},
-        //   body: JSON.stringify({ selectedAreas, nivelesMap, categoriasMap, costoConfirmado }),
-        // })
-    // } catch (err) {
-    //   console.error('Error enviando datos:', err)
-    // }
-
-    // 3) Navegar al siguiente paso
     router.push('/administrador/lista/crear/fechas')
   }
 

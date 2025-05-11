@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { CheckIcon } from '@heroicons/react/24/solid';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import Modal from '@/components/Modals/ModalProps';
-import ConfirmationModal from '@/components/Modals/regComp/ConfirmationModal';
+import ConfirmationModal from '@/components/Modals/admin/ConfirmationModal';
 import {inter} from '@/config/fonts'
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { RegistroProvider } from '@/lib/context/RegistroContext'
@@ -141,10 +141,10 @@ useEffect(() => {
                 {/* Modal de confirmación de envío */}
                 {isSubmitModalOpen && (
                   <ConfirmationModal
-                    count={submitCount}
+                    
                     onClose={() => {
                       setSubmitModalOpen(false);
-                      router.push('/');
+                      router.push('/administrador');
                     }}
                   />
                 )}
