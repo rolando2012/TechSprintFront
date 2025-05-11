@@ -159,44 +159,43 @@ const categoriasDisplay = Object.keys(categoriasGrouped).length
 
           {/* Niveles */}
           <div>
-  <div className="flex items-center gap-2">
-    <FaRegChartBar />
-    <label className="text-xl">Niveles</label>
-  </div>
-  <div
-    className={`${errors.niveles ? 'bg-red-200' : 'bg-gray-200'} rounded-md cursor-pointer`}
-    onClick={() => setShowNivelModal(true)}
-  >
-    <div
-      className={`
-        ${adlam.className}
-        w-full flex items-start
-        px-4 py-2
-      `}
-    >
-      {/* Contenedor de texto con wrapping y scroll si hay muchas líneas */}
-      <div
-        className="
-          flex-1
-          whitespace-pre-wrap break-words
-          max-h-24 overflow-y-auto
-          pr-2
-        "
-      >
-        {nivelesDisplay}
-      </div>
+            <div className="flex items-center gap-2">
+              <FaRegChartBar />
+              <label className="text-xl">Niveles</label>
+            </div>
+            <div
+              className={`bg-gray-200 rounded-md cursor-pointer`}
+              onClick={() => setShowNivelModal(true)}
+            >
+              <div
+                className={`
+                  ${adlam.className}
+                  w-full flex items-start
+                  px-4 py-2
+                `}
+              >
+                {/* Contenedor de texto con wrapping y scroll si hay muchas líneas */}
+                <div
+                  className="
+                    flex-1
+                    whitespace-pre-wrap break-words
+                    max-h-24 overflow-y-auto
+                    pr-2
+                  "
+                >
+                  {nivelesDisplay}
+                </div>
 
-      {/* Icono siempre al lado, sin empujar al texto */}
-      <BsMenuApp className="text-lg flex-shrink-0" />
-    </div>
-  </div>
-  {errors.niveles && (
-    <p className="text-red-500 text-sm mt-1">
-      Seleccione un nivel.
-    </p>
-  )}
-</div>
-
+                {/* Icono siempre al lado, sin empujar al texto */}
+                <BsMenuApp className="text-lg flex-shrink-0" />
+              </div>
+            </div>
+            {errors.niveles && (
+              <p className="text-red-500 text-sm mt-1">
+                Seleccione un nivel.
+              </p>
+            )}
+          </div>
 
           <hr className="my-1 border-b-2 border-gray-300" />
 

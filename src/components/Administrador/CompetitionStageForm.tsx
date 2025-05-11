@@ -1,30 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Clock, Trash2 } from "lucide-react";
 import { FaRegPlusSquare } from "react-icons/fa";
+import { useStageContext, Stage } from '@/lib/context/StageContext';
 
-interface Stage {
-    id: number;
-    name: string;
-    startDate: string;
-    endDate: string;
-    startTime: string;
-    endTime: string;
-    }
+export default function CompetitionStageForm() {
+    const { stages, setStages } = useStageContext();
+    const [errors, setErrors] = useState<Record<number, any>>({});
 
-    export default function CompetitionStageForm() {
-    const [errors, setErrors] = useState<Record<number, Partial<Record<keyof Stage | 'nameUnique', string>>>>({});
-    const [stages, setStages] = useState<Stage[]>([
-        {
-        id: 1,
-        name: "",
-        startDate: new Date().toISOString().split("T")[0],
-        endDate: new Date().toISOString().split("T")[0],
-        startTime: "08:00",
-        endTime: "18:00",
-        },
-    ]);
+    useEffect(() => {
+        if (stages.length === 0) {
+          setStages([
+            {
+              id: 1,
+              name: '',
+              startDate: new Date().toISOString().split('T')[0],
+              endDate: new Date().toISOString().split('T')[0],
+              startTime: '08:00',
+              endTime: '18:00',
+            },
+          ]);
+        }
+      }, [stages, setStages]);
 
     const addStage = () => {
         const newId = stages.length > 0 ? Math.max(...stages.map((s) => s.id)) + 1 : 1;
@@ -60,65 +58,39 @@ interface Stage {
     };
 
     const saveConfiguration = () => {
-        const newErrors: typeof errors = {};
-      
-        // 1) nombres únicos y obligatorios
+        const newErrors: Record<number, any> = {};
         const names = stages.map(s => s.name.trim());
         const dupes = names.filter((n, i) => n && names.indexOf(n) !== i);
-      
+    
         stages.forEach((stage, idx) => {
-          const e: Partial<Record<keyof Stage | 'nameUnique', string>> = {};
-      
-          // -- Nombre obligatorio
-          if (!stage.name.trim()) {
-            e.name = 'El nombre es obligatorio';
-          }
-          // -- Nombre único
-          else if (dupes.includes(stage.name.trim())) {
-            e.nameUnique = 'Ya existe otra etapa con este nombre';
-          }
-      
-          // -- Fecha final ≥ Fecha inicial
-          if (stage.endDate < stage.startDate) {
+          const e: any = {};
+          if (!stage.name.trim()) e.name = 'El nombre es obligatorio';
+          else if (dupes.includes(stage.name.trim())) e.nameUnique = 'Ya existe otra etapa con este nombre';
+    
+          if (stage.endDate < stage.startDate)
             e.endDate = 'La fecha final no puede ser anterior a la inicial';
-          }
-      
-          // -- No empezar el mismo día que termina la etapa anterior
-          if (idx > 0 && stage.startDate <= stages[idx - 1].endDate) {
+    
+          if (idx > 0 && stage.startDate <= stages[idx - 1].endDate)
             e.startDate = `Debe iniciar después de ${formatDate(stages[idx - 1].endDate)}`;
-          }
-      
-          // -- Si es el mismo día, hora final ≥ hora inicial
-          if (
-            stage.startDate === stage.endDate &&
-            stage.endTime < stage.startTime
-          ) {
+    
+          if (stage.startDate === stage.endDate && stage.endTime < stage.startTime)
             e.endTime = 'La hora final no puede ser anterior a la inicial';
-          }
-      
-          if (Object.keys(e).length > 0) {
-            newErrors[stage.id] = e;
-          }
+    
+          if (Object.keys(e).length) newErrors[stage.id] = e;
         });
-      
-        if (Object.keys(newErrors).length > 0) {
+    
+        if (Object.keys(newErrors).length) {
           setErrors(newErrors);
-          return; // aborta, muestra errores
+          return;
         }
-      
-        // TODO: tu lógica real de guardado (API, etc.)
+    
+        // Aquí ya tienes `stages` actualizado en tu Context
         console.log('Guardando configuración:', stages);
       };
-      
 
-    const formatDate = (dateString: string): string => {
-        const date = new Date(dateString);
-        return new Intl.DateTimeFormat('es', { 
-        day: 'numeric', 
-        month: 'long', 
-        year: 'numeric' 
-        }).format(date);
-    };
+
+      const formatDate = (dateString: string) =>
+        new Intl.DateTimeFormat('es', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(dateString));
 
     return (
         <div className="max-w-5xl mx-auto py-8">

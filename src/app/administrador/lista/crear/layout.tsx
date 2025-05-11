@@ -10,6 +10,7 @@ import ConfirmationModal from '@/components/Modals/regComp/ConfirmationModal';
 import {inter} from '@/config/fonts'
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { RegistroProvider } from '@/lib/context/RegistroContext'
+import { StageProvider } from '@/lib/context/StageContext';
 
 const steps = [
     { slug: 'datos-comp', label: 'Datos de Competencia', titulo:'Estructura de la competencia' },
@@ -47,6 +48,7 @@ useEffect(() => {
 
     return (
       <RegistroProvider>
+        <StageProvider>
           <main >
             <div >
             <div className="flex items-center justify-center mb-4">
@@ -150,6 +152,7 @@ useEffect(() => {
               </div>
             </div>
           </main>
+          </StageProvider>
         </RegistroProvider>
       );
     }
