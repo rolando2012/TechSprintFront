@@ -57,7 +57,8 @@ export default function CompetitionStageForm() {
           });
     };
 
-    const saveConfiguration = () => {
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
         const newErrors: Record<number, any> = {};
         const names = stages.map(s => s.name.trim());
         const dupes = names.filter((n, i) => n && names.indexOf(n) !== i);
@@ -93,7 +94,7 @@ export default function CompetitionStageForm() {
         new Intl.DateTimeFormat('es', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(dateString));
 
     return (
-        <div className="max-w-5xl mx-auto py-8">
+        <form id="StageForm" onSubmit={handleSubmit} className="max-w-5xl mx-auto py-8">
         {stages.map((stage, index) => (
             <div
             key={stage.id}
@@ -102,6 +103,7 @@ export default function CompetitionStageForm() {
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">Etapa {index + 1}</h2>
                 <button
+                type="button"
                 onClick={() => removeStage(stage.id)}
                 className="text-boton-2 hover:text-boton-2-hover transition-colors"
                 aria-label="Eliminar etapa"
@@ -231,6 +233,7 @@ export default function CompetitionStageForm() {
 
         <div className="flex justify-between items-center mt-8">
             <button
+            type="button"
             onClick={addStage}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
             >
@@ -238,14 +241,14 @@ export default function CompetitionStageForm() {
             <span>Agregar etapa</span>
             </button>
 
-            <button
+            {/* <button
             onClick={saveConfiguration}
             className="flex items-center gap-2 px-6 py-3 bg-boton text-white rounded-md hover:bg-boton-hover transition-colors"
             >
             <span className="i-lucide-save" />
             <span>Guardar configuración</span>
-            </button>
+            </button> */}
         </div>
-        </div>
+        </form>
     );
     }
