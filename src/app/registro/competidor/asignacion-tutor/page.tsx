@@ -60,12 +60,12 @@ export default function TutorAssignmentPage() {
           Swal.close();
   
           window.dispatchEvent(new CustomEvent('open-confirmation-modal', { detail: inscripciones.length }));
-        } catch (error) {
+        } catch (error:any) {
           clearInterval(timerInterval);
           Swal.fire({
             icon: 'error',
             title: 'Error al registrar',
-            text: 'Ocurrió un problema al registrar al competidor. Intenta nuevamente.',
+            text: error.message ||  'Ocurrió un problema al registrar al competidor. Intenta nuevamente.',
           });
         }
       },

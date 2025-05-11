@@ -151,14 +151,16 @@ export async function registrarCompetidor(
       return axios.post(`${BASE_URL}/registro/competidor`, payload);
     });
 
-    const responses = await Promise.all(requests);
-    responses.forEach(res => {
-      if (res.status !== 200 && res.status !== 201) {
-        throw new Error(`Error en registro, status ${res.status}`);
-      }
-    });
-  } catch (error) {
-    console.error('[API] Error en registrarCompetidor:', error);
-    throw error;
+    await Promise.all(requests)
+  } catch (err: any) {
+    // Si es error de Axios, extraigo el mensaje que venga del servidor
+    if (axios.isAxiosError(err) && err.response) {
+      const data = err.response.data as any
+      const detail =
+        data.error || data.message || err.response.statusText
+      throw new Error(detail)
+    }
+    // otro tipo de error
+    throw err
   }
 }
