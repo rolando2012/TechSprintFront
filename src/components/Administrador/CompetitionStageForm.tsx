@@ -4,10 +4,15 @@ import { useState, useEffect } from "react";
 import { Calendar, Clock, Trash2 } from "lucide-react";
 import { FaRegPlusSquare } from "react-icons/fa";
 import { useStageContext, Stage } from '@/lib/context/StageContext';
+import { useRegistro } from '@/lib/context/RegistroContext'
 
 export default function CompetitionStageForm() {
     const { stages, setStages } = useStageContext();
     const [errors, setErrors] = useState<Record<number, any>>({});
+    const { selectedAreas,
+        nivelesMap,
+        categoriasMap,
+        costoConfirmado, } = useRegistro()
 
     useEffect(() => {
         if (stages.length === 0) {
@@ -87,6 +92,7 @@ export default function CompetitionStageForm() {
     
         // Aquí ya tienes `stages` actualizado en tu Context
         console.log('Guardando configuración:', stages);
+        console.log("datos: ", selectedAreas, nivelesMap, categoriasMap, costoConfirmado )
       };
 
 
