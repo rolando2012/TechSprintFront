@@ -212,6 +212,7 @@ export default function DatosCompetenciaPage() {
       )}
       {showNivelModal && (
         <SelectNivelesModal
+          areas={selectedAreas} 
           selected={selectedNiveles}
           onClose={() => setShowNivelModal(false)}
           onConfirm={(vals) => {
@@ -222,6 +223,7 @@ export default function DatosCompetenciaPage() {
       )}
       {showCategoriaModal && (
         <SelectCategoriasModal
+          areas={selectedAreas} 
           selected={selectedCategorias}
           onClose={() => setShowCategoriaModal(false)}
           onConfirm={(vals) => {
