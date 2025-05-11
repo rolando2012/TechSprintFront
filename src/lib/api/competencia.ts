@@ -1,4 +1,4 @@
-
+import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -31,4 +31,24 @@ export type Stage = {
   
     return await res.json()
   }
+  
+  export interface Competencia {
+    codComp: string;
+    gestion: string;
+    fechaIni: string;
+    costo: string;
+  }
+
+  export async function getCompetencias(): Promise<Competencia[]> {
+    try {
+        const { data, status } = await axios.get<Competencia[]>(
+            `${BASE_URL}/administrador/competencias`
+        );
+        if (status !== 200) throw new Error(`Status ${status}`);
+        return data;
+    } catch (error) {
+        console.error('[API] CompetidoresByTutor error:', error);
+        return [];
+    }
+}
   
