@@ -63,17 +63,6 @@ export default function CompetidorLoginForm({ onClose }: Props) {
               />
             </div>
 
-            <div>
-              <label className="block text-gray-800 font-normal mb-1">Código:</label>
-              <input
-                type="text"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="CodCompetidor123"
-                className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:outline-none"
-              />
-            </div>
-
             {/* Botones */}
             <div className="flex justify-between pt-4">
               <button

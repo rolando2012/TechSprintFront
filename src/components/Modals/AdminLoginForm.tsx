@@ -83,11 +83,11 @@ export default function AdminLoginForm({ onClose, onLogin }: Props) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-gray-800 font-normal text-md'>Correo:</FormLabel>
+                    <FormLabel className='text-gray-800 font-normal text-md'>Nombre:</FormLabel>
                     <FormControl>
                       <Input
                         className='bg-white text-gray-800 font-normal text-lg'
-                        placeholder="Example@something.domain"
+                        placeholder="Admin"
                         {...field}
                       />
                     </FormControl>
@@ -114,25 +114,6 @@ export default function AdminLoginForm({ onClose, onLogin }: Props) {
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="code"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-gray-800 font-normal text-md'>Código:</FormLabel>
-                    <FormControl>
-                      <Input
-                        className='bg-white text-gray-800 font-normal text-lg'
-                        placeholder="CodAdmin123"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <div className="flex justify-between pt-4">
                 <button
                   type="submit"

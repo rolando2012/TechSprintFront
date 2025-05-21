@@ -84,11 +84,11 @@ export default function CajeroLoginForm({ onClose, onLogin }: Props) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className='text-gray-800 font-normal text-md'>Correo:</FormLabel>
+                    <FormLabel className='text-gray-800 font-normal text-md'>Nombre:</FormLabel>
                     <FormControl>
                       <Input 
                       className='bg-white text-gray-800 font-normal text-lg'
-                      placeholder="Example@something.domain" {...field} />
+                      placeholder="Cajero" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -105,22 +105,6 @@ export default function CajeroLoginForm({ onClose, onLogin }: Props) {
                       <Input 
                       className='bg-white text-gray-800 font-normal text-lg'
                       type="password" placeholder="************" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="code"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-gray-800 font-normal text-md'>Código:</FormLabel>
-                    <FormControl>
-                      <Input 
-                      className='bg-white text-gray-800 font-normal text-lg'
-                      placeholder="CodCajero123" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

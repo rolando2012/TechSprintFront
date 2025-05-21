@@ -109,23 +109,6 @@ export default function TutorLoginForm({ onClose, onLogin }: Props) {
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="code"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className='text-gray-800 font-normal text-md'>Código:</FormLabel>
-                    <FormControl>
-                      <Input 
-                      className='bg-white text-gray-800 font-normal text-lg'
-                      placeholder="CodTutor123" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <div className="flex justify-between pt-4">
                 <button
                   type="submit"
