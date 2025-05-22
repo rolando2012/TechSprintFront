@@ -34,8 +34,10 @@ export type Stage = {
   
   export interface Competencia {
     codComp: string;
+    nombreCompet: string;
     gestion: string;
     fechaIni: string;
+    fechaFin: string;
     costo: string;
   }
 

@@ -11,8 +11,10 @@ import { getCompetencias } from '@/lib/api/competencia';
 // Interfaz para mapear la respuesta de la API
 interface Competencia {
   id: string;
+  nombreCompet: string;
   version: string;
-  fecha: string; // ISO string
+  fecha: string; 
+  fechaFin: string;
   costo: string;
 }
 
@@ -24,10 +26,12 @@ export default function CompetenciasPage() {
     const fetchCompetencias = async () => {
       try {
         const data = await getCompetencias();
-        const mapped = data.map(({ codComp, gestion, fechaIni, costo }) => ({
+        const mapped = data.map(({ codComp, nombreCompet, gestion, fechaIni, fechaFin, costo }) => ({
           id: codComp,
+          nombreCompet: nombreCompet,
           version: gestion,
           fecha: fechaIni,
+          fechaFin: fechaFin,
           costo,
         }));
         setCompetencias(mapped);
@@ -70,27 +74,34 @@ export default function CompetenciasPage() {
       ) : (
         /* Tabla responsive */
         <div className="overflow-x-auto rounded-lg shadow mb-6">
-          <div className="min-w-[600px]">
+          <div className="min-w-[700px]">
             {/* Encabezados de tabla */}
-            <div className="grid grid-cols-12 bg-gray-800 text-white text-sm sm:text-base">
-              <div className="col-span-4 p-2 sm:p-3 font-semibold">Versión</div>
-              <div className="col-span-5 p-2 sm:p-3 font-semibold">Fecha</div>
-              <div className="col-span-2 p-2 sm:p-3 font-semibold">Costo</div>
-              <div className="col-span-1 p-2 sm:p-3 font-semibold">Editar</div>
+            <div className="grid grid-cols-13 bg-gray-800 text-white text-sm sm:text-base">
+              <div className="col-span-3 p-2 sm:p-3 font-semibold">Nombre</div>
+               <div className="col-span-2 p-2 sm:p-3 font-semibold">Version</div>
+              <div className="col-span-3 p-2 sm:p-3 font-semibold">Fecha Inicio</div>
+              <div className="col-span-3 p-2 sm:p-3 font-semibold">Fecha Fin</div>
+              <div className="col-span-1 p-2 sm:p-3 font-semibold text-center">Costo</div>
+              <div className="col-span-1 p-2 sm:p-3 font-semibold text-center">Editar</div>
             </div>
 
             {/* Filas de datos */}
             {competencias.map((comp, index) => (
               <div
                 key={`competencia-${comp.id}-${index}`}
-                className="grid grid-cols-12 bg-gray-200 border-b border-gray-300 text-sm sm:text-base"
+                className="grid grid-cols-13 bg-white hover:bg-gray-50 border-b border-gray-200 text-sm sm:text-base transition-colors"
               >
-                <div className="col-span-4 p-2 sm:p-3">{comp.version}</div>
-                <div className="col-span-5 p-2 sm:p-3">{formatFecha(comp.fecha)}</div>
-                <div className="col-span-2 p-2 sm:p-3">{comp.costo}</div>
-                <div className="col-span-1 p-2 sm:p-3 flex justify-center">
-                  <button className="text-gray-700 hover:text-black" aria-label="Editar">
-                    <Edit size={18} />
+                <div className="col-span-3 p-2 sm:p-3 font-medium text-gray-900">{comp.nombreCompet}</div>
+                <div className="col-span-2 p-2 sm:p-3 font-medium text-gray-900">{comp.version}</div>
+                <div className="col-span-3 p-2 sm:p-3 text-gray-700">{formatFecha(comp.fecha)}</div>
+                <div className="col-span-3 p-2 sm:p-3 text-gray-700">{formatFecha(comp.fechaFin)}</div>
+                <div className="col-span-1 p-2 sm:p-3 text-center text-gray-700 font-medium">{comp.costo}</div>
+                <div className="col-span-1 p-2 sm:p-3 flex justify-center items-center">
+                  <button 
+                    className="text-gray-600 hover:text-blue-600 p-1 rounded-md hover:bg-blue-50 transition-colors" 
+                    aria-label="Editar"
+                  >
+                    <Edit size={16} />
                   </button>
                 </div>
               </div>
