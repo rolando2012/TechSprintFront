@@ -53,4 +53,18 @@ export type Stage = {
         return [];
     }
 }
+
+export async function validarNombreUnico(nombre: string): Promise<boolean> {
+  const res = await fetch(`${BASE_URL}/administrador/validar-nombre`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nombre })
+  })
+  if (!res.ok) {
+    const { error } = await res.json()
+    throw new Error(error || 'Error al validar nombre')
+  }
+  const { unique } = await res.json()
+  return unique
+}
   
