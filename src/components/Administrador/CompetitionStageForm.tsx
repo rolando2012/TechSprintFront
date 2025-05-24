@@ -9,7 +9,7 @@ import { registrarCompetencia } from '@/lib/api/competencia'
 
 export default function CompetitionStageForm() {
   const { stages, setStages } = useStageContext();
-  const { selectedAreas, nivelesMap, categoriasMap, costo } = useRegistro();
+  const { nombre, nivelesMap, categoriasMap, costo } = useRegistro();
   const [errors, setErrors] = useState<Record<number, any>>({});
 
   // Fecha mínima hoy
@@ -81,7 +81,7 @@ export default function CompetitionStageForm() {
         timerInterval = setInterval(() => {}, 100);
         try {
           await registrarCompetencia(
-            selectedAreas,
+            nombre,
             nivelesMap,
             categoriasMap,
             costoNum,
@@ -97,6 +97,8 @@ export default function CompetitionStageForm() {
       },
       willClose: () => clearInterval(timerInterval)
     });
+    // console.log('Guardando configuración:', stages);
+    // console.log("datos: ", nombre, nivelesMap, categoriasMap, costo )
   };
 
   // Evita desfase de fecha

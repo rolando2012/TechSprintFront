@@ -12,7 +12,7 @@ export type Stage = {
   }
   
   export async function registrarCompetencia(
-    selectedAreas: string[],
+    nombre: string,
     nivelesMap: Record<string, string[]>,
     categoriasMap: Record<string, string[]>,
     costoConfirmado: number ,
@@ -21,7 +21,7 @@ export type Stage = {
     const res = await fetch(`${BASE_URL}/administrador/competencia`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ selectedAreas, nivelesMap, categoriasMap, costoConfirmado, stages })
+      body: JSON.stringify({ nombre, nivelesMap, categoriasMap, costoConfirmado, stages })
     })
   
     if (!res.ok) {

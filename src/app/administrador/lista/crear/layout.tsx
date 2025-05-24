@@ -144,7 +144,7 @@ useEffect(() => {
                     
                     onClose={() => {
                       setSubmitModalOpen(false);
-                      router.push('/administrador');
+                      router.push('/administrador/lista');
                     }}
                   />
                 )}
