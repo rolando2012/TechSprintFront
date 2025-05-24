@@ -254,7 +254,6 @@ const categoriasDisplay = Object.keys(categoriasGrouped).length
       
       {showNivelModal && (
         <SelectNivelesModal
-          areas={selectedAreas} 
           selected={tmpNiveles}
           onClose={() => setShowNivelModal(false)}
           onConfirm={handleConfirmNiveles}
@@ -263,7 +262,6 @@ const categoriasDisplay = Object.keys(categoriasGrouped).length
       
       {showCategoriaModal && (
         <SelectCategoriasModal
-          areas={selectedAreas} 
           selected={tmpCategorias}
           onClose={() => setShowCategoriaModal(false)}
           onConfirm={handleConfirmCategorias}
