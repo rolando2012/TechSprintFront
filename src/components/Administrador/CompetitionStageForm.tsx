@@ -12,7 +12,9 @@ export default function CompetitionStageForm() {
   const { selectedAreas, nivelesMap, categoriasMap, costo } = useRegistro();
   const [errors, setErrors] = useState<Record<number, any>>({});
 
-  // Nombres fijos de las cuatro etapas
+  // Fecha mínima hoy
+  const today = new Date().toISOString().split('T')[0];
+
   const fixedNames = [
     'Inscripciones',
     'Validación de Requisitos y aceptación de parte de los tutores',
@@ -20,18 +22,17 @@ export default function CompetitionStageForm() {
     'Periodo de Competición'
   ];
 
-  // Inicializar etapas estáticas
   useEffect(() => {
     const initial = fixedNames.map((name, idx) => ({
       id: idx + 1,
       name,
-      startDate: new Date().toISOString().split('T')[0],
-      endDate: new Date().toISOString().split('T')[0],
+      startDate: today,
+      endDate: today,
       startTime: '08:00',
       endTime: '18:00',
     }));
     setStages(initial);
-  }, [setStages]);
+  }, [setStages, today]);
 
   const updateStage = (id: number, field: keyof Omit<Stage, 'name'>, value: string) => {
     setStages(
@@ -39,7 +40,6 @@ export default function CompetitionStageForm() {
         stage.id === id ? { ...stage, [field]: value } : stage
       )
     );
-    // limpiar error del campo
     setErrors(prev => {
       const e = { ...prev[id] };
       delete e[field];
@@ -53,6 +53,8 @@ export default function CompetitionStageForm() {
 
     stages.forEach((stage, idx) => {
       const e: any = {};
+      if (stage.startDate < today) e.startDate = 'No puede ser anterior a hoy';
+      if (stage.endDate < today) e.endDate = 'No puede ser anterior a hoy';
       if (stage.endDate < stage.startDate)
         e.endDate = 'La fecha final no puede ser anterior a la inicial';
       if (idx > 0 && stage.startDate <= stages[idx - 1].endDate)
@@ -97,77 +99,84 @@ export default function CompetitionStageForm() {
     });
   };
 
-  const formatDate = (dateString: string) =>
-    new Intl.DateTimeFormat('es', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(dateString));
+  // Evita desfase de fecha
+  const formatDate = (dateString: string) => {
+    const [y, m, d] = dateString.split('-').map(Number);
+    return new Intl.DateTimeFormat('es', { day: 'numeric', month: 'long', year: 'numeric' })
+      .format(new Date(y, m - 1, d));
+  };
 
-    return (
-        <form id="StageForm" onSubmit={handleSubmit} className="max-w-5xl mx-auto py-8 space-y-8">
-      {stages.map((stage, index) => (
+  return (
+    <form id="StageForm" onSubmit={handleSubmit} className="max-w-5xl mx-auto py-8 space-y-8">
+      {stages.map((stage) => (
         <div key={stage.id} className="border-l-4 border-boton bg-white rounded-lg shadow p-6">
           <h2 className="text-2xl font-bold mb-4">{stage.name}</h2>
 
-          {/* Fecha inicial */}
-          <div className="mb-6">
-            <label htmlFor={`startDate-${stage.id}`} className="block text-sm font-medium text-gray-700 mb-1">
-              Fecha inicial
-            </label>
-            <div className="relative">
-              <div className="absolute left-0 top-1/2 transform -translate-y-1/2 pl-3 text-gray-500">
-                <Calendar className="w-5 h-5" />
+          {/* Fila de fechas */}
+          <div className="grid grid-cols-2 gap-6 mb-4">
+            {/* Fecha inicio */}
+            <div>
+              <label htmlFor={`startDate-${stage.id}`} className="block text-sm font-medium text-gray-700 mb-1">
+                Fecha inicio
+              </label>
+              <div className="relative">
+                <div className="absolute left-0 top-1/2 transform -translate-y-1/2 pl-3 text-gray-500">
+                  <Calendar className="w-5 h-5" />
+                </div>
+                <input
+                  id={`startDate-${stage.id}`} type="date"
+                  value={stage.startDate}
+                  min={today}
+                  onChange={e => updateStage(stage.id, 'startDate', e.target.value)}
+                  className="w-full pl-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
+                />
               </div>
-              <input
-                id={`startDate-${stage.id}`}
-                type="date"
-                value={stage.startDate}
-                onChange={e => updateStage(stage.id, 'startDate', e.target.value)}
-                className="w-full pl-10 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
-              />
+              <p className="mt-1 text-sm text-gray-500">{formatDate(stage.startDate)}</p>
+              {errors[stage.id]?.startDate && (
+                <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.startDate}</p>
+              )}
             </div>
-            {errors[stage.id]?.startDate && (
-              <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.startDate}</p>
-            )}
-            <p className="mt-1 text-sm text-gray-500">{formatDate(stage.startDate)}</p>
+
+            {/* Fecha fin */}
+            <div>
+              <label htmlFor={`endDate-${stage.id}`} className="block text-sm font-medium text-gray-700 mb-1">
+                Fecha fin
+              </label>
+              <div className="relative">
+                <div className="absolute left-0 top-1/2 transform -translate-y-1/2 pl-3 text-gray-500">
+                  <Calendar className="w-5 h-5" />
+                </div>
+                <input
+                  id={`endDate-${stage.id}`} type="date"
+                  value={stage.endDate}
+                  min={today}
+                  onChange={e => updateStage(stage.id, 'endDate', e.target.value)}
+                  className="w-full pl-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
+                />
+              </div>
+              <p className="mt-1 text-sm text-gray-500">{formatDate(stage.endDate)}</p>
+              {errors[stage.id]?.endDate && (
+                <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.endDate}</p>
+              )}
+            </div>
           </div>
 
-          {/* Fecha final */}
-          <div className="mb-6">
-            <label htmlFor={`endDate-${stage.id}`} className="block text-sm font-medium text-gray-700 mb-1">
-              Fecha final
-            </label>
-            <div className="relative">
-              <div className="absolute left-0 top-1/2 transform -translate-y-1/2 pl-3 text-gray-500">
-                <Calendar className="w-5 h-5" />
-              </div>
-              <input
-                id={`endDate-${stage.id}`}
-                type="date"
-                value={stage.endDate}
-                onChange={e => updateStage(stage.id, 'endDate', e.target.value)}
-                className="w-full pl-10 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
-              />
-            </div>
-            {errors[stage.id]?.endDate && (
-              <p className="mt-1 text-sm text-red-600">{errors[stage.id]!.endDate}</p>
-            )}
-            <p className="mt-1 text-sm text-gray-500">{formatDate(stage.endDate)}</p>
-          </div>
-
-          {/* Horarios */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Fila de horas */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Hora inicio */}
             <div>
               <label htmlFor={`startTime-${stage.id}`} className="block text-sm font-medium text-gray-700 mb-1">
-                Hora inicial
+                Hora inicio
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
                   <Clock className="w-5 h-5" />
                 </div>
                 <input
-                  id={`startTime-${stage.id}`}
-                  type="time"
+                  id={`startTime-${stage.id}`} type="time"
                   value={stage.startTime}
                   onChange={e => updateStage(stage.id, 'startTime', e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
                 />
               </div>
               {errors[stage.id]?.startTime && (
@@ -175,20 +184,20 @@ export default function CompetitionStageForm() {
               )}
             </div>
 
+            {/* Hora fin */}
             <div>
               <label htmlFor={`endTime-${stage.id}`} className="block text-sm font-medium text-gray-700 mb-1">
-                Hora final
+                Hora fin
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
                   <Clock className="w-5 h-5" />
                 </div>
                 <input
-                  id={`endTime-${stage.id}`}
-                  type="time"
+                  id={`endTime-${stage.id}`} type="time"
                   value={stage.endTime}
                   onChange={e => updateStage(stage.id, 'endTime', e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-boton"
                 />
               </div>
               {errors[stage.id]?.endTime && (
