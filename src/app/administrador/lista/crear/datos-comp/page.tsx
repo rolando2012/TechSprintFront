@@ -68,31 +68,38 @@ export default function DatosCompetenciaPage() {
     ? groupedText(categoriasGrouped)
     : 'Ingrese una categoría'
 
+  const clearLevelCatError = () => {
+    setErrors(prev => ({ ...prev, niveles: false, categorias: false }))
+  }
+
   const handleConfirmNiveles = (vals: string[]) => {
     setTmpNiveles(vals)
     setShowNivelModal(false)
     setNivelesMap(groupByArea(vals))
+    clearLevelCatError()
   }
 
   const handleConfirmCategorias = (vals: string[]) => {
     setTmpCategorias(vals)
     setShowCategoriaModal(false)
     setCategoriasMap(groupByArea(vals))
+    clearLevelCatError()
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const costoValue = parseFloat(costoInput)
+    const nivelCatEmpty = Object.keys(nivelesMap).length === 0 && Object.keys(categoriasMap).length === 0
     const newErrors = {
       nombre: nombreInput.trim() === '' || nombreInput.length > 100,
-      niveles: Object.keys(nivelesMap).length === 0,
-      categorias: Object.keys(categoriasMap).length === 0,
+      niveles: nivelCatEmpty,
+      categorias: nivelCatEmpty,
       costo: isNaN(costoValue) || costoValue < 0,
     }
     setErrors(newErrors)
 
-    if (Object.values(newErrors).some((v) => v)) return
+    if (Object.values(newErrors).some(v => v)) return
 
     setCostoConfirmado(costoValue.toFixed(2))
     console.log({ nombre: nombreInput.trim(), nivelesMap, categoriasMap, costo: costoValue })
@@ -116,7 +123,10 @@ export default function DatosCompetenciaPage() {
             <input
               type="text"
               value={nombreInput}
-              onChange={(e) => setNombreInput(e.target.value)}
+              onChange={e => {
+                setNombreInput(e.target.value)
+                if (errors.nombre) setErrors(prev => ({ ...prev, nombre: false }))
+              }}
               maxLength={100}
               className={`w-full px-4 py-2 rounded-md bg-gray-200 focus:outline-none ${errors.nombre ? 'border-red-500 border' : ''}`}
               placeholder="Ingrese el nombre de la competencia"
@@ -140,18 +150,16 @@ export default function DatosCompetenciaPage() {
               className={`bg-gray-200 rounded-md cursor-pointer ${errors.niveles ? 'border-red-500 border' : ''}`}
               onClick={() => setShowNivelModal(true)}
             >
-              <div
-                className={`${adlam.className} w-full flex items-start px-4 py-2`}
-              >
+              <div className={`${adlam.className} w-full flex items-start px-4 py-2`}>
                 <div className="flex-1 whitespace-pre-wrap break-words max-h-24 overflow-y-auto pr-2">
                   {nivelesDisplay}
                 </div>
                 <BsMenuApp className="text-lg flex-shrink-0" />
               </div>
             </div>
-            {errors.niveles && (
+            {errors.niveles && errors.categorias && (
               <p className="text-red-500 text-sm mt-1">
-                Seleccione al menos un nivel.
+                Seleccione al menos un nivel o una categoría.
               </p>
             )}
           </div>
@@ -175,9 +183,9 @@ export default function DatosCompetenciaPage() {
                 <BsMenuApp className="text-lg flex-shrink-0" />
               </div>
             </div>
-            {errors.categorias && (
+            {errors.niveles && errors.categorias && (
               <p className="text-red-500 text-sm mt-1">
-                Seleccione al menos una categoría.
+                Seleccione al menos un nivel o una categoría.
               </p>
             )}
           </div>
@@ -193,10 +201,13 @@ export default function DatosCompetenciaPage() {
             <input
               type="number"
               min="0"
-              step="0.01"
+              step="1"
               placeholder="Ingrese el costo"
               value={costoInput}
-              onChange={(e) => setCostoInput(e.target.value)}
+              onChange={e => {
+                setCostoInput(e.target.value)
+                if (errors.costo) setErrors(prev => ({ ...prev, costo: false }))
+              }}
               className={`w-full px-4 py-2 rounded-md bg-gray-200 focus:outline-none ${errors.costo ? 'border-red-500 border' : ''}`}
             />
             {costoConfirmado && !errors.costo && (
