@@ -28,23 +28,21 @@ function groupedText(grouped: Record<string, string[]>): string {
 }
 
 export default function DatosCompetenciaPage() {
-  const {
+   const {
+    nombre,
+    costo,
+    setNombre,
+    setCosto,
     nivelesMap,
     categoriasMap,
-    costoConfirmado,
     setNivelesMap,
     setCategoriasMap,
-    setCostoConfirmado,
   } = useRegistro()
 
-  const [nombreInput, setNombreInput] = useState('')
-  const [tmpNiveles, setTmpNiveles] = useState<string[]>([])
+   const [tmpNiveles, setTmpNiveles] = useState<string[]>([])
   const [tmpCategorias, setTmpCategorias] = useState<string[]>([])
-  const [costoInput, setCostoInput] = useState('')
-
   const [showNivelModal, setShowNivelModal] = useState(false)
   const [showCategoriaModal, setShowCategoriaModal] = useState(false)
-
   const [errors, setErrors] = useState({
     nombre: false,
     niveles: false,
@@ -54,18 +52,11 @@ export default function DatosCompetenciaPage() {
 
   const router = useRouter()
 
-  const nivelesGrouped = Object.keys(nivelesMap).length
-    ? nivelesMap
-    : {} as Record<string, string[]>
-  const nivelesDisplay = Object.keys(nivelesGrouped).length
-    ? groupedText(nivelesGrouped)
+  const nivelesDisplay = Object.keys(nivelesMap).length
+    ? groupedText(nivelesMap)
     : 'Ingrese un nivel'
-
-  const categoriasGrouped = Object.keys(categoriasMap).length
-    ? categoriasMap
-    : {} as Record<string, string[]>
-  const categoriasDisplay = Object.keys(categoriasGrouped).length
-    ? groupedText(categoriasGrouped)
+  const categoriasDisplay = Object.keys(categoriasMap).length
+    ? groupedText(categoriasMap)
     : 'Ingrese una categoría'
 
   const clearLevelCatError = () => {
@@ -86,23 +77,23 @@ export default function DatosCompetenciaPage() {
     clearLevelCatError()
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    const costoValue = parseFloat(costo)
+    const nivelCatEmpty =
+      Object.keys(nivelesMap).length === 0 &&
+      Object.keys(categoriasMap).length === 0
 
-    const costoValue = parseFloat(costoInput)
-    const nivelCatEmpty = Object.keys(nivelesMap).length === 0 && Object.keys(categoriasMap).length === 0
     const newErrors = {
-      nombre: nombreInput.trim() === '' || nombreInput.length > 100,
+      nombre: nombre.trim() === '' || nombre.length > 100,
       niveles: nivelCatEmpty,
       categorias: nivelCatEmpty,
       costo: isNaN(costoValue) || costoValue < 0,
     }
     setErrors(newErrors)
-
     if (Object.values(newErrors).some(v => v)) return
 
-    setCostoConfirmado(costoValue.toFixed(2))
-    console.log({ nombre: nombreInput.trim(), nivelesMap, categoriasMap, costo: costoValue })
+    console.log({ nombre: nombre.trim(), nivelesMap, categoriasMap, costo: costoValue })
     router.push('/administrador/lista/crear/fechas')
   }
 
@@ -122,9 +113,9 @@ export default function DatosCompetenciaPage() {
             </div>
             <input
               type="text"
-              value={nombreInput}
+              value={nombre}
               onChange={e => {
-                setNombreInput(e.target.value)
+                setNombre(e.target.value)
                 if (errors.nombre) setErrors(prev => ({ ...prev, nombre: false }))
               }}
               maxLength={100}
@@ -203,18 +194,14 @@ export default function DatosCompetenciaPage() {
               min="0"
               step="1"
               placeholder="Ingrese el costo"
-              value={costoInput}
+              value={costo}
               onChange={e => {
-                setCostoInput(e.target.value)
+                setCosto(e.target.value)
                 if (errors.costo) setErrors(prev => ({ ...prev, costo: false }))
               }}
               className={`w-full px-4 py-2 rounded-md bg-gray-200 focus:outline-none ${errors.costo ? 'border-red-500 border' : ''}`}
             />
-            {costoConfirmado && !errors.costo && (
-              <p className="mt-1 text-xl">
-                {costoConfirmado} Bs.
-              </p>
-            )}
+            
             {errors.costo && (
               <p className="text-red-500 text-sm mt-1">
                 El costo es obligatorio y no puede ser negativo.
