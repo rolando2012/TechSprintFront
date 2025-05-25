@@ -14,7 +14,7 @@ import {
 export default function AdministradorPage() {
   
   const features = [
-    { icon: <FaCalendarAlt size={75} />, label: 'Calendario', ruta:'' },
+    { icon: <FaCalendarAlt size={75} />, label: 'Calendario', ruta:'/administrador/calendario' },
     // { icon: <FaListAlt size={75} />, label: 'Versiones' },
     { icon: <FaUsersCog size={75} />, label: 'Registrar Tutor', ruta:'/administrador/registro-tutor' },
     // { icon: <FaClipboardList size={75} />, label: 'Lista de competidores',ruta:'/administrador/lista' },
