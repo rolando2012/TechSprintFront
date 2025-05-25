@@ -16,9 +16,9 @@ export default function AdministradorPage() {
   const features = [
     // { icon: <FaCalendarAlt size={75} />, label: 'Calendario' },
     // { icon: <FaListAlt size={75} />, label: 'Versiones' },
-    // { icon: <FaClipboardCheck size={75} />, label: 'Gestionar inscripciones' },
+    { icon: <FaUsersCog size={75} />, label: 'Registrar Tutor', ruta:'/administrador/registro-tutor' },
     // { icon: <FaClipboardList size={75} />, label: 'Lista de competidores',ruta:'/administrador/lista' },
-    { icon: <FaUsersCog size={75} />, label: 'Gestionar Competencia',ruta:'/administrador/lista' },
+    { icon: <FaClipboardCheck size={75} />, label: 'Gestionar Competencia',ruta:'/administrador/lista' },
   ]
 
   return (
