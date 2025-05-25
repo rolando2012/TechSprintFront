@@ -35,6 +35,10 @@ import {getAreas, Areas} from '@/lib/api/registro';
 import { inter } from '@/config/fonts';
 import { getDepartamentos } from '@/lib/api/registro'
 import {getMunicipios} from '@/lib/api/regTutor'
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 export default function RegistroTutor() {
   const form = useForm<TutorFormData>({
@@ -91,10 +95,38 @@ export default function RegistroTutor() {
   }, [selectedDept, form]);
 
 
-  function onSubmit(data: TutorFormData) {
-    console.log('Datos enviados:', data);
-    //form.reset();
-  }
+  const router = useRouter();
+
+const onSubmit = async (data: TutorFormData) => {
+    console.log('onSubmit called with:', data);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+    // Usamos formato simple de SweetAlert
+    axios.post(`${API_URL}/administrador/registrar-tutor`, data)
+      .then(res => {
+        console.log('POST response:', res);
+        form.reset();
+        Swal.fire({
+          icon: 'success',
+          title: 'Tutor registrado',
+          text: res.data.message,
+          confirmButtonColor: '#00abe4',
+        }).then(() => {
+          router.push('/administrador');
+        });
+      })
+      .catch(err => {
+            console.error('Error completo del POST:', err.response);        // -> inspecciona aquí
+            const backendMsg = err.response?.data?.error
+                            || err.response?.data?.message
+                            || err.message;
+            Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: backendMsg,
+            confirmButtonColor: '#d33',
+            });
+        });
+  };
 
   return (
      <div className="  flex items-center justify-center p-4">
@@ -324,19 +356,19 @@ export default function RegistroTutor() {
             />
 
             <div className="flex justify-center gap-4 w-full mt-6">
-              <button
+              <Button
                 type="submit"
                 className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl cursor-pointer"
               >
                 Registrar
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => form.reset()}
                 className="px-6 py-2 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl cursor-pointer"
               >
                 Cancelar
-              </button>
+              </Button>
             </div>
           </div>
            </form>
