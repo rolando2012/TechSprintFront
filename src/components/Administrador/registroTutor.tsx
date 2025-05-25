@@ -33,7 +33,8 @@ import {
 } from 'lucide-react';
 import {getAreas, Areas} from '@/lib/api/registro';
 import { inter } from '@/config/fonts';
-import { getDepartamentos, getMunicipios } from '@/lib/api/registro'
+import { getDepartamentos } from '@/lib/api/registro'
+import {getMunicipios} from '@/lib/api/regTutor'
 
 export default function RegistroTutor() {
   const form = useForm<TutorFormData>({
@@ -57,7 +58,7 @@ export default function RegistroTutor() {
   const [departamentos, setDepartamentos] = useState<{ codDept: string; nombreDept: string }[]>([]);
   const [municipios, setMunicipios] = useState<{ codMun: string; nombreMun: string }[]>([]);
 
-const selectedDept = form.watch('departamento');
+  const selectedDept = form.watch('departamento');
 
   useEffect(() => {
     getAreas()
@@ -77,19 +78,22 @@ const selectedDept = form.watch('departamento');
   }, []);
 
 
-  useEffect(() => {
+ useEffect(() => {
     if (selectedDept) {
-      const fetchMun = async () => setMunicipios(await getMunicipios(selectedDept));
-      fetchMun();
+      getMunicipios(selectedDept).then((data) => {
+        setMunicipios(data);
+        form.setValue('municipio', '');
+      });
     } else {
       setMunicipios([]);
+      form.setValue('municipio', '');
     }
-  }, [selectedDept]);
+  }, [selectedDept, form]);
 
 
   function onSubmit(data: TutorFormData) {
     console.log('Datos enviados:', data);
-    form.reset();
+    //form.reset();
   }
 
   return (
@@ -170,7 +174,7 @@ const selectedDept = form.watch('departamento');
                     <FormLabel  className="text-md font-medium">Celular</FormLabel>
                   </div>
                   <FormControl>
-                    <Input {...field} type="tel" placeholder="+591 XXXXXXXX" 
+                    <Input {...field} type="tel" placeholder="XXXXXXXX" 
                     className={`bg-white text-md font-medium ${inter.className}`}/>
                   </FormControl>
                   <FormMessage />
@@ -243,12 +247,12 @@ const selectedDept = form.watch('departamento');
                     <Globe size={18} /> Departamento
                   </Label>
                   <Select onValueChange={field.onChange} value={field.value} disabled={departamentos.length === 0}>
-                    <SelectTrigger className="w-full bg-white">
+                    <SelectTrigger className={`w-full bg-white text-sm font-medium ${inter.className}`}>
                       <SelectValue placeholder="Seleccionar departamento" />
                     </SelectTrigger>
                     <SelectContent>
                       {departamentos.map((d) => (
-                        <SelectItem key={d.codDept} value={d.codDept}>{d.nombreDept}</SelectItem>
+                        <SelectItem key={d.codDept} value={d.nombreDept}>{d.nombreDept}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -265,12 +269,12 @@ const selectedDept = form.watch('departamento');
                     <MapPin size={18} /> Municipio
                   </Label>
                   <Select onValueChange={field.onChange} value={field.value} disabled={!selectedDept || municipios.length === 0}>
-                    <SelectTrigger className="w-full bg-white">
+                    <SelectTrigger className={`w-full bg-white text-sm font-medium ${inter.className}`}>
                       <SelectValue placeholder="Seleccionar municipio" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent >
                       {municipios.map((m) => (
-                        <SelectItem key={m.codMun} value={m.codMun}>{m.nombreMun}</SelectItem>
+                        <SelectItem key={m.codMun} value={m.nombreMun}>{m.nombreMun}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -294,7 +298,7 @@ const selectedDept = form.watch('departamento');
                       onValueChange={field.onChange}
                       value={field.value}
                     >
-                      <SelectTrigger className="bg-white w-full">
+                      <SelectTrigger className={`w-full bg-white text-sm font-medium ${inter.className}`}>
                         <SelectValue
                           placeholder={
                             loadingAreas ? 'Cargando…' : errorAreas ? 'Error al cargar' : 'Seleccione área'
