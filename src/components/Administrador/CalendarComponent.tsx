@@ -1,136 +1,93 @@
 'use client'
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, List } from 'lucide-react';
+import { fetchEtapasCompetencia, fetchPrimeraCompetenciaId, Etapa } from '@/lib/api/competencia';
 
-interface Period {
-  id: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  color: 'blue' | 'yellow' | 'purple' | 'green';
+const monthNames = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const dayNames = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+
+function getDaysInMonth(date: Date): (number | null)[] {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const days: (number|null)[] = [];
+  for (let i = 0; i < firstDay.getDay(); i++) days.push(null);
+  for (let d = 1; d <= lastDay.getDate(); d++) days.push(d);
+  return days;
 }
 
-interface CalendarComponentProps {
-  currentPeriod?: string;
-  currentDate?: string;
-  periods?: Period[];
-}
+function CalendarComponent() {
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [activeView, setActiveView] = useState<'calendar'|'list'>('calendar');
+  const [etapas, setEtapas] = useState<Etapa[]>([]);
+  const [competenciaId, setCompetenciaId] = useState<number | null>(null);
 
-const CalendarComponent: React.FC<CalendarComponentProps> = ({
-  currentPeriod = "Inscripción",
-  currentDate = "09/04/2025",
-  periods = [
-    {
-      id: 'inscription',
-      name: 'Período de Inscripción',
-      startDate: '01/04/2025',
-      endDate: '30/04/2025',
-      color: 'blue'
-    },
-    {
-      id: 'validation',
-      name: 'Período de Validación',
-      startDate: '01/05/2025',
-      endDate: '15/05/2025',
-      color: 'yellow'
-    },
-    {
-      id: 'payment',
-      name: 'Período de Pago',
-      startDate: '16/05/2025',
-      endDate: '25/05/2025',
-      color: 'purple'
-    },
-    {
-      id: 'competence',
-      name: 'Período de Competencia',
-      startDate: '26/05/2025',
-      endDate: '10/06/2025',
-      color: 'green'
-    }
-  ]
-}) => {
-  const [currentMonth, setCurrentMonth] = useState(new Date(2025, 4)); // May 2025
-  const [activeView, setActiveView] = useState<'calendar' | 'list'>('calendar');
+  useEffect(() => {
+    // fetch first competencia id then fetch etapas
+    fetchPrimeraCompetenciaId()
+      .then(id => {
+        setCompetenciaId(id);
+        return fetchEtapasCompetencia(id);
+      })
+      .then(setEtapas)
+      .catch(console.error);
+  }, []);
 
-  const monthNames = [
-    'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
-  ];
-
-  const dayNames = ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'];
-
-  const getDaysInMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
-
-    const days = [];
-    
-    // Add empty cells for days before month starts
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      days.push(null);
-    }
-    
-    // Add days of the month
-    for (let day = 1; day <= daysInMonth; day++) {
-      days.push(day);
-    }
-    
-    return days;
-  };
-
-  const getDayColor = (day: number) => {
-    if (!day) return '';
-    
-    const currentDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    const dateStr = currentDate.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-
-    // Check which period this date belongs to
-    for (const period of periods) {
-      const startDate = new Date(period.startDate.split('/').reverse().join('-'));
-      const endDate = new Date(period.endDate.split('/').reverse().join('-'));
-      
-      if (currentDate >= startDate && currentDate <= endDate) {
-        switch (period.color) {
-          case 'blue':
-            return 'bg-blue-100 text-blue-800';
-          case 'yellow':
-            return 'bg-yellow-100 text-yellow-800';
-          case 'purple':
-            return 'bg-purple-100 text-purple-800';
-          case 'green':
-            return 'bg-green-100 text-green-800';
-          default:
-            return '';
-        }
-      }
-    }
-    
-    return '';
-  };
-
-  const navigateMonth = (direction: 'prev' | 'next') => {
+  const navigateMonth = (dir: 'prev'|'next') => {
     setCurrentMonth(prev => {
-      const newMonth = new Date(prev);
-      if (direction === 'prev') {
-        newMonth.setMonth(newMonth.getMonth() - 1);
-      } else {
-        newMonth.setMonth(newMonth.getMonth() + 1);
-      }
-      return newMonth;
+      const m = new Date(prev);
+      m.setMonth(m.getMonth() + (dir === 'next' ? 1 : -1));
+      return m;
     });
   };
+
+  function getDayColor(day: number | null) {
+    if (day === null) return '';
+    const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    const etapa = etapas.find(e => {
+      const start = new Date(e.fechaInicio);
+      const end = new Date(e.fechaFin);
+      return date >= start && date <= end;
+    });
+    if (!etapa) return '';
+    switch (etapa.estado) {
+      case 'open': return 'bg-emerald-100 text-emerald-800';
+      case 'closed': return 'bg-rose-100 text-rose-800';
+      case 'pending': return 'bg-amber-100 text-amber-800';
+      case 'active': return 'bg-blue-100 text-blue-800';
+      default: return 'bg-slate-100 text-slate-800';
+    }
+  }
+
+  function getLegendColor(estado: string) {
+    switch (estado) {
+      case 'open': return 'bg-emerald-200';
+      case 'closed': return 'bg-rose-200';
+      case 'pending': return 'bg-amber-200';
+      case 'active': return 'bg-blue-200';
+      default: return 'bg-slate-200';
+    }
+  }
+
+  function getEstadoLabel(estado: string) {
+    switch (estado) {
+      case 'open': return 'Abierto';
+      case 'closed': return 'Cerrado';
+      case 'pending': return 'Pendiente';
+      case 'active': return 'Activo';
+      default: return 'Sin definir';
+    }
+  }
 
   const days = getDaysInMonth(currentMonth);
+  const currentDate = new Date().toLocaleDateString('es-ES');
+  const currentEtapa = etapas.find(e => {
+    const now = new Date();
+    const start = new Date(e.fechaInicio);
+    const end = new Date(e.fechaFin);
+    return now >= start && now <= end;
+  });
 
   return (
     <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
@@ -148,15 +105,22 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
             <span>{currentDate}</span>
           </div>
           <div className="text-left">
-            <span className="font-medium">{currentPeriod}</span>
+            <span className="font-medium">
+              {currentEtapa ? currentEtapa.nombreEtapa : 'Sin etapa activa'}
+            </span>
           </div>
         </div>
 
         {/* Date Range */}
-        <div className="flex items-center justify-center mt-4 text-sm text-gray-600">
-          <Calendar className="w-4 h-4 mr-2" />
-          <span>01/04/2025 - 30/04/2025</span>
-        </div>
+        {currentEtapa && (
+          <div className="flex items-center justify-center mt-4 text-sm text-gray-600">
+            <Calendar className="w-4 h-4 mr-2" />
+            <span>
+              {new Date(currentEtapa.fechaInicio).toLocaleDateString('es-ES')} - {' '}
+              {new Date(currentEtapa.fechaFin).toLocaleDateString('es-ES')}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Calendar/List Toggle */}
@@ -246,10 +210,18 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       {/* List View */}
       {activeView === 'list' && (
         <div className="mb-6 space-y-3">
-          {periods.map(period => (
-            <div key={period.id} className="flex justify-between items-center py-2">
-              <span className="text-sm font-medium text-gray-700">{period.name}</span>
-              <span className="text-sm text-gray-500">{period.startDate} - {period.endDate}</span>
+          {etapas.map(etapa => (
+            <div key={etapa.codEtapa} className="flex justify-between items-center py-3 px-2 border-l-4 border-gray-200 bg-gray-50 rounded-r-md">
+              <div className="flex-1">
+                <div className="font-medium text-gray-800">{etapa.nombreEtapa}</div>
+                <div className="text-sm text-gray-600 mt-1">
+                  Estado: {getEstadoLabel(etapa.estado)}
+                </div>
+              </div>
+              <div className="text-sm text-gray-500 text-right">
+                <div>{new Date(etapa.fechaInicio).toLocaleDateString('es-ES')}</div>
+                <div>{new Date(etapa.fechaFin).toLocaleDateString('es-ES')}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -257,24 +229,14 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
 
       {/* Legend */}
       <div className="mb-6">
-        <div className="text-sm font-medium text-gray-700 mb-2">Períodos</div>
-        <div className="space-y-2">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-blue-200 rounded mr-2"></div>
-            <span className="text-sm text-gray-600">Período de inscripción</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-yellow-200 rounded mr-2"></div>
-            <span className="text-sm text-gray-600">Período de validación</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-purple-200 rounded mr-2"></div>
-            <span className="text-sm text-gray-600">Período de pago</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-200 rounded mr-2"></div>
-            <span className="text-sm text-gray-600">Período de competencia</span>
-          </div>
+        <div className="text-sm font-medium text-gray-700 mb-3">Estados de Etapas</div>
+        <div className="grid grid-cols-2 gap-2">
+          {[...new Set(etapas.map(e => e.estado))].map(estado => (
+            <div key={estado} className="flex items-center">
+              <div className={`w-3 h-3 ${getLegendColor(estado)} rounded mr-2`}></div>
+              <span className="text-sm text-gray-600">{getEstadoLabel(estado)}</span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -284,6 +246,6 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
       </button>
     </div>
   );
-};
+}
 
 export default CalendarComponent;

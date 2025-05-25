@@ -67,4 +67,33 @@ export async function validarNombreUnico(nombre: string): Promise<boolean> {
   const { unique } = await res.json()
   return unique
 }
-  
+
+export interface Etapa {
+  codEtapa: number;
+  codCompetencia: number;
+  nombreEtapa: string;
+  descripcion?: string;
+  fechaInicio: string; // ISO date
+  horaInicio: string;  // ISO time
+  fechaFin: string;    // ISO date
+  horaFin: string;     // ISO time
+  orden: number;
+  estado: string;
+}
+
+export async function fetchEtapasCompetencia(competenciaId: number): Promise<Etapa[]> {
+  const res = await fetch(`${BASE_URL}/administrador/competencias/${competenciaId}/etapas`);
+  if (!res.ok) {
+    throw new Error(`Error fetching etapas: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export async function fetchPrimeraCompetenciaId(): Promise<number> {
+  const res = await fetch(`${BASE_URL}/administrador/competencias/first`);
+  if (!res.ok) {
+    throw new Error(`Error fetching competencia: ${res.statusText}`);
+  }
+  const data = await res.json();
+  return data.codCompet;
+}
