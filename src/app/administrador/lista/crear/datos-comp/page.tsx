@@ -221,7 +221,7 @@ export default function DatosCompetenciaPage() {
           <input
             type="number"
             min="0"
-            step="0.01"
+            step="1"
             value={costo}
             onChange={e => {
               setCosto(e.target.value)

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { tutorSchema, TutorFormData } from '@/lib/schemas/tutorSchema';
@@ -30,6 +30,7 @@ import {
   Globe,
   Briefcase,
 } from 'lucide-react';
+import {getAreas, Areas} from '@/lib/api/registro';
 
 const departamentos = [
   { value: 'lp', label: 'La Paz' },
@@ -44,12 +45,6 @@ const municipios = [
   // ... más municipios según departamento
 ];
 
-const areas = [
-  { value: 'mat', label: 'Matemáticas' },
-  { value: 'fis', label: 'Física' },
-  { value: 'qus', label: 'Química' },
-  // ... más áreas
-];
 
 export default function RegistroTutor() {
   const form = useForm<TutorFormData>({
@@ -67,6 +62,21 @@ export default function RegistroTutor() {
       area: '',
     },
   });
+  const [areas, setAreas] = useState<Areas[]>([]);
+  const [loadingAreas, setLoadingAreas] = useState(true);
+  const [errorAreas, setErrorAreas] = useState<string | null>(null);
+  useEffect(() => {
+    getAreas()
+      .then(data => {
+        setAreas(data);
+        setLoadingAreas(false);
+      })
+      .catch(err => {
+        setErrorAreas(err.message);
+        setLoadingAreas(false);
+      });
+  }, []);
+
 
   function onSubmit(data: TutorFormData) {
     console.log('Datos enviados:', data);
@@ -91,7 +101,7 @@ export default function RegistroTutor() {
                 <FormItem>
                   <div className="flex items-center mb-1">
                     <User className="mr-2 text-gray-600" />
-                    <FormLabel>Nombres</FormLabel>
+                    <FormLabel >Nombres</FormLabel>
                   </div>
                   <FormControl>
                     <Input {...field} placeholder="Ingrese su nombre"
@@ -279,22 +289,33 @@ export default function RegistroTutor() {
               control={form.control}
               name="area"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <div className="flex items-center mb-1">
                     <Briefcase className="mr-2 text-gray-600" />
                     <FormLabel>Área</FormLabel>
                   </div>
                   <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className='bg-white w-full'>
-                        <SelectValue placeholder="Seleccione área" />
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <SelectTrigger className="bg-white w-full">
+                        <SelectValue
+                          placeholder={
+                            loadingAreas ? 'Cargando…' : errorAreas ? 'Error al cargar' : 'Seleccione área'
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
-                        {areas.map((a) => (
-                          <SelectItem key={a.value} value={a.value}>
-                            {a.label}
-                          </SelectItem>
-                        ))}
+                        {errorAreas ? (
+                          <SelectItem value="">Error: {errorAreas}</SelectItem>
+                        ) : (
+                          areas.map(a => (
+                            <SelectItem key={a.codArea} value={String(a.codArea)}>
+                              {a.nombreArea}
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>
