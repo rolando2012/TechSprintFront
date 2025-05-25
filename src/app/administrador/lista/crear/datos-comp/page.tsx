@@ -191,6 +191,11 @@ export default function DatosCompetenciaPage() {
               <BsMenuApp className="text-lg flex-shrink-0" />
             </div>
           </div>
+          {errors.niveles && (
+              <p className="text-red-500 text-sm mt-1">
+                Seleccione al menos un nivel o una categoría.
+              </p>
+            )}
         </div>
 
         {/* Categorías */}
@@ -211,6 +216,11 @@ export default function DatosCompetenciaPage() {
               <BsMenuApp className="text-lg flex-shrink-0" />
             </div>
           </div>
+           {errors.categorias && (
+              <p className="text-red-500 text-sm mt-1">
+                Seleccione al menos un nivel o una categoría.
+              </p>
+            )}
         </div>
 
         {/* Costo */}

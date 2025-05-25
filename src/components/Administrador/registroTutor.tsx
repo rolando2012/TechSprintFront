@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -31,20 +32,8 @@ import {
   Briefcase,
 } from 'lucide-react';
 import {getAreas, Areas} from '@/lib/api/registro';
-
-const departamentos = [
-  { value: 'lp', label: 'La Paz' },
-  { value: 'cb', label: 'Cochabamba' },
-  { value: 'sc', label: 'Santa Cruz' },
-  // ... más departamentos
-];
-
-const municipios = [
-  { value: 'mlp', label: 'Municipio La Paz' },
-  { value: 'ic', label: 'El Alto' },
-  // ... más municipios según departamento
-];
-
+import { inter } from '@/config/fonts';
+import { getDepartamentos, getMunicipios } from '@/lib/api/registro'
 
 export default function RegistroTutor() {
   const form = useForm<TutorFormData>({
@@ -65,6 +54,11 @@ export default function RegistroTutor() {
   const [areas, setAreas] = useState<Areas[]>([]);
   const [loadingAreas, setLoadingAreas] = useState(true);
   const [errorAreas, setErrorAreas] = useState<string | null>(null);
+  const [departamentos, setDepartamentos] = useState<{ codDept: string; nombreDept: string }[]>([]);
+  const [municipios, setMunicipios] = useState<{ codMun: string; nombreMun: string }[]>([]);
+
+const selectedDept = form.watch('departamento');
+
   useEffect(() => {
     getAreas()
       .then(data => {
@@ -76,6 +70,21 @@ export default function RegistroTutor() {
         setLoadingAreas(false);
       });
   }, []);
+
+  useEffect(() => {
+    const fetchDeptos = async () => setDepartamentos(await getDepartamentos());
+    fetchDeptos();
+  }, []);
+
+
+  useEffect(() => {
+    if (selectedDept) {
+      const fetchMun = async () => setMunicipios(await getMunicipios(selectedDept));
+      fetchMun();
+    } else {
+      setMunicipios([]);
+    }
+  }, [selectedDept]);
 
 
   function onSubmit(data: TutorFormData) {
@@ -101,11 +110,11 @@ export default function RegistroTutor() {
                 <FormItem>
                   <div className="flex items-center mb-1">
                     <User className="mr-2 text-gray-600" />
-                    <FormLabel >Nombres</FormLabel>
+                    <FormLabel className="text-md font-medium">Nombres</FormLabel>
                   </div>
                   <FormControl>
                     <Input {...field} placeholder="Ingrese su nombre"
-                    className='bg-white ' />
+                    className={`bg-white text-md font-medium ${inter.className}`}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,11 +129,11 @@ export default function RegistroTutor() {
                 <FormItem>
                   <div className="flex items-center mb-1">
                     <User className="mr-2 text-gray-600" />
-                    <FormLabel>Apellido paterno</FormLabel>
+                    <FormLabel  className="text-md font-medium">Apellido paterno</FormLabel>
                   </div>
                   <FormControl>
                     <Input {...field} placeholder="Apellido paterno"
-                    className='bg-white ' />
+                    className={`bg-white text-md font-medium ${inter.className}`} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -139,11 +148,11 @@ export default function RegistroTutor() {
                 <FormItem>
                   <div className="flex items-center mb-1">
                     <User className="mr-2 text-gray-600" />
-                    <FormLabel>Apellido materno</FormLabel>
+                    <FormLabel  className="text-md font-medium">Apellido materno</FormLabel>
                   </div>
                   <FormControl>
                     <Input {...field} placeholder="Apellido materno"
-                    className='bg-white ' />
+                    className={`bg-white text-md font-medium ${inter.className}`} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -158,11 +167,11 @@ export default function RegistroTutor() {
                 <FormItem>
                   <div className="flex items-center mb-1">
                     <Phone className="mr-2 text-gray-600" />
-                    <FormLabel>Celular</FormLabel>
+                    <FormLabel  className="text-md font-medium">Celular</FormLabel>
                   </div>
                   <FormControl>
-                    <Input {...field} type="tel" placeholder="+591 7xxxxxxx" 
-                    className='bg-white '/>
+                    <Input {...field} type="tel" placeholder="+591 XXXXXXXX" 
+                    className={`bg-white text-md font-medium ${inter.className}`}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -177,11 +186,11 @@ export default function RegistroTutor() {
                 <FormItem>
                   <div className="flex items-center mb-1">
                     <Mail className="mr-2 text-gray-600" />
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel  className="text-md font-medium">Email</FormLabel>
                   </div>
                   <FormControl>
                     <Input {...field} type="email" placeholder="correo@ejemplo.com"
-                    className='bg-white ' />
+                    className={`bg-white text-md font-medium ${inter.className}`} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -196,11 +205,11 @@ export default function RegistroTutor() {
                 <FormItem>
                   <div className="flex items-center mb-1">
                     <CreditCard className="mr-2 text-gray-600" />
-                    <FormLabel>Carnet</FormLabel>
+                    <FormLabel  className="text-md font-medium">Carnet</FormLabel>
                   </div>
                   <FormControl>
                     <Input {...field} placeholder="Carnet" 
-                    className='bg-white '/>
+                    className={`bg-white text-md font-medium ${inter.className}`}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -215,71 +224,57 @@ export default function RegistroTutor() {
                 <FormItem>
                   <div className="flex items-center mb-1">
                     <Building2 className="mr-2 text-gray-600" />
-                    <FormLabel>Institución</FormLabel>
+                    <FormLabel  className="text-md font-medium">Institución</FormLabel>
                   </div>
                   <FormControl>
                     <Input {...field} placeholder="Institución" 
-                    className='bg-white '/>
+                   className={`bg-white text-md font-medium ${inter.className}`}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Departamento */}
-            <FormField
-              control={form.control}
+             <FormField
               name="departamento"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center mb-1">
-                    <Globe className="mr-2 text-gray-600" />
-                    <FormLabel>Departamento</FormLabel>
-                  </div>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value} >
-                      <SelectTrigger className='bg-white w-full'>
-                        <SelectValue placeholder="Seleccione departamento" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {departamentos.map((d) => (
-                          <SelectItem key={d.value} value={d.value}>
-                            {d.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
+                  <Label className="flex items-center gap-2 text-md">
+                    <Globe size={18} /> Departamento
+                  </Label>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={departamentos.length === 0}>
+                    <SelectTrigger className="w-full bg-white">
+                      <SelectValue placeholder="Seleccionar departamento" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {departamentos.map((d) => (
+                        <SelectItem key={d.codDept} value={d.codDept}>{d.nombreDept}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-red-500 text-sm" />
                 </FormItem>
               )}
             />
 
-            {/* Municipio */}
             <FormField
-              control={form.control}
               name="municipio"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center mb-1">
-                    <MapPin className="mr-2 text-gray-600" />
-                    <FormLabel>Municipio</FormLabel>
-                  </div>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className='bg-white w-full'>
-                        <SelectValue placeholder="Seleccione municipio" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {municipios.map((m) => (
-                          <SelectItem key={m.value} value={m.value}>
-                            {m.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
+                  <Label className="flex items-center gap-2 text-md">
+                    <MapPin size={18} /> Municipio
+                  </Label>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={!selectedDept || municipios.length === 0}>
+                    <SelectTrigger className="w-full bg-white">
+                      <SelectValue placeholder="Seleccionar municipio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {municipios.map((m) => (
+                        <SelectItem key={m.codMun} value={m.codMun}>{m.nombreMun}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-red-500 text-sm" />
                 </FormItem>
               )}
             />
@@ -292,7 +287,7 @@ export default function RegistroTutor() {
                 <FormItem className="w-full">
                   <div className="flex items-center mb-1">
                     <Briefcase className="mr-2 text-gray-600" />
-                    <FormLabel>Área</FormLabel>
+                    <FormLabel  className="text-md font-medium">Área</FormLabel>
                   </div>
                   <FormControl>
                     <Select
@@ -306,7 +301,7 @@ export default function RegistroTutor() {
                           }
                         />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent >
                         {errorAreas ? (
                           <SelectItem value="">Error: {errorAreas}</SelectItem>
                         ) : (
