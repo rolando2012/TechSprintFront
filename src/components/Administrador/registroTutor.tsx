@@ -39,6 +39,9 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import Modal from '@/components/Modals/ModalProps';
+import Link from 'next/link';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 export default function RegistroTutor() {
   const form = useForm<TutorFormData>({
@@ -61,6 +64,7 @@ export default function RegistroTutor() {
   const [errorAreas, setErrorAreas] = useState<string | null>(null);
   const [departamentos, setDepartamentos] = useState<{ codDept: string; nombreDept: string }[]>([]);
   const [municipios, setMunicipios] = useState<{ codMun: string; nombreMun: string }[]>([]);
+  const [isCancelModalOpen, setCancelModalOpen] = useState(false);
 
   const selectedDept = form.watch('departamento');
 
@@ -93,6 +97,11 @@ export default function RegistroTutor() {
       form.setValue('municipio', '');
     }
   }, [selectedDept, form]);
+
+  const openCancelModal = (e: React.MouseEvent) => {
+      e.preventDefault();
+      setCancelModalOpen(true);
+    };
 
 
   const router = useRouter();
@@ -264,14 +273,14 @@ const onSubmit = async (data: TutorFormData) => {
                   </div>
                   <FormControl>
                     <Input {...field} placeholder="Institución" 
-                   className={`bg-white text-md font-medium ${inter.className}`}/>
+                  className={`bg-white text-md font-medium ${inter.className}`}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-             <FormField
+            <FormField
               name="departamento"
               render={({ field }) => (
                 <FormItem>
@@ -358,14 +367,14 @@ const onSubmit = async (data: TutorFormData) => {
             <div className="flex justify-center gap-4 w-full mt-6">
               <Button
                 type="submit"
-                className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl cursor-pointer"
+                className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl cursor-pointer text-lg"
               >
                 Registrar
               </Button>
               <Button
                 type="button"
-                onClick={() => form.reset()}
-                className="px-6 py-2 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl cursor-pointer"
+                onClick={openCancelModal}
+                className="text-lg px-6 py-1 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl cursor-pointer "
               >
                 Cancelar
               </Button>
@@ -373,6 +382,21 @@ const onSubmit = async (data: TutorFormData) => {
           </div>
            </form>
         </Form>
+        {/* Modal de cancelar */}
+        {isCancelModalOpen && (
+          <Modal onClose={() => setCancelModalOpen(false)}>
+            <div className="flex flex-col items-center w-full">
+              <ExclamationCircleIcon className="w-16 h-16 text-bright-gray-800 mb-4" />
+              <p className="text-lg text-bright-gray-800 mb-6">¿Estás seguro de cancelar el registro?</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
+                <Link href="/administrador" className="px-6 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl text-center">Sí, estoy seguro</Link>
+                <button onClick={() => setCancelModalOpen(false)}
+                  className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl"
+                >No, cerrar</button>
+              </div>
+            </div>
+          </Modal>
+        )}
       </div>
     </div>
   );
