@@ -168,7 +168,7 @@ function CalendarComponent() {
             >
               <option value="">Seleccionar competencia...</option>
               {competencias.map(c => (
-                <option key={c.codComp} value={c.nombreCompet}>
+                <option key={`${c.nombreCompet}-${c.gestion}`} value={c.nombreCompet}>
                   {c.nombreCompet} – {c.gestion}
                 </option>
               ))}

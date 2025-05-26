@@ -17,9 +17,9 @@ export default function CompetitionStageForm() {
 
   const fixedNames = [
     'Inscripciones',
-    'Validación de Requisitos y aceptación de parte de los tutores',
-    'Pago de las inscripciones',
-    'Periodo de Competición'
+    'Validación de Requisitos',
+    'Pago de Inscripciones',
+    'Competición'
   ];
 
   useEffect(() => {
