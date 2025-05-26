@@ -7,8 +7,8 @@ import Link from 'next/link'
 export default function TutorPage() {
   const options = [
     { icon: <FaUserCheck size={70} />, label: 'Participantes asignados',ruta:'/tutor/competidores' },
-    // { icon: <FaCheckCircle size={70} />, label: 'Validar inscripciones' },
-    // { icon: <FaFileSignature size={70} />, label: 'Proceso de inscripciones' },
+    { icon: <FaCheckCircle size={70} />, label: 'Validar inscripciones',ruta:'' },
+    { icon: <FaFileSignature size={70} />, label: 'Registrar competidores',ruta:'' },
   ]
 
   return (

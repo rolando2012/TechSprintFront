@@ -11,7 +11,6 @@ import {
 export default function CajeroPage() {
   const options = [
     { icon: <FaMoneyCheckAlt size={70} />, label: 'Pagos pendientes' },
-    { icon: <FaCashRegister size={70} />, label: 'Registrar pagos' },
     { icon: <FaHistory size={70} />, label: 'Historial de pagos' },
   ]
 
