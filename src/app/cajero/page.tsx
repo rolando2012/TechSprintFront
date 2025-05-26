@@ -4,7 +4,6 @@ import Image from 'next/image'
 
 import {
   FaMoneyCheckAlt,
-  FaCashRegister,
   FaHistory,
 } from 'react-icons/fa'
 

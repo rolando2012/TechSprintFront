@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { FaInfoCircle, FaFileAlt, FaCalendarAlt } from 'react-icons/fa'
+import { FaInfoCircle, FaCalendarAlt } from 'react-icons/fa'
 
 export default function CompetidorPage() {
   const options = [
