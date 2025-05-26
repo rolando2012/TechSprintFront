@@ -95,7 +95,7 @@ export default function DatosCompetenciaPage() {
       nombreUnique: '',
       niveles: nivelCatEmpty,
       categorias: nivelCatEmpty,
-      costo: isNaN(costoValue) || costoValue < 0,
+      costo: isNaN(costoValue) || costoValue <= 0,
     }
     setErrors(newErrors)
     if (Object.values(newErrors).some(v => v === true)) return
@@ -230,7 +230,6 @@ export default function DatosCompetenciaPage() {
           </label>
           <input
             type="number"
-            min="0"
             step="1"
             value={costo}
             onChange={e => {
@@ -244,7 +243,7 @@ export default function DatosCompetenciaPage() {
           />
           {errors.costo && (
             <p className="text-red-500 text-sm mt-1">
-              El costo es obligatorio y no puede ser negativo.
+              El costo es obligatorio y no puede ser negativo ni 0.
             </p>
           )}
         </div>
