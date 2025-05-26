@@ -52,32 +52,50 @@ function CalendarComponent() {
       return date >= start && date <= end;
     });
     if (!etapa) return '';
-    switch (etapa.estado) {
-      case 'open': return 'bg-emerald-100 text-emerald-800';
-      case 'closed': return 'bg-rose-100 text-rose-800';
-      case 'pending': return 'bg-amber-100 text-amber-800';
-      case 'active': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-slate-100 text-slate-800';
+    
+    // Determinar color basado en el nombre exacto de la etapa
+    switch (etapa.nombreEtapa) {
+      case 'Inscripciones':
+        return 'bg-blue-100 text-blue-800';
+      case 'Validación de Requisitos':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'Pago de Inscripciones':
+        return 'bg-purple-100 text-purple-800';
+      case 'Competición':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-slate-100 text-slate-800';
     }
   }
 
-  function getLegendColor(estado: string) {
-    switch (estado) {
-      case 'open': return 'bg-emerald-200';
-      case 'closed': return 'bg-rose-200';
-      case 'pending': return 'bg-amber-200';
-      case 'active': return 'bg-blue-200';
-      default: return 'bg-slate-200';
+  function getLegendColor(nombreEtapa: string) {
+    const nombreLower = nombreEtapa.toLowerCase();
+    console.log("etapa", nombreLower)
+    if ( nombreLower == 'inscripción') {
+      return 'bg-blue-200';
+    } else if (nombreLower.includes('validacion') || nombreLower.includes('validación')) {
+      return 'bg-yellow-200';
+    } else if (nombreLower.includes('pago')) {
+      return 'bg-purple-200';
+    }  else if (nombreLower.includes('competencia')) {
+      return 'bg-green-200';
+    } else {
+      return 'bg-slate-200';
     }
   }
 
-  function getEstadoLabel(estado: string) {
-    switch (estado) {
-      case 'open': return 'Abierto';
-      case 'closed': return 'Cerrado';
-      case 'pending': return 'Pendiente';
-      case 'active': return 'Activo';
-      default: return 'Sin definir';
+  function getPeriodoLabel(nombreEtapa: string) {
+    const nombreLower = nombreEtapa.toLowerCase();
+    if ( nombreLower == 'inscripciones') {
+      return 'Período de inscripción';
+    } else if (nombreLower.includes('validacion') || nombreLower.includes('validación')) {
+      return 'Período de validación';
+    } else if (nombreLower.includes('pago')) {
+      return 'Período de pago';
+    } else if (nombreLower.includes('competición')) {
+      return 'Período de competencia';
+    } else {
+      return nombreEtapa;
     }
   }
 
@@ -167,7 +185,7 @@ function CalendarComponent() {
             >
               <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
-            <h2 className="text-lg font-semibold text-gray-800">
+            <h2 className="text-xl font-semibold text-gray-800">
               {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
             </h2>
             <button
@@ -213,7 +231,7 @@ function CalendarComponent() {
               <div className="flex-1">
                 <div className="font-medium text-gray-800">{etapa.nombreEtapa}</div>
                 <div className="text-sm text-gray-600 mt-1">
-                  Estado: {getEstadoLabel(etapa.estado)}
+                  Tipo: {getPeriodoLabel(etapa.nombreEtapa)}
                 </div>
               </div>
               <div className="text-sm text-gray-500 text-right">
@@ -227,12 +245,12 @@ function CalendarComponent() {
 
       {/* Legend */}
       <div className="mb-6">
-        <div className="text-xl font-medium text-gray-700 mb-3">Estados de Etapas</div>
-        <div className="grid grid-cols-2 gap-2">
-          {[...new Set(etapas.map(e => e.estado))].map(estado => (
-            <div key={estado} className="flex items-center">
-              <div className={`w-3 h-3 ${getLegendColor(estado)} rounded mr-2`}></div>
-              <span className="text-lg text-gray-600">{getEstadoLabel(estado)}</span>
+        <div className="text-xl font-medium text-gray-700 mb-3">Períodos</div>
+        <div className="space-y-2">
+          {[...new Set(etapas.map(e => getPeriodoLabel(e.nombreEtapa)))].map(periodo => (
+            <div key={periodo} className="flex items-center">
+              <div className={`w-3 h-3 ${getLegendColor(periodo)} rounded mr-2`}></div>
+              <span className="text-lg text-gray-600">{periodo}</span>
             </div>
           ))}
         </div>
