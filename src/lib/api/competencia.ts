@@ -81,16 +81,24 @@ export interface Etapa {
   estado: string;
 }
 
-export async function fetchEtapasCompetencia(competenciaId: number): Promise<Etapa[]> {
-  const res = await fetch(`${BASE_URL}/administrador/competencias/${competenciaId}/etapas`);
-  if (!res.ok) {
-    throw new Error(`Error fetching etapas: ${res.statusText}`);
-  }
-  return res.json();
+export async function fetchEtapasCompetencia(competencia: string): Promise<Etapa[]> {
+    try {
+        console.log('Fetching etapas for competencia:', competencia);
+        const res = await fetch(`${BASE_URL}/administrador/competencias/${competencia}/etapas`);
+        if (!res.ok) {
+            throw new Error(`Error fetching etapas: ${res.status} - ${res.statusText}`);
+        }
+        const data = await res.json();
+        console.log('Etapas fetched successfully:', data);
+        return data;
+    } catch (error) {
+        console.error('[API] fetchEtapasCompetencia error:', error);
+        throw error; // Re-lanzar el error para que lo capture el componente
+    }
 }
 
 export async function fetchPrimeraCompetenciaId(): Promise<number> {
-  const res = await fetch(`${BASE_URL}/administrador/competencias/first`);
+  const res = await fetch(`${BASE_URL}/administrador/competencia/first/1`);
   if (!res.ok) {
     throw new Error(`Error fetching competencia: ${res.statusText}`);
   }
