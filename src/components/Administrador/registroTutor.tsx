@@ -283,10 +283,13 @@ const onSubmit = async (data: TutorFormData) => {
             <FormField
               name="departamento"
               render={({ field }) => (
+                
+
                 <FormItem>
-                  <Label className="flex items-center gap-2 text-md">
-                    <Globe size={18} /> Departamento
-                  </Label>
+                  <div className="flex items-center mb-1">
+                    <Globe className="mr-2 text-gray-600" />
+                    <FormLabel  className="text-md font-medium">Departamento</FormLabel>
+                  </div>
                   <Select onValueChange={field.onChange} value={field.value} disabled={departamentos.length === 0}>
                     <SelectTrigger className={`w-full bg-white text-sm font-medium ${inter.className}`}>
                       <SelectValue placeholder="Seleccionar departamento" />
@@ -306,9 +309,10 @@ const onSubmit = async (data: TutorFormData) => {
               name="municipio"
               render={({ field }) => (
                 <FormItem>
-                  <Label className="flex items-center gap-2 text-md">
-                    <MapPin size={18} /> Municipio
-                  </Label>
+                  <div className="flex items-center mb-1">
+                    <MapPin className="mr-2 text-gray-600" />
+                    <FormLabel  className="text-md font-medium">Municipio</FormLabel>
+                  </div>
                   <Select onValueChange={field.onChange} value={field.value} disabled={!selectedDept || municipios.length === 0}>
                     <SelectTrigger className={`w-full bg-white text-sm font-medium ${inter.className}`}>
                       <SelectValue placeholder="Seleccionar municipio" />
