@@ -6,9 +6,11 @@ import {
   CompetidoresByTutor, 
   getCompetidoresByTutor, 
   Estado, 
-  fetchEstadosCompetidores 
-} from '@/lib/api/competidor'; // Ajusta la ruta según tu estructura
+  fetchEstadosCompetidores,
+  updateEstadoInscripcion
+} from '@/lib/api/competidor'; 
 import Link from 'next/link';
+import Swal from 'sweetalert2';
 
 interface ValidarInscripcionesProps {
   tutorId: string;
@@ -77,14 +79,61 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
     setIsModalOpen(true);
   };
 
-  const handleStatusUpdate = (newStatus: string) => {
+  const handleStatusUpdate = async (newStatus: string) => {
     if (selectedCompetidor) {
       console.log(`Competidor ID: ${selectedCompetidor.codComp}, Nuevo Estado: ${newStatus}`);
       // Aquí puedes agregar la lógica para actualizar el estado en el backend
       setIsModalOpen(false);
       setSelectedCompetidor(null);
+ // 1) Muestro el loading
+    Swal.fire({
+      title: 'Now loading',
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      // 2) Llamo al servicio que hicimos arriba
+      await updateEstadoInscripcion(selectedCompetidor.codComp, newStatus);
+
+      // 3) Cierro el loading
+      Swal.close();
+
+      // 4) Muestro éxito
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Estado actualizado!',
+        text: `El nuevo estado es "${newStatus}"`,
+        confirmButtonText: 'Aceptar',
+      });
+
+      // 5) Opcional: refrescar lista de estados o competidores
+      const [_, nuevosEstados] = await Promise.all([
+        getCompetidoresByTutor(tutorId),
+        fetchEstadosCompetidores(parseInt(tutorId)),
+      ]);
+      setCompetidores(await getCompetidoresByTutor(tutorId));
+      setEstados(nuevosEstados);
+    } catch (err: any) {
+      // 6) Cierro el loading si sigue abierto
+      Swal.close();
+
+      // 7) Muestro error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al actualizar',
+        text: err.response?.data?.message ?? err.message,
+        confirmButtonText: 'Cerrar',
+      });
+    } finally {
+      // 8) Cierro modal
+      setIsModalOpen(false);
+      setSelectedCompetidor(null);
     }
-  };
+  }};
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -257,7 +306,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
 
               {/* Verificado */}
               <button
-                onClick={() => handleStatusUpdate('Aceptado')}
+                onClick={() => handleStatusUpdate('Verificado')}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
               >
                 <Check className="w-5 h-5 mr-2" />

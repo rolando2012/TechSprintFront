@@ -37,7 +37,7 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
 
   const getEstadoBadge = (estadoInscripcion: string) => {
     switch (estadoInscripcion) {
-      case 'Aceptado':
+      case 'Verificado':
       case 'VERIFICADO':
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-boton">

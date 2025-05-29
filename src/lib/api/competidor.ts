@@ -41,3 +41,12 @@ export const fetchEstadosCompetidores = async (tutorId: number): Promise<Estado[
   const { data } = await axios.get<EstadosResponse>(`${BASE_URL}/competidor/tutor/${tutorId}/estados`);
   return data.estados;
 };
+
+export async function updateEstadoInscripcion(
+  codComp: string,
+  nuevoEstado: string,
+): Promise<void> {
+  await axios.patch(`${BASE_URL}/competidor/${codComp}/estado`, {
+    estado: nuevoEstado,
+  });
+}
