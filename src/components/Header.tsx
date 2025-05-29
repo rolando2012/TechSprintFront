@@ -106,9 +106,9 @@ export default function Header() {
         {isLogged ? (  
           <div className="flex items-center gap-2 md:gap-4">
             {/* Notification Icon */}
-            <div className="relative z-10">
+            {/* <div className="relative z-10">
               <IoMdNotificationsOutline className="-top-1 h-8 w-8 md:h-16 md:w-16 text-white hover:text-gray-200 transition-colors cursor-pointer"/>
-            </div>
+            </div> */}
             
             {/* User Menu */}
             <div className="relative z-10 flex items-center gap-2">
