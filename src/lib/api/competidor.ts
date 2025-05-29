@@ -3,6 +3,7 @@ import axios from 'axios';
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export interface CompetidoresByTutor{
+    codComp: string,
     nombre: string;
     apellidoPaterno: string;
     carnet: string;

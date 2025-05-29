@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Check, X, Clock } from 'lucide-react';
+import { Check, X, Clock, CircleCheck } from 'lucide-react';
 import { 
   CompetidoresByTutor, 
   getCompetidoresByTutor, 
   Estado, 
   fetchEstadosCompetidores 
 } from '@/lib/api/competidor'; // Ajusta la ruta según tu estructura
+import Link from 'next/link';
 
 interface ValidarInscripcionesProps {
   tutorId: string;
@@ -45,19 +46,6 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
     }
   }, [tutorId]);
 
-  const getStatusColor = (estado: string) => {
-    switch (estado.toLowerCase()) {
-      case 'verificado':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'pendiente':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'rechazado':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
   const getStatusBadgeColor = (estado: string) => {
     switch (estado.toLowerCase()) {
       case 'verificado':
@@ -91,7 +79,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
 
   const handleStatusUpdate = (newStatus: string) => {
     if (selectedCompetidor) {
-      console.log(`Competidor ID: ${selectedCompetidor.carnet}, Nuevo Estado: ${newStatus}`);
+      console.log(`Competidor ID: ${selectedCompetidor.codComp}, Nuevo Estado: ${newStatus}`);
       // Aquí puedes agregar la lógica para actualizar el estado en el backend
       setIsModalOpen(false);
       setSelectedCompetidor(null);
@@ -166,7 +154,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
       {/* Main Content */}
       <div className="bg-white rounded-lg shadow-sm">
         <div className="bg-gray-700 text-white p-4 rounded-t-lg flex items-center">
-          <Check className="w-5 h-5 mr-2" />
+          <CircleCheck className="w-6 h-6 mr-2" />
           <h2 className="text-lg font-semibold">Validar Inscripciones</h2>
         </div>
 
@@ -179,7 +167,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
             <div className="space-y-4">
               {competidores.map((competidor, index) => (
                 <div 
-                  key={`${competidor.carnet}-${index}`}
+                  key={`${competidor.codComp}-${index}`}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
@@ -231,9 +219,11 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
 
         {/* Footer con botón Volver */}
         <div className="flex justify-end p-4 border-t border-gray-200">
-          <button className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+          <Link 
+            href="/tutor"
+            className="px-6 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-400 transition-colors">
             Volver
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -258,7 +248,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
             <div className="space-y-3">
               {/* Pendiente */}
               <button
-                onClick={() => handleStatusUpdate('pendiente')}
+                onClick={() => handleStatusUpdate('Pendiente')}
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
               >
                 <Clock className="w-5 h-5 mr-2" />
@@ -267,7 +257,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
 
               {/* Verificado */}
               <button
-                onClick={() => handleStatusUpdate('verificado')}
+                onClick={() => handleStatusUpdate('Aceptado')}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
               >
                 <Check className="w-5 h-5 mr-2" />
@@ -276,7 +266,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
 
               {/* Rechazado */}
               <button
-                onClick={() => handleStatusUpdate('rechazado')}
+                onClick={() => handleStatusUpdate('Rechazado')}
                 className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
               >
                 <X className="w-5 h-5 mr-2" />
@@ -290,7 +280,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
                 onClick={closeModal}
                 className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
               >
-                Volver
+                Cerrar
               </button>
             </div>
           </div>
