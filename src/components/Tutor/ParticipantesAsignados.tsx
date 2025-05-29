@@ -2,8 +2,13 @@
 import { useState, useEffect } from 'react';
 import { getCompetidoresByTutor } from '@/lib/api/competidor';
 import { CompetidoresByTutor } from '@/lib/api/competidor';
-import Link from 'next/link'
+import Link from 'next/link';
 import { RiFileSettingsFill } from "react-icons/ri";
+import { 
+  CheckCircleIcon, 
+  ClockIcon, 
+  XCircleIcon 
+} from '@heroicons/react/24/solid';
 
 interface ParticipantesAsignadosProps {
   tutorId: string;
@@ -30,15 +35,43 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
     fetchParticipantes();
   }, [tutorId]);
 
-  const getEstadoClass = (estadoInscripcion:string) => {
-    if(estadoInscripcion === 'Pendiente')  return 'bg-gray-400 text-white';
-    if(estadoInscripcion === 'Aceptado')  return 'bg-blue-500 text-white';
-    if(estadoInscripcion === 'Rechazado')  return 'bg-red-500text-white';
-
-    return 'bg-red-500 text-white';
+  const getEstadoBadge = (estadoInscripcion: string) => {
+    switch (estadoInscripcion) {
+      case 'Aceptado':
+      case 'VERIFICADO':
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-boton">
+            <CheckCircleIcon className="w-4 h-4 mr-1" />
+            VERIFICADO
+          </span>
+        );
+      case 'Pendiente':
+      case 'PENDIENTE':
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-boton-3">
+            <ClockIcon className="w-4 h-4 mr-1" />
+            PENDIENTE
+          </span>
+        );
+      case 'Rechazado':
+      case 'RECHAZADO':
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-boton-2">
+            <XCircleIcon className="w-4 h-4 mr-1" />
+            RECHAZADO
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+            <ClockIcon className="w-4 h-4 mr-1" />
+            {estadoInscripcion}
+          </span>
+        );
+    }
   };
 
-   const formatFecha = (iso: string) => {
+  const formatFecha = (iso: string) => {
     try {
       const date = new Date(iso);
       return date.toLocaleDateString('es-BO', {
@@ -50,49 +83,91 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
       return iso;
     }
   };
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-2 mb-4">
-      <RiFileSettingsFill className='h-16 w-16'/>
-        <div className="text-3xl font-bold">Participantes Asignados</div>
-        
+    <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
+      <div className="flex items-center gap-3 mb-6">
+        <RiFileSettingsFill className='h-8 w-8 text-gray-700'/>
+        <h1 className="text-2xl font-semibold text-gray-900">Participantes Asignados</h1>
       </div>
       
       {loading ? (
-        <div className="text-center py-8">Cargando participantes...</div>
+        <div className="text-center py-12">
+          <div className="text-gray-500">Cargando participantes...</div>
+        </div>
       ) : error ? (
-        <div className="text-center py-8 text-red-500">{error}</div>
+        <div className="text-center py-12">
+          <div className="text-red-500">{error}</div>
+        </div>
       ) : (
-        <>
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-slate-600 text-white">
-                  <th className="p-4 text-left">Nombre</th>
-                  <th className="p-4 text-left">C.I.</th>
-                  <th className="p-4 text-left">Colegio</th>
-                  <th className="p-4 text-left">Nivel</th>
-                  <th className="p-4 text-left">Area</th>
-                   <th className="p-4 text-left">Fecha de Inscripción</th>
-                  <th className="p-4 text-left">Estado de Inscripción</th>
+            <table className="w-full">
+              <thead className="bg-gray-600 border-b">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">
+                    Nombre
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">
+                    C.I.
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">
+                    Colegio
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">
+                    Nivel
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">
+                    Área
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">
+                    Fecha de Inscripción
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">
+                    Estado de Inscripción
+                  </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {participantes.map((participante, index) => (
                   <tr 
                     key={index} 
-                    className={index % 2 === 0 ? 'bg-slate-700 text-white' : 'bg-slate-600 text-white'}
+                    className={`${
+                      index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                    } hover:bg-gray-100 transition-colors duration-150`}
                   >
-                    <td className="p-4">{`${participante.nombre} ${participante.apellidoPaterno}`}</td>
-                    <td className="p-4">{participante.carnet || '-'}</td>
-                    <td className="p-4">{participante.colegio || '-'}</td>
-                    <td className="p-4">{participante.gradoRange}</td>
-                    <td className="p-4">{participante.area}</td>
-                    <td className="p-4">{formatFecha(participante.fechaInscripcion)}</td>
-                    <td className="p-4">
-                      <div className={`px-4 py-2 rounded text-center ${getEstadoClass(participante.estadoInscripcion)}`}>
-                        {participante.estadoInscripcion}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {`${participante.nombre} ${participante.apellidoPaterno}`}
                       </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-700">
+                        {participante.carnet || '-'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-700">
+                        {participante.colegio || '-'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-700">
+                        {participante.gradoRange}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-700">
+                        {participante.area}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-700">
+                        {formatFecha(participante.fechaInscripcion)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {getEstadoBadge(participante.estadoInscripcion)}
                     </td>
                   </tr>
                 ))}
@@ -100,15 +175,15 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
             </table>
           </div>
           
-          <div className="flex justify-end mt-4">
+          <div className="px-6 py-4 bg-gray-50 border-t flex justify-end">
             <Link 
-                href='/tutor'
-              className="px-6 py-2 bg-slate-600 text-white rounded-md hover:bg-slate-700 transition-colors"
+              href='/tutor'
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
             >
               Volver
             </Link>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
