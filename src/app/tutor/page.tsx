@@ -8,7 +8,7 @@ export default function TutorPage() {
   const options = [
     { icon: <FaUserCheck size={70} />, label: 'Participantes asignados',ruta:'/tutor/competidores' },
     { icon: <FaCheckCircle size={70} />, label: 'Validar inscripciones',ruta:'' },
-    { icon: <FaFileSignature size={70} />, label: 'Registrar competidores',ruta:'' },
+    { icon: <FaFileSignature size={70} />, label: 'Consultar estado competidor',ruta:'' },
   ]
 
   return (

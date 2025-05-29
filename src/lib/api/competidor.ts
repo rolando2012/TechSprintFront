@@ -9,6 +9,8 @@ export interface CompetidoresByTutor{
     colegio: string;
     gradoRange: string;
     estadoInscripcion:string,
+    fechaInscripcion: string,
+    area:string,
 }
 
 export async function getCompetidoresByTutor(id:string): Promise<CompetidoresByTutor[]> {

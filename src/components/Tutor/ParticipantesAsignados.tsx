@@ -38,6 +38,18 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
     return 'bg-red-500 text-white';
   };
 
+   const formatFecha = (iso: string) => {
+    try {
+      const date = new Date(iso);
+      return date.toLocaleDateString('es-BO', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+    } catch {
+      return iso;
+    }
+  };
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center gap-2 mb-4">
@@ -60,6 +72,8 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
                   <th className="p-4 text-left">C.I.</th>
                   <th className="p-4 text-left">Colegio</th>
                   <th className="p-4 text-left">Nivel</th>
+                  <th className="p-4 text-left">Area</th>
+                   <th className="p-4 text-left">Fecha de Inscripción</th>
                   <th className="p-4 text-left">Estado de Inscripción</th>
                 </tr>
               </thead>
@@ -73,6 +87,8 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
                     <td className="p-4">{participante.carnet || '-'}</td>
                     <td className="p-4">{participante.colegio || '-'}</td>
                     <td className="p-4">{participante.gradoRange}</td>
+                    <td className="p-4">{participante.area}</td>
+                    <td className="p-4">{formatFecha(participante.fechaInscripcion)}</td>
                     <td className="p-4">
                       <div className={`px-4 py-2 rounded text-center ${getEstadoClass(participante.estadoInscripcion)}`}>
                         {participante.estadoInscripcion}
