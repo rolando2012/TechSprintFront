@@ -25,3 +25,18 @@ export async function getCompetidoresByTutor(id:string): Promise<CompetidoresByT
         return [];
     }
 }
+
+export interface Estado {
+  estado: string;
+  total: number;
+}
+
+export interface EstadosResponse {
+  estados: Estado[];
+}
+
+
+export const fetchEstadosCompetidores = async (tutorId: number): Promise<Estado[]> => {
+  const { data } = await axios.get<EstadosResponse>(`${BASE_URL}/competidor/tutor/${tutorId}/estados`);
+  return data.estados;
+};
