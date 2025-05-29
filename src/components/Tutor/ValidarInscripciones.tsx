@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Eye, Check, X } from 'lucide-react';
+import { Check, X, Clock } from 'lucide-react';
 import { 
   CompetidoresByTutor, 
   getCompetidoresByTutor, 
@@ -18,6 +18,8 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
   const [estados, setEstados] = useState<Estado[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCompetidor, setSelectedCompetidor] = useState<CompetidoresByTutor | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,6 +69,38 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
       default:
         return 'bg-gray-500 text-white';
     }
+  };
+
+  const getStatusIcon = (estado: string) => {
+    switch (estado.toLowerCase()) {
+      case 'verificado':
+        return <Check className="w-4 h-4" />;
+      case 'pendiente':
+        return <Clock className="w-4 h-4" />;
+      case 'rechazado':
+        return <X className="w-4 h-4" />;
+      default:
+        return null;
+    }
+  };
+
+  const handleChangeStatus = (competidor: CompetidoresByTutor) => {
+    setSelectedCompetidor(competidor);
+    setIsModalOpen(true);
+  };
+
+  const handleStatusUpdate = (newStatus: string) => {
+    if (selectedCompetidor) {
+      console.log(`Competidor ID: ${selectedCompetidor.carnet}, Nuevo Estado: ${newStatus}`);
+      // Aquí puedes agregar la lógica para actualizar el estado en el backend
+      setIsModalOpen(false);
+      setSelectedCompetidor(null);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedCompetidor(null);
   };
 
   const formatDate = (dateString: string) => {
@@ -175,16 +209,18 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
 
                     {/* Estado */}
                     <div>
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeColor(competidor.estadoInscripcion)}`}>
-                        {competidor.estadoInscripcion.toUpperCase()}
-                      </span>
+                      <button 
+                        onClick={() => handleChangeStatus(competidor)}
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium transition-all hover:opacity-80 ${getStatusBadgeColor(competidor.estadoInscripcion)}`}
+                      >
+                        {getStatusIcon(competidor.estadoInscripcion)}
+                        <span className="ml-2">{competidor.estadoInscripcion.toUpperCase()}</span>
+                      </button>
                     </div>
 
-                    {/* Acciones */}
+                    {/* Acciones - Removido el icono del ojo */}
                     <div className="flex justify-end">
-                      <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
-                        <Eye className="w-5 h-5" />
-                      </button>
+                      {/* Espacio para otras acciones futuras */}
                     </div>
                   </div>
                 </div>
@@ -200,6 +236,66 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
           </button>
         </div>
       </div>
+
+      {/* Modal para cambiar estado */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4 relative">
+            {/* Botón cerrar */}
+            <button 
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Título */}
+            <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
+              Cambiar Estado Inscripción
+            </h2>
+
+            {/* Opciones de estado */}
+            <div className="space-y-3">
+              {/* Pendiente */}
+              <button
+                onClick={() => handleStatusUpdate('pendiente')}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Clock className="w-5 h-5 mr-2" />
+                PENDIENTE
+              </button>
+
+              {/* Verificado */}
+              <button
+                onClick={() => handleStatusUpdate('verificado')}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Check className="w-5 h-5 mr-2" />
+                VERIFICADO
+              </button>
+
+              {/* Rechazado */}
+              <button
+                onClick={() => handleStatusUpdate('rechazado')}
+                className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <X className="w-5 h-5 mr-2" />
+                RECHAZADO
+              </button>
+            </div>
+
+            {/* Botón Volver */}
+            <div className="flex justify-end mt-6">
+              <button 
+                onClick={closeModal}
+                className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              >
+                Volver
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
