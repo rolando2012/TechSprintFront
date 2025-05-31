@@ -50,3 +50,44 @@ export async function updateEstadoInscripcion(
     estado: nuevoEstado,
   });
 }
+export interface CompetidorConsulta {
+  codComp: number;
+  estadoInscripcion: string;
+  nombre: string;
+  carnet: string;
+  fechaNac: string;
+  celular: string;
+  emailContacto: string;
+  tutorNombre: string;
+  colegio: string;
+  gradoRange: string;
+  fechaInscripcion: string;
+  area: string;
+  departamento: string;
+  municipio: string;
+  estadoPago: string;
+}
+
+export const consultarCompetidor = async (
+  tutorId: string,
+  carnet: string,
+  email: string
+): Promise<CompetidorConsulta> => {
+  const response = await fetch(`${BASE_URL}/competidor/tutor/${tutorId}/consulta`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      carnet,
+      email,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Error al consultar competidor');
+  }
+
+  return response.json();
+};

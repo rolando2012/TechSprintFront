@@ -2,13 +2,14 @@
 
 import Image from 'next/image'
 import { FaUserCheck, FaCheckCircle, FaFileSignature } from 'react-icons/fa'
+import { SiSearxng } from "react-icons/si";
 import Link from 'next/link'
 
 export default function TutorPage() {
   const options = [
     { icon: <FaUserCheck size={70} />, label: 'Participantes asignados',ruta:'/tutor/competidores' },
     { icon: <FaCheckCircle size={70} />, label: 'Validar inscripciones',ruta:'/tutor/validar' },
-    { icon: <FaFileSignature size={70} />, label: 'Consultar estado competidor',ruta:'' },
+    { icon: <SiSearxng size={70} />, label: 'Consultar estado competidor',ruta:'/tutor/consulta' },
   ]
 
   return (
