@@ -99,6 +99,24 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
         <div className="text-center py-12">
           <div className="text-red-500">{error}</div>
         </div>
+      ) : participantes.length === 0 ? (
+        <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+          <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <RiFileSettingsFill className="w-10 h-10 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No hay competidores registrados
+          </h3>
+          <p className="text-gray-500 mb-6">
+            Aún no tienes participantes asignados en tu tutorías.
+          </p>
+          <Link 
+            href='/tutor'
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+          >
+            Volver
+          </Link>
+        </div>
       ) : (
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">

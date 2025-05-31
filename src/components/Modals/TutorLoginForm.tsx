@@ -112,14 +112,16 @@ export default function TutorLoginForm({ onClose, onLogin }: Props) {
               <div className="flex justify-between pt-4">
                 <button
                   type="submit"
-                  className="bg-boton hover:bg-boton-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
+                  className="bg-boton hover:bg-boton-hover text-white font-normal 
+                  py-2 px-6 rounded-full cursor-pointer transition-all transform hover:scale-105 active:scale-95"
                 >
                   Ingresar
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-boton-2 hover:bg-boton-2-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
+                  className="bg-boton-2 hover:bg-boton-2-hover text-white font-normal 
+                  py-2 px-6 rounded-full cursor-pointer transition-all transform hover:scale-105 active:scale-95"
                 >
                   Cancelar
                 </button>

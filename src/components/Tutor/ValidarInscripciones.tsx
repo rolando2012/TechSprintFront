@@ -296,13 +296,13 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
             {/* Opciones de estado */}
             <div className="space-y-3">
               {/* Pendiente */}
-              <button
+              {/* <button
                 onClick={() => handleStatusUpdate('Pendiente')}
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
               >
                 <Clock className="w-5 h-5 mr-2" />
                 PENDIENTE
-              </button>
+              </button> */}
 
               {/* Verificado */}
               <button
