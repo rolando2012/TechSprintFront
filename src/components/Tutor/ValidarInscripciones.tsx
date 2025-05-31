@@ -270,7 +270,8 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
         <div className="flex justify-end p-4 border-t border-gray-200">
           <Link 
             href="/tutor"
-            className="px-6 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-400 transition-colors">
+            className="px-6 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-400 
+            transition-all transform hover:scale-105 active:scale-95">
             Volver
           </Link>
         </div>
@@ -307,7 +308,8 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
               {/* Verificado */}
               <button
                 onClick={() => handleStatusUpdate('Verificado')}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center 
+                transition-all transform hover:scale-105 active:scale-95"
               >
                 <Check className="w-5 h-5 mr-2" />
                 VERIFICADO
@@ -316,7 +318,8 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
               {/* Rechazado */}
               <button
                 onClick={() => handleStatusUpdate('Rechazado')}
-                className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
+                className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center 
+                transition-all transform hover:scale-105 active:scale-95"
               >
                 <X className="w-5 h-5 mr-2" />
                 RECHAZADO
@@ -327,7 +330,8 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
             <div className="flex justify-end mt-6">
               <button 
                 onClick={closeModal}
-                className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-xl 
+                transition-all transform hover:scale-105 active:scale-95"
               >
                 Cerrar
               </button>

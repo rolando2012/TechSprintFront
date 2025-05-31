@@ -112,7 +112,9 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
           </p>
           <Link 
             href='/tutor'
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium 
+            rounded-full text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 
+            focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200 transition-all transform hover:scale-105 active:scale-95"
           >
             Volver
           </Link>
@@ -196,7 +198,9 @@ export default function ParticipantesAsignados({ tutorId }: ParticipantesAsignad
           <div className="px-6 py-4 bg-gray-50 border-t flex justify-end">
             <Link 
               href='/tutor'
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium 
+              rounded-full text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 
+              focus:ring-gray-500 transition-colors duration-200  transition-all transform hover:scale-105 active:scale-95"
             >
               Volver
             </Link>

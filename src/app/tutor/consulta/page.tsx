@@ -24,7 +24,7 @@ export default async function ConsultaPage() {
     const tutorId = payload.id as string;
 
     return (
-      <div className="container mx-auto">
+      <div className=" mx-auto">
         <ConsultaEstadoPage tutorId={tutorId} />
       </div>
     );

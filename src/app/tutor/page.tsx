@@ -33,7 +33,8 @@ export default function TutorPage() {
               href={ruta}
               key={label}
               className="bg-bright-gray-300  rounded-xl p-6 w-full max-w-[220px] flex flex-col items-center 
-                  shadow hover:shadow-md transition cursor-pointer hover:bg-bright-gray-400"
+                  shadow hover:shadow-md transition cursor-pointer hover:bg-bright-gray-400 
+                  transition-all transform hover:scale-105 active:scale-95"
             >
               <div className="text-6xl mb-4 text-gray-800">{icon}</div>
               <p className="font-semibold text-center text-gray-800">{label}</p>

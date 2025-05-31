@@ -115,7 +115,7 @@ export default function Header() {
               <div className="flex flex-col items-center">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="p-1 rounded-full hover:bg-bright-gray-950 focus:outline-none focus:ring transition-colors">
+                    <button className="p-1 rounded-full hover:bg-bright-gray-950 focus:outline-none focus:ring transition-all transform hover:scale-105 active:scale-95">
                       <PiUserCircleFill className=" h-10 w-10 md:h-18 md:w-18 text-white hover:text-gray-200" />
                     </button>
                   </DropdownMenuTrigger>
