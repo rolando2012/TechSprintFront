@@ -98,6 +98,7 @@ export default function DetallesInscripcion({ competidor, onVolver }: DetallesIn
   };
 
   return (
+    <div className="min-h-screen bg-background-reg py-8 px-4 sm:px-6 lg:px-8">
     <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8">
       <div className="flex items-center gap-3 mb-6">
         <RiFileTextFill className="h-6 w-6 sm:h-8 sm:w-8 text-gray-700" />
@@ -225,6 +226,7 @@ export default function DetallesInscripcion({ competidor, onVolver }: DetallesIn
           Volver
         </button>
       </div>
+    </div>
     </div>
   );
 }
