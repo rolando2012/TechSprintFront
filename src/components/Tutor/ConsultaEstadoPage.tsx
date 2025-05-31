@@ -138,13 +138,13 @@ export default function ConsultaEstadoPage({ tutorId }: ConsultaEstadoPageProps)
           </div>
 
         <div className="relative flex flex-col sm:flex-row items-start sm:items-center mt-8 sm:mt-12 w-full gap-4">
-                <Link
-                  href="/tutor"
-                  className="sm:mr-auto px-4 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-400 
-                  transition-all transform hover:scale-105 active:scale-95"
-                >
-                  Volver
-                </Link>
+            <Link
+                href="/tutor"
+                className="sm:mr-auto px-4 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-400 
+                transition-all transform hover:scale-105 active:scale-95"
+            >
+                Volver
+            </Link>
           <button
             onClick={handleConsultar}
             className="sm:absolute sm:left-1/2 sm:transform sm:-translate-x-1/2 w-full sm:w-auto 

@@ -222,7 +222,9 @@ export default function DetallesInscripcion({ competidor, onVolver }: DetallesIn
       <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
         <button
           onClick={onVolver}
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200"
+          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-gray-600 hover:bg-gray-500 
+          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200
+          transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
         >
           Volver
         </button>
