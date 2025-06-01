@@ -6,6 +6,7 @@ import { inter } from '@/config/fonts';
 import { getTutors } from '@/lib/api/registro';
 import {registrarCompetidor} from '@/lib/api/registro';
 import Swal from 'sweetalert2';
+import { Grab } from 'lucide-react';
 
 const tutores = await getTutors();
 
@@ -35,6 +36,23 @@ export default function TutorAssignmentPage() {
     console.log('Inscripciones:', inscripciones); 
     console.log('Personal data:', personalData);
     setError('');
+
+    const partes = personalData.apellido.trim().split(' ');
+    const apellidoPaterno = partes[0] || '';
+    const apellidoMaterno = partes.slice(1).join(' ') || '';
+
+    const personaParaEnviar = {
+      nombre: personalData.nombre,
+      apellidoPaterno,
+      apellidoMaterno,
+      celular: personalData.celular,
+      correoElectronico: personalData.correoElectronico,
+      carnetIdentidad: personalData.carnetIdentidad,
+      fechaNacimiento: personalData.fechaNacimiento, 
+      municipio: personalData.municipio, 
+      colegio: personalData.colegio,
+      grado : personalData.grado,
+    };
   
     let timerInterval: NodeJS.Timeout;
     await Swal.fire({
@@ -55,7 +73,7 @@ export default function TutorAssignmentPage() {
         }, 100);
   
         try {
-          await registrarCompetidor(personalData, inscripciones, tutorAssignments);
+          await registrarCompetidor(personaParaEnviar, inscripciones, tutorAssignments);
           clearInterval(timerInterval);
           Swal.close();
   

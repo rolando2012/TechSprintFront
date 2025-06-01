@@ -103,6 +103,11 @@ export async function getCosto(): Promise<costo> {
   if (status !== 200) throw new Error(`Status ${status}`);
   return data[0];
 }
+
+export interface AreaInscripcion {
+  area: string;
+  nivel: string;
+}
 export interface CompetidorPayload {
   persona: {
     nombre: string;
@@ -112,55 +117,69 @@ export interface CompetidorPayload {
     email: string;
     carnet: string;
   };
-  fechaNac: string;
-  codMun: number;
-  colegio: string;
-  grado: string;
-  nivel: string;
-  area:string;
-  tutorId: number;
+  fechaNac: string;       
+  codMun: number;         
+  colegio: string;        
+  grado: string;          
+  tutorId: number;        
+  areas: AreaInscripcion[]; 
 }
 
 export async function registrarCompetidor(
-  personalData: PersonalData,
-  inscripciones: InscripcionData[],
-  tutorAssignments: Record<string, TutorAssignmentData>,
+  personalData: {
+    nombre: string;
+    apellidoPaterno: string;
+    apellidoMaterno: string;
+    celular: string;
+    correoElectronico: string;
+    carnetIdentidad: string;
+    fechaNacimiento: string; // "YYYY-MM-DD"
+    municipio: string;       // id de municipio en string
+    colegio: string;
+    grado: string;
+  },
+  inscripciones: {
+    area: string;
+    nivel: string;
+  }[],
+  tutorAssignments: Record<string, { codTut: string }>
 ): Promise<void> {
+  // 1) Construimos el arreglo de { area, nivel }
+  const areas: AreaInscripcion[] = inscripciones.map(insc => ({
+    area: insc.area,
+    nivel: insc.nivel
+  }));
+
+  // 2) Armamos el payload completo
+  const payload: CompetidorPayload = {
+    persona: {
+      nombre: personalData.nombre,
+      apellidoPaterno: personalData.apellidoPaterno,
+      apellidoMaterno: personalData.apellidoMaterno,
+      celular: personalData.celular,
+      email: personalData.correoElectronico,
+      carnet: personalData.carnetIdentidad,
+    },
+    fechaNac: personalData.fechaNacimiento,
+    codMun: Number(personalData.municipio),
+    colegio: personalData.colegio,
+    grado: personalData.grado,
+    tutorId: Number(
+      // Suponemos que todas las inscripciones usan el mismo tutorId.
+      // Si varía por área, podrías recibir un arreglo paralelo.
+      Object.values(tutorAssignments)[0].codTut
+    ),
+    areas
+  };
+
   try {
-    const requests = inscripciones.map(insc => {
-      const { codTut } = tutorAssignments[insc.area];
-
-      const payload: CompetidorPayload = {
-        persona: {
-          nombre: personalData.nombre,
-          apellidoPaterno: personalData.apellido,
-          apellidoMaterno: personalData.apellido,
-          celular: personalData.celular,
-          email: personalData.correoElectronico,
-          carnet: personalData.carnetIdentidad,
-        },
-        fechaNac: personalData.fechaNacimiento,
-        codMun: Number(personalData.municipio),
-        colegio: personalData.colegio,
-        grado: personalData.grado,
-        nivel: insc.nivel,   // ← usar el nivel global (ej. "3ro Primaria")
-        area: insc.area,             // ← aquí el área
-        tutorId: Number(codTut),
-      };
-
-      return axios.post(`${BASE_URL}/registro/competidor`, payload);
-    });
-
-    await Promise.all(requests)
+    await axios.post(`${BASE_URL}/registro/competidor`, payload);
   } catch (err: any) {
-    // Si es error de Axios, extraigo el mensaje que venga del servidor
     if (axios.isAxiosError(err) && err.response) {
-      const data = err.response.data as any
-      const detail =
-        data.error || data.message || err.response.statusText
-      throw new Error(detail)
+      const data = err.response.data as any;
+      const detail = data.error || data.message || err.response.statusText;
+      throw new Error(detail);
     }
-    // otro tipo de error
-    throw err
+    throw err;
   }
 }
