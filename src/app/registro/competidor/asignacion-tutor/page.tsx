@@ -11,7 +11,7 @@ import { Grab } from 'lucide-react';
 const tutores = await getTutors();
 
 export default function TutorAssignmentPage() {
-  const { personalData, inscripciones, tutorAssignments, setTutorAssignments } = useRegistro();
+  const { personalData, inscripciones, tutorAssignments, setTutorAssignments, setInscripciones } = useRegistro();
   const [error, setError] = React.useState<string>('');
 
   const onSelectTutor = (area: string, tutorId: string) => {
@@ -78,6 +78,8 @@ export default function TutorAssignmentPage() {
           Swal.close();
   
           window.dispatchEvent(new CustomEvent('open-confirmation-modal', { detail: inscripciones.length }));
+          setTutorAssignments({});
+          setInscripciones([]);
         } catch (error:any) {
           clearInterval(timerInterval);
           Swal.fire({
