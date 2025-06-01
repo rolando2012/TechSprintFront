@@ -16,6 +16,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import {HistorialPago, EstadisticasPago,obtenerHistorialPagos,obtenerEstadisticasPago} from '@/lib/api/cajero';
+import Link from 'next/link';
 
 const EstadoBadge = ({ estado }: { estado: string }) => {
   const getEstadoConfig = (estado: string) => {
@@ -212,6 +213,14 @@ export default function HistorialPagosPage() {
                   <p className="text-gray-500">No se encontraron registros de pagos en este momento.</p>
                 </div>
               </div>
+              <div className="bg-gray-50 px-6 py-3 rounded-b-lg flex justify-end border-t border-gray-200">
+                <Link 
+                    href='/cajero'
+                    className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-full text-sm 
+                    font-medium transition-all transform hover:scale-105 active:scale-95">
+                    Volver
+                </Link>
+              </div>
             </div>
           ) : (
             <>
@@ -284,9 +293,12 @@ export default function HistorialPagosPage() {
 
               {/* Footer */}
               <div className="bg-gray-50 px-6 py-3 rounded-b-lg flex justify-end border-t border-gray-200">
-                <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
-                  Volver
-                </button>
+                <Link 
+                    href='/cajero'
+                    className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-full text-sm 
+                    font-medium transition-all transform hover:scale-105 active:scale-95">
+                    Volver
+                </Link>
               </div>
             </>
           )}
