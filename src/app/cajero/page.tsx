@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 
 import {
   FaMoneyCheckAlt,
@@ -9,8 +10,8 @@ import {
 
 export default function CajeroPage() {
   const options = [
-    { icon: <FaMoneyCheckAlt size={70} />, label: 'Pagos pendientes' },
-    { icon: <FaHistory size={70} />, label: 'Historial de pagos' },
+    { icon: <FaMoneyCheckAlt size={70} />, label: 'Pagos pendientes', ruta: '/cajero/pendientes' },
+    { icon: <FaHistory size={70} />, label: 'Historial de pagos', ruta:'' },
   ]
 
   return (
@@ -30,14 +31,17 @@ export default function CajeroPage() {
 
       {/* Opciones del cajero */}
       <section className="bg-gray-200 py-10 px-4 flex flex-col md:flex-row justify-center gap-8 flex-wrap">
-        {options.map(({ icon, label }) => (
-          <div
+        {options.map(({ icon, label,ruta }) => (
+          <Link
+            href={ruta}
             key={label}
-            className="bg-[#B4B9C5] rounded-xl p-6 w-full max-w-[220px] flex flex-col items-center shadow hover:shadow-md transition text-center"
+            className="bg-[#B4B9C5] rounded-xl p-6 w-full max-w-[220px] flex flex-col items-center shadow 
+            cursor-pointer hover:bg-bright-gray-400 
+            hover:shadow-md transition text-center  transition-all transform hover:scale-105 active:scale-95"
           >
             <div className="text-6xl mb-4 text-gray-800">{icon}</div>
             <p className="font-semibold text-gray-800">{label}</p>
-          </div>
+          </Link>
         ))}
       </section>
     </main>
