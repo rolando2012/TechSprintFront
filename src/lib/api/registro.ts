@@ -108,6 +108,7 @@ export interface AreaInscripcion {
   area: string;
   nivel: string;
 }
+
 export interface CompetidorPayload {
   persona: {
     nombre: string;
@@ -121,7 +122,7 @@ export interface CompetidorPayload {
   codMun: number;         
   colegio: string;        
   grado: string;          
-  tutorId: number;        
+  tutorAssignments: Record<string, TutorAssignmentData>;      
   areas: AreaInscripcion[]; 
 }
 
@@ -142,7 +143,7 @@ export async function registrarCompetidor(
     area: string;
     nivel: string;
   }[],
-  tutorAssignments: Record<string, { codTut: string }>
+  tutorAssignments: Record<string, TutorAssignmentData>
 ): Promise<void> {
   // 1) Construimos el arreglo de { area, nivel }
   const areas: AreaInscripcion[] = inscripciones.map(insc => ({
@@ -164,11 +165,7 @@ export async function registrarCompetidor(
     codMun: Number(personalData.municipio),
     colegio: personalData.colegio,
     grado: personalData.grado,
-    tutorId: Number(
-      // Suponemos que todas las inscripciones usan el mismo tutorId.
-      // Si varía por área, podrías recibir un arreglo paralelo.
-      Object.values(tutorAssignments)[0].codTut
-    ),
+    tutorAssignments: tutorAssignments, 
     areas
   };
 
