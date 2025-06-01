@@ -24,25 +24,28 @@ export default function Page() {
   const { personalData, setPersonalData } = useRegistro();
   const [localData, setLocalData] = useState<PersonalData>(personalData);
   const [errors, setErrors] = useState<Partial<Record<keyof PersonalData, string>>>({});
-  const [touchedFields, setTouchedFields] = useState<Set<keyof PersonalData>>(new Set());
-
   const [departamentos, setDepartamentos] = useState<Departamento[]>([]);
   const [municipios, setMunicipios] = useState<Municipio[]>([]);
   const [grados, setGrados] = useState<string[]>([]);
   const [niveles, setNiveles] = useState<string[]>([]);
 
-  const today = new Date();
+  // 1) Calculamos la fecha de hoy en formato YYYY-MM-DD para usar como max
+  const hoyISO = new Date().toISOString().split('T')[0];
 
+  // 2) Helper para calcular edad
   const getAge = (born: string) => {
     if (!born) return 0;
     const [y, m, d] = born.split('-').map(Number);
-    const b = new Date(y, m - 1, d);
-    let age = today.getFullYear() - b.getFullYear();
-    const mm = today.getMonth() - b.getMonth();
-    if (mm < 0 || (mm === 0 && today.getDate() < b.getDate())) age--;
+    const birth = new Date(y, m - 1, d);
+    if (isNaN(birth.getTime())) return 0;
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const mm = today.getMonth() - birth.getMonth();
+    if (mm < 0 || (mm === 0 && today.getDate() < birth.getDate())) age--;
     return age;
   };
 
+  // Calculamos la edad en cada render a partir de localData.fechaNacimiento
   const age = getAge(localData.fechaNacimiento);
 
   useEffect(() => {
@@ -80,7 +83,7 @@ export default function Page() {
     if (localData.grado) {
       setNiveles(getNivelesByGrado(localData.grado));
     }
-  }, []); // solo al montar, para repoblar según datos previos
+  }, []); // solo al montar, para repoblar niveles según datos previos
 
   const onDepartamentoChange = (codDept: string) => {
     setLocalData(d => ({ ...d, departamento: codDept, municipio: '' }));
@@ -106,17 +109,28 @@ export default function Page() {
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
     const field = e.target.name as keyof PersonalData;
     const value = e.target.value;
-    setTouchedFields(prev => new Set(prev).add(field));
     validateField(field, value);
   };
 
   const handleChange = (e: React.ChangeEvent<any>) => {
     const { name, value } = e.target as { name: keyof PersonalData; value: string };
     setLocalData(d => ({ ...d, [name]: value }));
+    // Revalidar en cada cambio
     validateField(name, value);
   };
 
   const validateForm = () => {
+    const edad = getAge(localData.fechaNacimiento);
+      if (!localData.fechaNacimiento) {
+        // Si no puso fecha aún, dejamos que Zod marque el error de "obligatorio"
+      } else if (edad < 8 || edad > 20) {
+        // Si la fecha existe pero la edad no está en [8,20], ponemos error y bloqueamos
+        setErrors(prev => ({
+          ...prev,
+          fechaNacimiento: `Debes tener entre 8 y 20 años (tienes ${edad}).`
+        }));
+        return false;
+      }
     try {
       personalDataSchema.parse(localData);
       setErrors({});
@@ -210,7 +224,9 @@ export default function Page() {
                 value={localData.carnetIdentidad}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`${formFieldStyle} ${errors.carnetIdentidad ? 'border border-red-500' : ''}`}
+                className={`${formFieldStyle} ${
+                  errors.carnetIdentidad ? 'border border-red-500' : ''
+                }`}
                 placeholder="Carnet de identidad"
               />
               {errors.carnetIdentidad && (
@@ -235,7 +251,9 @@ export default function Page() {
                 value={localData.correoElectronico}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`${formFieldStyle} ${errors.correoElectronico ? 'border border-red-500' : ''}`}
+                className={`${formFieldStyle} ${
+                  errors.correoElectronico ? 'border border-red-500' : ''
+                }`}
                 placeholder="Correo electrónico"
               />
               {errors.correoElectronico && (
@@ -260,14 +278,21 @@ export default function Page() {
                 value={localData.fechaNacimiento}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`${formFieldStyle} ${errors.fechaNacimiento ? 'border border-red-500' : ''}`}
+                max={hoyISO}                   
+                className={`${formFieldStyle} ${
+                  errors.fechaNacimiento ? 'border border-red-500' : ''
+                }`}
               />
-              {errors.fechaNacimiento && (
-                <p className="text-red-500 text-xs mt-1">{errors.fechaNacimiento}</p>
-              )}
-              {localData.fechaNacimiento && (age < 8 || age > 20) && (
-                <p className="text-red-500 text-xs mt-1">
-                  Debes tener entre 8 y 20 años (tienes {age}).
+              {/* 3) Mostramos la edad siempre que haya fecha */}
+              {localData.fechaNacimiento && (
+                <p
+                  className={`text-xs mt-1 ${
+                    age < 8 || age > 20 ? 'text-red-500' : 'text-gray-700'
+                  }`}
+                >
+                  {age < 8 || age > 20
+                    ? `Debes tener entre 8 y 20 años (tienes ${age}).`
+                    : `Tienes ${age} años.`}
                 </p>
               )}
             </div>
@@ -288,7 +313,9 @@ export default function Page() {
                 value={localData.departamento}
                 onChange={e => onDepartamentoChange(e.target.value)}
                 onBlur={handleBlur}
-                className={`${formFieldStyle} ${errors.departamento ? 'border border-red-500' : ''}`}
+                className={`${formFieldStyle} ${
+                  errors.departamento ? 'border border-red-500' : ''
+                }`}
               >
                 <option value="">Seleccione un departamento</option>
                 {departamentos.map(dep => (
@@ -326,7 +353,9 @@ export default function Page() {
                 }}
                 onBlur={handleBlur}
                 disabled={!localData.departamento}
-                className={`${formFieldStyle} ${errors.municipio ? 'border border-red-500' : ''}`}
+                className={`${formFieldStyle} ${
+                  errors.municipio ? 'border border-red-500' : ''
+                }`}
               >
                 <option value="">Seleccione un municipio</option>
                 {municipios.map(mun => (
@@ -357,7 +386,9 @@ export default function Page() {
                 value={localData.colegio}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`${formFieldStyle} ${errors.colegio ? 'border border-red-500' : ''}`}
+                className={`${formFieldStyle} ${
+                  errors.colegio ? 'border border-red-500' : ''
+                }`}
                 placeholder="Colegio/institución"
               />
               {errors.colegio && (
