@@ -149,7 +149,21 @@ export default function Page() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm()) {
+    // 2) Si NO es válido, tomamos la primera llave del objeto `errors`
+    //    (por ejemplo: { nombre: '…', apellido: '…' })
+    const firstErrorField = Object.keys(errors)[0] as keyof PersonalData;
+    if (firstErrorField) {
+      // 3) Buscamos el elemento <input> o <select> con ese name
+      const el = document.querySelector<HTMLElement>(`[name="${firstErrorField}"]`);
+      if (el) {
+        // 4) Scroll suave hasta él y hacemos focus
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.focus();
+      }
+    }
+    return; // No avanzamos a la siguiente página
+  }
     setPersonalData(localData);
     router.push('/registro/competidor/inscripcion');
   };
@@ -292,7 +306,8 @@ export default function Page() {
                 >
                   {age < 8 || age > 20
                     ? `Debes tener entre 8 y 20 años (tienes ${age}).`
-                    : `Tienes ${age} años.`}
+                    :``}
+                    {/* : `Tienes ${age} años.`} */}
                 </p>
               )}
             </div>

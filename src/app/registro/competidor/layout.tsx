@@ -88,24 +88,28 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
           <div className="flex justify-center gap-4 w-full mt-6">
             {stepIndex > 0 && (
               <button onClick={() => router.push(`/registro/competidor/${steps[stepIndex - 1].slug}`)}
-                className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl"
+                className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl
+                transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
               >Anterior</button>
             )}
 
             {stepIndex < steps.length - 1 && (
               <button onClick={() => formId && (document.getElementById(formId) as HTMLFormElement)?.requestSubmit()}
-                className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl"
+                className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl
+                transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
               >Siguiente</button>
             )}
 
             {stepIndex === steps.length - 1 && (
               <button type="submit" form="tutorForm"
-                className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl"
+                className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl
+                transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
               >Enviar</button>
             )}
 
             <a href="#" onClick={openCancelModal}
-              className="px-6 py-2 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl"
+              className="px-6 py-2 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl
+              transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
             >Cancelar</a>
 
             {/* Modal de cancelar */}
@@ -115,9 +119,12 @@ export default function RegistroLayout({ children }: { children: React.ReactNode
                   <ExclamationCircleIcon className="w-16 h-16 text-bright-gray-800 mb-4" />
                   <p className="text-lg text-bright-gray-800 mb-6">¿Estás seguro de cancelar el registro?</p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
-                    <Link href="/" className="px-6 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl text-center">Sí, estoy seguro</Link>
+                    <Link href="/" className="px-6 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl 
+                    text-center transition-all transform hover:scale-105 active:scale-95 cursor-pointer">
+                    Sí, estoy seguro</Link>
                     <button onClick={() => setCancelModalOpen(false)}
-                      className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl"
+                      className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl
+                      transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
                     >No, cerrar</button>
                   </div>
                 </div>
