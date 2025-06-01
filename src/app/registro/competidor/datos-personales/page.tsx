@@ -114,9 +114,13 @@ export default function Page() {
   };
   
   const handleChange = (e: React.ChangeEvent<any>) => {
-    const { name, value } = e.target;
-    setLocalData(d => ({ ...d, [name]: value }));
-  };
+  const { name, value } = e.target as { name: keyof PersonalData; value: string };
+  // 1) Actualiza localData
+  setLocalData(d => ({ ...d, [name]: value }));
+  // 2) Valida ese campo inmediatamente:
+  validateField(name, value);
+};
+
 
   const validateForm = () => {
     try {
@@ -193,6 +197,7 @@ export default function Page() {
               type="text"
               value={localData.apellido}
               onChange={handleChange}
+              onBlur={handleBlur}
               className={`${formFieldStyle} ${errors.apellido ? 'border border-red-500' : ''}`}
               placeholder="Apellido(s)"
             />
@@ -219,6 +224,7 @@ export default function Page() {
               type="text"
               value={localData.carnetIdentidad}
               onChange={handleChange}
+              onBlur={handleBlur}
               className={`${formFieldStyle} ${errors.carnetIdentidad ? 'border border-red-500' : ''}`}
               placeholder="Carnet de identidad"
             />
@@ -246,6 +252,7 @@ export default function Page() {
               type="email"
               value={localData.correoElectronico}
               onChange={handleChange}
+              onBlur={handleBlur}
               className={`${formFieldStyle} ${errors.correoElectronico ? 'border border-red-500' : ''}`}
               placeholder="Correo electrónico"
             />
@@ -271,7 +278,7 @@ export default function Page() {
               name="fechaNacimiento"
               type="date"
               value={localData.fechaNacimiento}
-              
+              onBlur={handleBlur}
               onChange={handleChange}
               className={`${formFieldStyle} ${errors.fechaNacimiento ? 'border border-red-500' : ''}`}
             />
@@ -301,6 +308,7 @@ export default function Page() {
               id="departamento"
               name="departamento"
               value={localData.departamento}
+              onBlur={handleBlur}
               onChange={e => onDepartamentoChange(e.target.value)}
               className={`${formFieldStyle} ${errors.departamento ? 'border border-red-500' : ''}`}
             >
@@ -328,6 +336,7 @@ export default function Page() {
               id="municipio"
               name="municipio"
               value={localData.municipio}
+              onBlur={handleBlur}
               onChange={e => {
                 setLocalData(d => ({ ...d, municipio: e.target.value }));
                 if (errors.municipio) validateField('municipio', e.target.value);
@@ -362,6 +371,7 @@ export default function Page() {
               type="text"
               value={localData.colegio}
               onChange={handleChange}
+              onBlur={handleBlur}
               className={`${formFieldStyle} ${errors.colegio ? 'border border-red-500' : ''}`}
               placeholder="Colegio/institución"
             />
@@ -386,6 +396,7 @@ export default function Page() {
               id="grado"
               name="grado"
               value={localData.grado}
+              onBlur={handleBlur}
               onChange={e => onGradoChange(e.target.value)}
               className={`${formFieldStyle} ${errors.grado ? 'border border-red-500' : ''}`}
             >
@@ -413,6 +424,7 @@ export default function Page() {
               id="nivel"
               name="nivel"
               value={localData.nivel}
+              onBlur={handleBlur}
               onChange={e => {
                 setLocalData(d => ({ ...d, nivel: e.target.value }));
                 if (errors.nivel) validateField('nivel', e.target.value);
