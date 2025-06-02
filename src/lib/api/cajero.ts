@@ -61,6 +61,7 @@ export async function obtenerEstadisticasPago(): Promise<EstadisticasPago> {
 
 export interface PagoPendiente {
   codComp: number;
+  codIns: number;
   nombre: string;
   apellidoPaterno: string;
   carnet: string;
@@ -86,3 +87,51 @@ export async function obtenerPagosPendientes(): Promise<PagoPendiente[]> {
     throw error;
   }
 }
+
+export const aceptarPago = async (codIns: number): Promise<void> => {
+  try {
+    const response = await fetch(`${BASE_URL}/cajero/pagos/${codIns}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        estadoPago: 'aprobado',
+        fechaAprobacion: new Date().toISOString()
+      })
+    });
+
+    if (!response.ok) {
+      // Intentar obtener el mensaje de error del servidor
+      let errorMessage = 'Error al procesar el pago';
+      
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorData.error || errorMessage;
+      } catch (parseError) {
+        // Si no se puede parsear la respuesta, usar el status text
+        errorMessage = response.statusText || errorMessage;
+      }
+
+      throw new Error(errorMessage);
+    }
+
+    // Verificar si hay contenido en la respuesta
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      return data;
+    }
+    
+    // Si no hay contenido JSON, simplemente retornar void
+    return;
+    
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    
+    // Si es un error de red o desconocido
+    throw new Error('Error de conexión. Verifique su conexión a internet.');
+  }
+};

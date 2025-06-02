@@ -9,11 +9,118 @@ import {
   Loader2, 
   FileX,
   Calendar,
-  MapPin
+  MapPin,
+  X,
+  Check
 } from 'lucide-react';
-import { obtenerPagosPendientes, PagoPendiente } from '@/lib/api/cajero';
+import { obtenerPagosPendientes, PagoPendiente, aceptarPago } from '@/lib/api/cajero';
 import Link from 'next/link';
+import Swal from 'sweetalert2';
 
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  pago: PagoPendiente | null;
+  onAceptar: (codIns: number) => Promise<void>;
+}
+
+const Modal = ({ isOpen, onClose, pago, onAceptar }: ModalProps) => {
+  if (!isOpen || !pago) return null;
+
+  const handleAceptar = async () => {
+    try {
+      await onAceptar(pago.codIns);
+      onClose();
+    } catch (error) {
+      console.error('Error al aceptar pago:', error);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={onClose}></div>
+      
+      {/* Modal */}
+      <div className="flex min-h-full items-center justify-center p-4">
+        <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+          {/* Header */}
+          <div className="bg-gray-700 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-white" />
+                <h3 className="text-lg font-semibold text-white">Confirmar Pago</h3>
+              </div>
+              <button
+                onClick={onClose}
+                className="text-gray-300 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="bg-white px-6 py-4">
+            <div className="space-y-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-medium text-blue-900 mb-2">Detalles del Pago</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Estudiante:</span>
+                    <span className="font-medium">{pago.nombre} {pago.apellidoPaterno}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">C.I.:</span>
+                    <span className="font-medium">{pago.carnet || '-'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Colegio:</span>
+                    <span className="font-medium">{pago.colegio || '-'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Nivel:</span>
+                    <span className="font-medium">{pago.gradoRange}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Área:</span>
+                    <span className="font-medium">{pago.area}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <p className="text-yellow-800 text-sm">
+                  ¿Está seguro de que desea aprobar este pago? Esta acción no se puede deshacer.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="bg-gray-50 px-6 py-4 flex justify-end gap-3">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleAceptar}
+              className="px-4 py-2 text-sm font-medium text-white bg-boton border-transparent rounded-md hover:bg-boton-hover
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-boton flex items-center gap-2
+              transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <Check className="w-4 h-4" />
+              Aceptar Pago
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const EstadoBadge = ({ estado }: { estado: string }) => {
   const getEstadoConfig = (estado: string) => {
@@ -73,6 +180,8 @@ export default function PagosPendientesPage() {
   const [pagosPendientes, setPagosPendientes] = useState<PagoPendiente[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [pagoSeleccionado, setPagoSeleccionado] = useState<PagoPendiente | null>(null);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -91,6 +200,55 @@ export default function PagosPendientesPage() {
 
     cargarDatos();
   }, []);
+
+  const handleFilaClick = (pago: PagoPendiente) => {
+    setPagoSeleccionado(pago);
+    setModalOpen(true);
+  };
+
+  const handleAceptarPago = async (codIns: number) => {
+    // Mostrar loading con SweetAlert2
+    Swal.fire({
+      title: 'Procesando pago...',
+      allowEscapeKey: false,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    try {
+      // Llamar a la función de aceptar pago
+      await aceptarPago(codIns);
+      
+      // Cerrar el loading
+      Swal.close();
+      
+      // Mostrar mensaje de éxito
+      await Swal.fire({
+        title: 'Pago Aceptado',
+        text: 'El pago ha sido procesado exitosamente',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      // Actualizar la tabla removiendo el pago aceptado
+      setPagosPendientes(prev => prev.filter(pago => pago.codIns !== codIns));
+      
+    } catch (error: any) {
+      // Cerrar el loading
+      Swal.close();
+      
+      // Mostrar mensaje de error
+      await Swal.fire({
+        title: 'Error',
+        text: error.message || 'Ocurrió un error al procesar el pago',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+    }
+  };
 
   if (loading) {
     return (
@@ -155,7 +313,7 @@ export default function PagosPendientesPage() {
                     font-medium transition-all transform hover:scale-105 active:scale-95">
                     Volver
                 </Link>
-            </div>
+              </div>
             </div>
           </div>
         </div>
@@ -173,6 +331,7 @@ export default function PagosPendientesPage() {
               <CreditCard className="w-5 h-5 text-white" />
               <h1 className="text-lg font-semibold text-white">Pagos Pendientes</h1>
             </div>
+            <p className="text-gray-300 text-sm mt-1">Haz clic en una fila para procesar el pago</p>
           </div>
 
           {/* Table */}
@@ -205,7 +364,11 @@ export default function PagosPendientesPage() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {pagosPendientes.map((pago, index) => (
-                  <tr key={`${pago.codComp}-${index}`} className="hover:bg-gray-50">
+                  <tr 
+                    key={`${pago.codComp}-${index}`} 
+                    className="hover:bg-blue-50 cursor-pointer transition-colors"
+                    onClick={() => handleFilaClick(pago)}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {pago.nombre} {pago.apellidoPaterno}
                     </td>
@@ -250,6 +413,14 @@ export default function PagosPendientesPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        pago={pagoSeleccionado}
+        onAceptar={handleAceptarPago}
+      />
     </div>
   );
 }
