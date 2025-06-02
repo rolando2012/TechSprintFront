@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { PersonalData } from '@/lib/schemas/ValidarRegComp';
-import { InscripcionData,TutorAssignmentData } from '@/app/registro/competidor/context';
+import { TutorAssignmentData } from '@/app/registro/competidor/context';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -179,4 +178,24 @@ export async function registrarCompetidor(
     }
     throw err;
   }
+}
+
+export async function checkEmailExists(email: string): Promise<boolean> {
+  // Ajusta la URL a tu servidor Express donde tengas la ruta para chequear email.
+  // Por ejemplo: http://localhost:4000/api/personas/check-email?email=...
+  const res = await fetch(
+    `${BASE_URL}/registro/check-email?email=${encodeURIComponent(email)}`,
+    {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error('Error al conectar con el servidor de validación de email');
+  }
+
+  const json = await res.json();
+  // Se asume que el endpoint responde { exists: boolean }
+  return json.exists as boolean;
 }

@@ -7,6 +7,8 @@ import { personalDataSchema, PersonalData } from '@/lib/schemas/ValidarRegComp';
 import { getGrados, getNivelesByGrado } from '@/lib/dataInscripcion';
 import { inter } from '@/config/fonts';
 import { Departamento, getDepartamentos, Municipio, getMunicipios } from '@/lib/api/registro';
+import { checkEmailExists } from '@/lib/api/registro';
+
 import {
   User,
   IdCard,
@@ -19,7 +21,9 @@ import {
   Phone,
 } from 'lucide-react';
 
-export default function Page() {
+import Swal from 'sweetalert2';
+
+export default function DatosPersonalesPage() {
   const router = useRouter();
   const { personalData, setPersonalData } = useRegistro();
   const [localData, setLocalData] = useState<PersonalData>(personalData);
@@ -29,10 +33,9 @@ export default function Page() {
   const [grados, setGrados] = useState<string[]>([]);
   const [niveles, setNiveles] = useState<string[]>([]);
 
-  // 1) Calculamos la fecha de hoy en formato YYYY-MM-DD para usar como max
+  // Para bloquear fechas futuras
   const hoyISO = new Date().toISOString().split('T')[0];
 
-  // 2) Helper para calcular edad
   const getAge = (born: string) => {
     if (!born) return 0;
     const [y, m, d] = born.split('-').map(Number);
@@ -45,19 +48,17 @@ export default function Page() {
     return age;
   };
 
-  // Calculamos la edad en cada render a partir de localData.fechaNacimiento
   const age = getAge(localData.fechaNacimiento);
 
   useEffect(() => {
-    const fetchData = async () => {
+    (async () => {
       try {
         const deps = await getDepartamentos();
         setDepartamentos(deps);
       } catch (error) {
         console.error('Error fetching departamentos:', error);
       }
-    };
-    fetchData();
+    })();
   }, []);
 
   useEffect(() => {
@@ -83,7 +84,7 @@ export default function Page() {
     if (localData.grado) {
       setNiveles(getNivelesByGrado(localData.grado));
     }
-  }, []); // solo al montar, para repoblar niveles según datos previos
+  }, []); // solo al montar
 
   const onDepartamentoChange = (codDept: string) => {
     setLocalData(d => ({ ...d, departamento: codDept, municipio: '' }));
@@ -98,7 +99,11 @@ export default function Page() {
 
   const validateField = (field: keyof PersonalData, value: string) => {
     try {
-      z.object({ [field]: personalDataSchema.shape[field] }).parse({ [field]: value });
+      z
+        .object({
+          [field]: personalDataSchema.shape[field],
+        })
+        .parse({ [field]: value });
       setErrors(e => ({ ...e, [field]: undefined }));
     } catch (err) {
       const zErr = err as any;
@@ -115,31 +120,33 @@ export default function Page() {
   const handleChange = (e: React.ChangeEvent<any>) => {
     const { name, value } = e.target as { name: keyof PersonalData; value: string };
     setLocalData(d => ({ ...d, [name]: value }));
-    // Revalidar en cada cambio
     validateField(name, value);
   };
 
-  const validateForm = () => {
+  const validateForm = (): boolean => {
+    // 1) Validación de edad
     const edad = getAge(localData.fechaNacimiento);
-      if (!localData.fechaNacimiento) {
-        // Si no puso fecha aún, dejamos que Zod marque el error de "obligatorio"
-      } else if (edad < 8 || edad > 20) {
-        // Si la fecha existe pero la edad no está en [8,20], ponemos error y bloqueamos
+    if (localData.fechaNacimiento) {
+      if (edad < 8 || edad > 20) {
         setErrors(prev => ({
           ...prev,
-          fechaNacimiento: `Debes tener entre 8 y 20 años (tienes ${edad}).`
+          fechaNacimiento: `Debes tener entre 8 y 20 años (tienes ${edad}).`,
         }));
         return false;
       }
+    }
+
+    // 2) Validación Zod para todos los campos
     try {
       personalDataSchema.parse(localData);
       setErrors({});
       return true;
     } catch (e) {
       if (e instanceof z.ZodError) {
-        const errs: any = {};
+        const errs: Partial<Record<keyof PersonalData, string>> = {};
         e.errors.forEach(err => {
-          errs[err.path[0] as keyof PersonalData] = err.message;
+          const campo = err.path[0] as keyof PersonalData;
+          errs[campo] = err.message;
         });
         setErrors(errs);
       }
@@ -147,25 +154,91 @@ export default function Page() {
     }
   };
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) {
-    // 2) Si NO es válido, tomamos la primera llave del objeto `errors`
-    //    (por ejemplo: { nombre: '…', apellido: '…' })
-    const firstErrorField = Object.keys(errors)[0] as keyof PersonalData;
-    if (firstErrorField) {
-      // 3) Buscamos el elemento <input> o <select> con ese name
-      const el = document.querySelector<HTMLElement>(`[name="${firstErrorField}"]`);
-      if (el) {
-        // 4) Scroll suave hasta él y hacemos focus
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        el.focus();
+
+    const formEsValido = validateForm();
+    if (!formEsValido) {
+      const firstErrorField = Object.keys(errors)[0] as keyof PersonalData;
+      if (firstErrorField) {
+        const el = document.querySelector<HTMLElement>(`[name="${firstErrorField}"]`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.focus();
+        }
       }
+      return;
     }
-    return; // No avanzamos a la siguiente página
-  }
-    setPersonalData(localData);
-    router.push('/registro/competidor/inscripcion');
+
+    let timerInterval: NodeJS.Timeout;
+    await Swal.fire({
+      title: 'Verificando datos...',
+      html: 'No cierre la ventana del navegador',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: async () => {
+        Swal.showLoading();
+        timerInterval = setInterval(() => {
+          const content = Swal.getHtmlContainer();
+          if (content) {
+            const b = content.querySelector('b');
+            if (b) {
+              b.textContent = Swal.getTimerLeft()?.toString() ?? '';
+            }
+          }
+        }, 100);
+
+        try {
+          // 1) Hacemos la petición al backend para chequear el email
+          const existe = await checkEmailExists(localData.correoElectronico!);
+          clearInterval(timerInterval);
+          Swal.close();
+
+          if (existe) {
+            // Si el email ya existe, ponemos error y mostramos SweetAlert
+            setErrors(prev => ({
+              ...prev,
+              correoElectronico: 'Este correo ya está registrado',
+            }));
+            const elEmail = document.querySelector<HTMLElement>('[name="correoElectronico"]');
+            if (elEmail) {
+              elEmail.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              elEmail.focus();
+            }
+            await Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'El correo ya existe en nuestra base de datos.',
+            });
+            return;
+          }
+
+          // 2) Si no existe, mostramos éxito brevemente
+          await Swal.fire({
+            icon: 'success',
+            title: 'Datos correctos',
+            timer: 1000,
+            showConfirmButton: false,
+          });
+
+          // 3) Guardamos en context y navegamos al siguiente paso
+          setPersonalData(localData);
+          router.push('/registro/competidor/inscripcion');
+        } catch (error: any) {
+          clearInterval(timerInterval);
+          Swal.close();
+          console.error(error);
+          await Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: error.message || 'No se pudo verificar el correo electrónico.',
+          });
+        }
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    });
   };
 
   const formFieldStyle = 'bg-gray-200 rounded-3xl p-3 w-full border-none';
@@ -195,7 +268,9 @@ export default function Page() {
                 className={`${formFieldStyle} ${errors.nombre ? 'border border-red-500' : ''}`}
                 placeholder="Nombre(s)"
               />
-              {errors.nombre && <p className="text-red-500 text-xs mt-1">{errors.nombre}</p>}
+              {errors.nombre && (
+                <p className="text-red-500 text-xs mt-1">{errors.nombre}</p>
+              )}
             </div>
           </div>
         </div>
@@ -215,10 +290,14 @@ export default function Page() {
                 value={localData.apellido}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`${formFieldStyle} ${errors.apellido ? 'border border-red-500' : ''}`}
+                className={`${formFieldStyle} ${
+                  errors.apellido ? 'border border-red-500' : ''
+                }`}
                 placeholder="Apellido(s)"
               />
-              {errors.apellido && <p className="text-red-500 text-xs mt-1">{errors.apellido}</p>}
+              {errors.apellido && (
+                <p className="text-red-500 text-xs mt-1">{errors.apellido}</p>
+              )}
             </div>
           </div>
         </div>
@@ -271,7 +350,9 @@ export default function Page() {
                 placeholder="Correo electrónico"
               />
               {errors.correoElectronico && (
-                <p className="text-red-500 text-xs mt-1">{errors.correoElectronico}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.correoElectronico}
+                </p>
               )}
             </div>
           </div>
@@ -292,12 +373,11 @@ export default function Page() {
                 value={localData.fechaNacimiento}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                max={hoyISO}                   
+                max={hoyISO}
                 className={`${formFieldStyle} ${
                   errors.fechaNacimiento ? 'border border-red-500' : ''
                 }`}
               />
-              {/* 3) Mostramos la edad siempre que haya fecha */}
               {localData.fechaNacimiento && (
                 <p
                   className={`text-xs mt-1 ${
@@ -306,7 +386,7 @@ export default function Page() {
                 >
                   {age < 8 || age > 20
                     ? `Debes tener entre 8 y 20 años (tienes ${age}).`
-                    :``}
+                    : ``}
                     {/* : `Tienes ${age} años.`} */}
                 </p>
               )}
@@ -340,7 +420,9 @@ export default function Page() {
                 ))}
               </select>
               {errors.departamento && (
-                <p className="text-red-500 text-xs mt-1">{errors.departamento}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.departamento}
+                </p>
               )}
             </div>
           </div>
@@ -364,7 +446,8 @@ export default function Page() {
                 value={localData.municipio}
                 onChange={e => {
                   setLocalData(d => ({ ...d, municipio: e.target.value }));
-                  if (errors.municipio) validateField('municipio', e.target.value);
+                  if (errors.municipio)
+                    validateField('municipio', e.target.value);
                 }}
                 onBlur={handleBlur}
                 disabled={!localData.departamento}
@@ -380,7 +463,9 @@ export default function Page() {
                 ))}
               </select>
               {errors.municipio && (
-                <p className="text-red-500 text-xs mt-1">{errors.municipio}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.municipio}
+                </p>
               )}
             </div>
           </div>
@@ -407,7 +492,9 @@ export default function Page() {
                 placeholder="Colegio/institución"
               />
               {errors.colegio && (
-                <p className="text-red-500 text-xs mt-1">{errors.colegio}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.colegio}
+                </p>
               )}
             </div>
           </div>
@@ -427,7 +514,9 @@ export default function Page() {
                 value={localData.grado}
                 onChange={e => onGradoChange(e.target.value)}
                 onBlur={handleBlur}
-                className={`${formFieldStyle} ${errors.grado ? 'border border-red-500' : ''}`}
+                className={`${formFieldStyle} ${
+                  errors.grado ? 'border border-red-500' : ''
+                }`}
               >
                 <option value="">Seleccione un grado</option>
                 {grados.map(gr => (
@@ -465,7 +554,9 @@ export default function Page() {
                 }}
                 onBlur={handleBlur}
                 disabled={!localData.grado}
-                className={`${formFieldStyle} ${errors.nivel ? 'border border-red-500' : ''}`}
+                className={`${formFieldStyle} ${
+                  errors.nivel ? 'border border-red-500' : ''
+                }`}
               >
                 <option value="">Seleccione un nivel</option>
                 {niveles.map(niv => (
@@ -496,7 +587,9 @@ export default function Page() {
                 value={localData.celular}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`${formFieldStyle} ${errors.celular ? 'border border-red-500' : ''}`}
+                className={`${formFieldStyle} ${
+                  errors.celular ? 'border border-red-500' : ''
+                }`}
                 placeholder="Celular"
               />
               {errors.celular && (
