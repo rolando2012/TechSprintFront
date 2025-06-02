@@ -11,7 +11,8 @@ import {
   Calendar,
   MapPin,
   X,
-  Check
+  Check,
+  Search
 } from 'lucide-react';
 import { obtenerPagosPendientes, PagoPendiente, aceptarPago } from '@/lib/api/cajero';
 import Link from 'next/link';
@@ -101,16 +102,13 @@ const Modal = ({ isOpen, onClose, pago, onAceptar }: ModalProps) => {
           <div className="bg-gray-50 px-6 py-4 flex justify-end gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
             >
               Cancelar
             </button>
             <button
               onClick={handleAceptar}
-              className="px-4 py-2 text-sm font-medium text-white bg-boton border-transparent rounded-md hover:bg-boton-hover
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-boton flex items-center gap-2
-              transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+              className="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors flex items-center gap-2"
             >
               <Check className="w-4 h-4" />
               Aceptar Pago
@@ -178,10 +176,42 @@ const formatearFecha = (fecha: string): string => {
 
 export default function PagosPendientesPage() {
   const [pagosPendientes, setPagosPendientes] = useState<PagoPendiente[]>([]);
+  const [pagosFiltrados, setPagosFiltrados] = useState<PagoPendiente[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [pagoSeleccionado, setPagoSeleccionado] = useState<PagoPendiente | null>(null);
+  const [busqueda, setBusqueda] = useState('');
+
+  // Función para normalizar texto (sin acentos y en minúsculas)
+  const normalizarTexto = (texto: string): string => {
+    return texto
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  };
+
+  // Función para filtrar pagos
+  const filtrarPagos = (termino: string) => {
+    if (!termino.trim()) {
+      setPagosFiltrados(pagosPendientes);
+      return;
+    }
+
+    const terminoNormalizado = normalizarTexto(termino);
+    const pagosFiltrados = pagosPendientes.filter(pago => {
+      const nombreCompleto = `${pago.nombre} ${pago.apellidoPaterno}`;
+      const nombreNormalizado = normalizarTexto(nombreCompleto);
+      return nombreNormalizado.includes(terminoNormalizado);
+    });
+
+    setPagosFiltrados(pagosFiltrados);
+  };
+
+  // Efecto para filtrar cuando cambia la búsqueda
+  useEffect(() => {
+    filtrarPagos(busqueda);
+  }, [busqueda, pagosPendientes]);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -190,6 +220,7 @@ export default function PagosPendientesPage() {
         setError(null);
         const datos = await obtenerPagosPendientes();
         setPagosPendientes(datos);
+        setPagosFiltrados(datos); // Inicializar datos filtrados
       } catch (err) {
         setError('Error al cargar los pagos pendientes');
         console.error(err);
@@ -234,7 +265,10 @@ export default function PagosPendientesPage() {
       });
 
       // Actualizar la tabla removiendo el pago aceptado
-      setPagosPendientes(prev => prev.filter(pago => pago.codIns !== codIns));
+      setPagosPendientes(prev => {
+        const nuevosPageos = prev.filter(pago => pago.codIns !== codIns);
+        return nuevosPageos;
+      });
       
     } catch (error: any) {
       // Cerrar el loading
@@ -284,7 +318,7 @@ export default function PagosPendientesPage() {
     );
   }
 
-  if (pagosPendientes.length === 0) {
+  if (pagosPendientes.length === 0 && !loading && !error) {
     return (
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-7xl mx-auto">
@@ -327,79 +361,122 @@ export default function PagosPendientesPage() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           {/* Header */}
           <div className="bg-gray-700 px-6 py-4 rounded-t-lg">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-3">
               <CreditCard className="w-5 h-5 text-white" />
               <h1 className="text-lg font-semibold text-white">Pagos Pendientes</h1>
             </div>
-            <p className="text-gray-300 text-sm mt-1">Haz clic en una fila para procesar el pago</p>
+            <p className="text-gray-300 text-sm mb-3">Haz clic en una fila para procesar el pago</p>
+            
+            {/* Buscador */}
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Buscar por nombre..."
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              />
+              {busqueda && (
+                <button
+                  onClick={() => setBusqueda('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Table */}
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gray-100 border-b border-gray-200">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Nombre
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    C.I.
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Colegio
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Nivel
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Área
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Fecha
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Estado de Inscripción
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {pagosPendientes.map((pago, index) => (
-                  <tr 
-                    key={`${pago.codComp}-${index}`} 
-                    className="hover:bg-blue-50 cursor-pointer transition-colors"
-                    onClick={() => handleFilaClick(pago)}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {pago.nombre} {pago.apellidoPaterno}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {pago.carnet || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-gray-400" />
-                        {pago.colegio || '-'}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {pago.gradoRange}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {pago.area}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-gray-400" />
-                        {formatearFecha(pago.fechaInscripcion)}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <EstadoBadge estado={pago.estadoInscripcion} />
-                    </td>
+            {pagosFiltrados.length === 0 && busqueda ? (
+              /* Mensaje cuando no hay resultados de búsqueda */
+              <div className="p-8">
+                <div className="flex items-center justify-center">
+                  <div className="text-center">
+                    <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Sin resultados</h3>
+                    <p className="text-gray-500 mb-4">
+                      No se encontraron pagos que coincidan con "{busqueda}"
+                    </p>
+                    <button
+                      onClick={() => setBusqueda('')}
+                      className="text-blue-600 hover:text-blue-500 text-sm font-medium"
+                    >
+                      Limpiar búsqueda
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-100 border-b border-gray-200">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      Nombre
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      C.I.
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      Colegio
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      Nivel
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      Área
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      Fecha
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      Estado de Inscripción
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {pagosFiltrados.map((pago, index) => (
+                    <tr 
+                      key={`${pago.codComp}-${index}`} 
+                      className="hover:bg-blue-50 cursor-pointer transition-colors"
+                      onClick={() => handleFilaClick(pago)}
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {pago.nombre} {pago.apellidoPaterno}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {pago.carnet || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-gray-400" />
+                          {pago.colegio || '-'}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {pago.gradoRange}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {pago.area}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-gray-400" />
+                          {formatearFecha(pago.fechaInscripcion)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <EstadoBadge estado={pago.estadoInscripcion} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
 
           {/* Footer */}
