@@ -179,7 +179,8 @@ function CalendarComponent() {
           <button
             onClick={handleShowCalendar}
             disabled={!selectedCompetencia}
-            className="px-4 py-2 bg-boton text-white rounded-md hover:bg-boton-hover disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-boton text-white rounded-md hover:bg-boton-hover disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2
+            transition-all transform hover:scale-105 active:scale-95"
           >
             <Eye className="w-4 h-4" />
             Mostrar Calendario
@@ -342,7 +343,8 @@ function CalendarComponent() {
 
       <Link
         href="/administrador"
-        className="sm:mr-auto px-4 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-600 transition-colors"
+        className="sm:mr-auto px-4 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-600 
+        transition-all transform hover:scale-105 active:scale-95"
       >
         Volver
       </Link>

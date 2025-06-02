@@ -371,14 +371,16 @@ const onSubmit = async (data: TutorFormData) => {
             <div className="flex justify-center gap-4 w-full mt-6">
               <Button
                 type="submit"
-                className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl cursor-pointer text-lg"
+                className="px-6 py-2 bg-boton hover:bg-boton-hover text-white rounded-2xl cursor-pointer text-lg
+                transition-all transform hover:scale-105 active:scale-95"
               >
                 Registrar
               </Button>
               <Button
                 type="button"
                 onClick={openCancelModal}
-                className="text-lg px-6 py-1 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl cursor-pointer "
+                className="text-lg px-6 py-1 block bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl 
+                cursor-pointer transition-all transform hover:scale-105 active:scale-95"
               >
                 Cancelar
               </Button>
@@ -393,9 +395,12 @@ const onSubmit = async (data: TutorFormData) => {
               <ExclamationCircleIcon className="w-16 h-16 text-bright-gray-800 mb-4" />
               <p className="text-lg text-bright-gray-800 mb-6">¿Estás seguro de cancelar el registro?</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
-                <Link href="/administrador" className="px-6 py-2 bg-boton-2 hover:bg-boton-2-hover text-white rounded-2xl text-center">Sí, estoy seguro</Link>
+                <Link href="/administrador" className="px-6 py-2 bg-boton-2 hover:bg-boton-2-hover text-white 
+                rounded-2xl text-center transition-all transform hover:scale-105 active:scale-95">
+                Sí, estoy seguro</Link>
                 <button onClick={() => setCancelModalOpen(false)}
-                  className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl"
+                  className="px-6 py-2 bg-bright-gray-400 hover:bg-bright-gray-500 text-white rounded-2xl
+                  transition-all transform hover:scale-105 active:scale-95"
                 >No, cerrar</button>
               </div>
             </div>

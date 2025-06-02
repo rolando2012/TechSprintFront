@@ -40,7 +40,8 @@ export default function AdministradorPage() {
             key={label}
             href={ruta}
             className="bg-bright-gray-300 rounded-xl p-6 w-full max-w-[220px] h-[200px] shadow hover:shadow-md 
-            transition flex flex-col justify-center items-center text-center cursor-pointer hover:bg-bright-gray-400"
+            flex flex-col justify-center items-center text-center cursor-pointer hover:bg-bright-gray-400
+            transition-all transform hover:scale-105 active:scale-95"
           >
             <div className="text-gray-800 mb-3">{icon}</div>
             <p className="font-semibold text-base text-gray-700">{label}</p>
