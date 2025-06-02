@@ -181,8 +181,6 @@ export async function registrarCompetidor(
 }
 
 export async function checkEmailExists(email: string): Promise<boolean> {
-  // Ajusta la URL a tu servidor Express donde tengas la ruta para chequear email.
-  // Por ejemplo: http://localhost:4000/api/personas/check-email?email=...
   const res = await fetch(
     `${BASE_URL}/registro/check-email?email=${encodeURIComponent(email)}`,
     {

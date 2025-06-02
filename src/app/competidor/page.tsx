@@ -28,7 +28,8 @@ export default function CompetidorPage() {
           {options.map(({ icon, label }) => (
             <div
               key={label}
-              className="bg-[#B4B9C5] rounded-xl p-6 w-full max-w-[220px] flex flex-col items-center shadow hover:shadow-md transition"
+              className="bg-[#B4B9C5] rounded-xl p-6 w-full max-w-[220px] flex flex-col items-center shadow hover:shadow-md 
+              cursor-pointer hover:bg-bright-gray-400  transition-all transform hover:scale-105 active:scale-95"
             >
               <div className="text-6xl mb-4 text-gray-800">{icon}</div>
               <p className="font-semibold text-center text-gray-800">{label}</p>
