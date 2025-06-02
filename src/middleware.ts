@@ -9,12 +9,14 @@ enum Role {
   Administrador = 'Administrador',
   Tutor = 'Tutor',
   Cajero = 'Cajero',
+  Competidor = 'Competidor',
 }
 
 const roleRedirects: Record<Role, string> = {
   [Role.Administrador]: '/administrador',
   [Role.Tutor]: '/tutor',
   [Role.Cajero]: '/cajero',
+  [Role.Competidor]: '/competidor',
 }
 
 // Helper: verify JWT and return payload or null
@@ -65,9 +67,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
-  // Tutor routes
+  // Cajero routes
   if (pathname.startsWith('/cajero')) {
     if (role === Role.Cajero) {
+      return NextResponse.next()
+    }
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  // Competidor routes
+  if (pathname.startsWith('/competidor')) {
+    if (role === Role.Competidor) {
       return NextResponse.next()
     }
     return NextResponse.redirect(new URL('/', request.url))

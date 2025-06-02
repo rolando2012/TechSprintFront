@@ -1,30 +1,77 @@
 'use client'
 import Image from 'next/image'
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { LoginSchema } from '@/lib/schemas/zood'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { useState } from 'react'
+import { Input } from '@/components/ui/input'
 
 type Props = {
   onClose: () => void
   onLogin: () => void
 }
 
-export default function CompetidorLoginForm({ onClose }: Props) {
+export default function CompetidorLoginForm({ onClose, onLogin }: Props) {
   const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [code, setCode] = useState('')
+  const [error, setError] = useState<string | undefined>(undefined)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      code: '',
+    },
+  })
 
-    // Simulación de autenticación
-    router.push('/competidor')
-    onClose()
-  }
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    setError(undefined);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',   
+        body: JSON.stringify(values),
+      });
+      const body = await res.json();
+
+      if (!res.ok) {
+        // cualquier status ≠ 200
+        setError(body.error || `Error desconocido (${res.status})`);
+        return;
+      }
+
+      router.push('/competidor');
+      onClose();
+    } catch (e) {
+      console.error(e);
+      setError('No se pudo conectar al servidor');
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
       <div className="bg-[#e2e5ea] rounded-2xl w-full max-w-3xl p-10 shadow-lg relative">
+        {error && (
+          <p
+            role="alert"
+            aria-live="assertive"
+            className="bg-boton-2-hover text-md text-white text-center px-4 py-2 rounded mb-4"
+          >
+            {error}
+          </p>
+        )}
+
         <h2 className="text-2xl font-semibold text-center mb-6">
           Bienvenido al servicio TechSprint para Competidor(es)
         </h2>
@@ -39,47 +86,69 @@ export default function CompetidorLoginForm({ onClose }: Props) {
             className="object-contain"
           />
 
-          {/* Formulario */}
-          <form className="flex-1 space-y-4" onSubmit={handleSubmit}>
-            <div>
-              <label className="block text-gray-800 font-normal mb-1">Correo:</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Example@something.domain"
-                className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:outline-none"
+          {/* Formulario usando React Hook Form + Zod + componentes UI */}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-800 font-normal text-md">
+                      Correo:
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className="bg-white text-gray-800 font-normal text-lg"
+                        placeholder="Example@something.domain"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div>
-              <label className="block text-gray-800 font-normal mb-1">Contraseña:</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="************"
-                className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:outline-none"
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-800 font-normal text-md">
+                      Contraseña:
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        className="bg-white text-gray-800 font-normal text-lg"
+                        placeholder="************"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* Botones */}
-            <div className="flex justify-between pt-4">
-              <button
-                type="submit"
-                className="bg-boton hover:bg-boton-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
-              >
-                Ingresar
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="bg-boton-2 hover:bg-boton-2-hover text-white font-normal py-2 px-6 rounded-full cursor-pointer"
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
+              <div className="flex justify-between pt-4">
+                <button
+                  type="submit"
+                  className="bg-boton hover:bg-boton-hover text-white font-normal 
+                    py-2 px-6 rounded-full cursor-pointer transition-all transform hover:scale-105 active:scale-95"
+                >
+                  Ingresar
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="bg-boton-2 hover:bg-boton-2-hover text-white font-normal 
+                    py-2 px-6 rounded-full cursor-pointer transition-all transform hover:scale-105 active:scale-95"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
     </div>
