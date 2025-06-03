@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Check, X, Clock, CircleCheck } from 'lucide-react';
+import { Check, X, Clock, CircleCheck, AlertTriangle, MessageCircle } from 'lucide-react';
 import { 
   CompetidoresByTutor, 
   getCompetidoresByTutor, 
@@ -22,7 +22,9 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [selectedCompetidor, setSelectedCompetidor] = useState<CompetidoresByTutor | null>(null);
+  const [motivoRechazo, setMotivoRechazo] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +35,12 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
           fetchEstadosCompetidores(parseInt(tutorId))
         ]);
         
-        setCompetidores(competidoresData);
+        // Ordenar competidores por fecha de inscripción (más recientes primero)
+        const competidoresOrdenados = competidoresData.sort((a, b) => 
+          new Date(b.fechaInscripcion).getTime() - new Date(a.fechaInscripcion).getTime()
+        );
+        
+        setCompetidores(competidoresOrdenados);
         setEstados(estadosData);
       } catch (err) {
         setError('Error al cargar los datos');
@@ -75,19 +82,28 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
   };
 
   const handleChangeStatus = (competidor: CompetidoresByTutor) => {
+    // Verificar que el estado sea pendiente
+    if (competidor.estadoInscripcion.toLowerCase() !== 'pendiente') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Acción no permitida',
+        text: `Solo se puede cambiar el estado de inscripciones pendientes. Estado actual: ${competidor.estadoInscripcion}`,
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#f59e0b',
+      });
+      return;
+    }
+
     setSelectedCompetidor(competidor);
     setIsModalOpen(true);
   };
 
-  const handleStatusUpdate = async (newStatus: string) => {
-    if (selectedCompetidor) {
-      console.log(`Competidor ID: ${selectedCompetidor.codComp}, Nuevo Estado: ${newStatus}`);
-      // Aquí puedes agregar la lógica para actualizar el estado en el backend
-      setIsModalOpen(false);
-      setSelectedCompetidor(null);
- // 1) Muestro el loading
+  const handleStatusUpdate = async (newStatus: string, motivo?: string) => {
+    if (!selectedCompetidor) return;
+
+    // Mostrar loading
     Swal.fire({
-      title: 'Now loading',
+      title: 'Actualizando estado...',
       allowEscapeKey: false,
       allowOutsideClick: false,
       didOpen: () => {
@@ -96,48 +112,88 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
     });
 
     try {
-      // 2) Llamo al servicio que hicimos arriba
-      await updateEstadoInscripcion(selectedCompetidor.codComp, newStatus);
+      // Llamar al servicio actualizado
+      await updateEstadoInscripcion(
+        selectedCompetidor.codIns, 
+        newStatus, 
+        motivo
+      );
 
-      // 3) Cierro el loading
+      // Cerrar loading
       Swal.close();
 
-      // 4) Muestro éxito
+      // Mostrar éxito
       await Swal.fire({
         icon: 'success',
         title: '¡Estado actualizado!',
         text: `El nuevo estado es "${newStatus}"`,
         confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#10b981',
       });
 
-      // 5) Opcional: refrescar lista de estados o competidores
-      const [_, nuevosEstados] = await Promise.all([
+      // Refrescar datos
+      const [competidoresData, estadosData] = await Promise.all([
         getCompetidoresByTutor(tutorId),
         fetchEstadosCompetidores(parseInt(tutorId)),
       ]);
-      setCompetidores(await getCompetidoresByTutor(tutorId));
-      setEstados(nuevosEstados);
+      
+      // Ordenar competidores por fecha
+      const competidoresOrdenados = competidoresData.sort((a, b) => 
+        new Date(b.fechaInscripcion).getTime() - new Date(a.fechaInscripcion).getTime()
+      );
+      
+      setCompetidores(competidoresOrdenados);
+      setEstados(estadosData);
     } catch (err: any) {
-      // 6) Cierro el loading si sigue abierto
+      // Cerrar loading
       Swal.close();
 
-      // 7) Muestro error
+      // Mostrar error
       Swal.fire({
         icon: 'error',
         title: 'Error al actualizar',
         text: err.response?.data?.message ?? err.message,
         confirmButtonText: 'Cerrar',
+        confirmButtonColor: '#ef4444',
       });
     } finally {
-      // 8) Cierro modal
+      // Cerrar modales
       setIsModalOpen(false);
+      setIsRejectModalOpen(false);
       setSelectedCompetidor(null);
+      setMotivoRechazo('');
     }
-  }};
+  };
+
+  const handleRejectClick = () => {
+    setIsModalOpen(false);
+    setIsRejectModalOpen(true);
+    setMotivoRechazo('');
+  };
+
+  const handleRejectSubmit = () => {
+    if (motivoRechazo.trim() === '') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Motivo requerido',
+        text: 'Debe especificar un motivo para el rechazo',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#f59e0b',
+      });
+      return;
+    }
+    console.log("llego")
+    handleStatusUpdate('Rechazado', motivoRechazo);
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedCompetidor(null);
+  };
+
+  const closeRejectModal = () => {
+    setIsRejectModalOpen(false);
+    setMotivoRechazo('');
   };
 
   const formatDate = (dateString: string) => {
@@ -255,7 +311,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
                       </button>
                     </div>
 
-                    {/* Acciones - Removido el icono del ojo */}
+                    {/* Acciones */}
                     <div className="flex justify-end">
                       {/* Espacio para otras acciones futuras */}
                     </div>
@@ -296,15 +352,6 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
 
             {/* Opciones de estado */}
             <div className="space-y-3">
-              {/* Pendiente */}
-              {/* <button
-                onClick={() => handleStatusUpdate('Pendiente')}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors"
-              >
-                <Clock className="w-5 h-5 mr-2" />
-                PENDIENTE
-              </button> */}
-
               {/* Verificado */}
               <button
                 onClick={() => handleStatusUpdate('Verificado')}
@@ -317,7 +364,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
 
               {/* Rechazado */}
               <button
-                onClick={() => handleStatusUpdate('Rechazado')}
+                onClick={handleRejectClick}
                 className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center 
                 transition-all transform hover:scale-105 active:scale-95"
               >
@@ -326,7 +373,7 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
               </button>
             </div>
 
-            {/* Botón Volver */}
+            {/* Botón Cerrar */}
             <div className="flex justify-end mt-6">
               <button 
                 onClick={closeModal}
@@ -334,6 +381,80 @@ const ValidarInscripciones: React.FC<ValidarInscripcionesProps> = ({ tutorId }) 
                 transition-all transform hover:scale-105 active:scale-95"
               >
                 Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para especificar motivo de rechazo */}
+      {isRejectModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-lg mx-4 relative">
+            {/* Botón cerrar */}
+            <button 
+              onClick={closeRejectModal}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Título con icono */}
+            <div className="flex items-center justify-center mb-6">
+              <AlertTriangle className="w-8 h-8 text-red-500 mr-3" />
+              <h2 className="text-xl font-semibold text-gray-800">
+                Motivo de Rechazo
+              </h2>
+            </div>
+
+            {/* Campo de texto */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <MessageCircle className="w-4 h-4 inline mr-1" />
+                Especifica el motivo del rechazo:
+              </label>
+              <textarea
+                value={motivoRechazo}
+                onChange={(e) => setMotivoRechazo(e.target.value)}
+                maxLength={255}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                rows={4}
+                placeholder="Ingresa el motivo por el cual se rechaza la inscripción..."
+              />
+              
+              {/* Contador de caracteres */}
+              <div className="flex justify-between items-center mt-2">
+                <span className="text-xs text-gray-500">
+                  Motivo requerido para proceder con el rechazo
+                </span>
+                <span className={`text-xs ${motivoRechazo.length > 230 ? 'text-red-500' : 'text-gray-500'}`}>
+                  {motivoRechazo.length}/255
+                </span>
+              </div>
+            </div>
+
+            {/* Botones de acción */}
+            <div className="flex gap-3 justify-end">
+              <button 
+                onClick={closeRejectModal}
+                className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-xl 
+                transition-all transform hover:scale-105 active:scale-95 flex items-center"
+              >
+                <X className="w-4 h-4 mr-2" />
+                Cancelar
+              </button>
+              
+              <button 
+                onClick={handleRejectSubmit}
+                disabled={motivoRechazo.trim() === ''}
+                className={`px-6 py-2 rounded-xl font-medium transition-all transform hover:scale-105 active:scale-95 flex items-center
+                  ${motivoRechazo.trim() === '' 
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                    : 'bg-red-500 hover:bg-red-600 text-white'
+                  }`}
+              >
+                <AlertTriangle className="w-4 h-4 mr-2" />
+                Rechazar Inscripción
               </button>
             </div>
           </div>

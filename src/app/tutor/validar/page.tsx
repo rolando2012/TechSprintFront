@@ -1,4 +1,3 @@
-// app/tutor/validar-inscripciones/page.tsx
 import ValidarInscripciones from '@/components/Tutor/ValidarInscripciones'
 import { cookies } from 'next/headers'
 import { jwtVerify } from 'jose'

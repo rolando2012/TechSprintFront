@@ -4,6 +4,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export interface CompetidoresByTutor{
     codComp: string,
+    codIns: number,
     nombre: string;
     apellidoPaterno: string;
     carnet: string;
@@ -43,13 +44,26 @@ export const fetchEstadosCompetidores = async (tutorId: number): Promise<Estado[
 };
 
 export async function updateEstadoInscripcion(
-  codComp: string,
+  codIns: number,
   nuevoEstado: string,
+  motivoRechazo?: string,       
 ): Promise<void> {
-  await axios.patch(`${BASE_URL}/competidor/${codComp}/estado`, {
+
+  const payload: { estado: string; motivoRechazo?: string } = {
     estado: nuevoEstado,
-  });
+  };
+
+  // 2. Si el estado es “Rechazado”, asegurarnos de que motivoRechazo exista
+  if (nuevoEstado === 'Rechazado') {
+    if (!motivoRechazo || motivoRechazo.trim() === '') {
+      throw new Error('Debe especificarse un motivo de rechazo cuando el estado es "Rechazado".');
+    }
+    payload.motivoRechazo = motivoRechazo.trim();
+  }
+
+  await axios.patch(`${BASE_URL}/competidor/${codIns}/estado`, payload);
 }
+
 export interface CompetidorConsulta {
   codComp: number;
   estadoInscripcion: string;
