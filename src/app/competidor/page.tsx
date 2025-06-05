@@ -1,12 +1,13 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { FaInfoCircle, FaCalendarAlt } from 'react-icons/fa'
 
 export default function CompetidorPage() {
   const options = [
-    { icon: <FaInfoCircle size={70} />, label: 'Consultar estado' },
-    { icon: <FaCalendarAlt size={70} />, label: 'Calendario' },
+    { icon: <FaInfoCircle size={70} />, label: 'Consultar estado', ruta: '' },
+    { icon: <FaCalendarAlt size={70} />, label: 'Calendario',ruta:'/competidor/calendario' },
   ]
 
   return (
@@ -25,15 +26,16 @@ export default function CompetidorPage() {
 
         {/* Opciones del Competidor */}
         <section className="bg-gray-200 py-10 px-4 flex flex-col md:flex-row justify-center gap-8">
-          {options.map(({ icon, label }) => (
-            <div
+          {options.map(({ icon, label, ruta }) => (
+            <Link
               key={label}
+              href={ruta}
               className="bg-[#B4B9C5] rounded-xl p-6 w-full max-w-[220px] flex flex-col items-center shadow hover:shadow-md 
               cursor-pointer hover:bg-bright-gray-400  transition-all transform hover:scale-105 active:scale-95"
             >
               <div className="text-6xl mb-4 text-gray-800">{icon}</div>
               <p className="font-semibold text-center text-gray-800">{label}</p>
-            </div>
+            </Link>
           ))}
         </section>
       </main>
