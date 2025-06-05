@@ -80,6 +80,7 @@ export interface CompetidorConsulta {
   departamento: string;
   municipio: string;
   estadoPago: string;
+  motivoRechazo?: string;
 }
 
 export const consultarCompetidor = async (

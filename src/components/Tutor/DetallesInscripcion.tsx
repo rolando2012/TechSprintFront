@@ -5,7 +5,8 @@ import {
   ClockIcon, 
   XCircleIcon,
   CreditCardIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  ExclamationCircleIcon
 } from '@heroicons/react/24/solid';
 import { RiFileTextFill } from "react-icons/ri";
 
@@ -15,6 +16,8 @@ interface DetallesInscripcionProps {
 }
 
 export default function DetallesInscripcion({ competidor, onVolver }: DetallesInscripcionProps) {
+  const isRechazado = competidor.estadoInscripcion?.toUpperCase() === 'RECHAZADO';
+
   const getEstadoInscripcionBadge = (estado: string) => {
     switch (estado?.toUpperCase()) {
       case 'VERIFICADO':
@@ -166,54 +169,88 @@ export default function DetallesInscripcion({ competidor, onVolver }: DetallesIn
           </div>
         </div>
 
-        {/* Información de Contacto */}
-        <div className="space-y-3 sm:space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-4">Información de Contacto</h3>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Número de Celular
-            </label>
-            <p className="text-gray-900">{competidor.celular}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Correo de Contacto
-            </label>
-            <p className="text-gray-900 break-all">{competidor.emailContacto}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Profesor o Tutor
-            </label>
-            <p className="text-gray-900 break-words">{competidor.tutorNombre}</p>
-          </div>
-        </div>
+        {/* Condicionalmente mostrar secciones normales o Motivo de Rechazo */}
+        {!isRechazado ? (
+          <>
+            {/* Información de Contacto */}
+            <div className="space-y-3 sm:space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-4">Información de Contacto</h3>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Número de Celular
+                </label>
+                <p className="text-gray-900">{competidor.celular}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Correo de Contacto
+                </label>
+                <p className="text-gray-900 break-all">{competidor.emailContacto}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Profesor o Tutor
+                </label>
+                <p className="text-gray-900 break-words">{competidor.tutorNombre}</p>
+              </div>
+            </div>
 
-        {/* Ubicación */}
-        <div className="space-y-3 sm:space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-4">Ubicación</h3>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Departamento
-            </label>
-            <p className="text-gray-900">{competidor.departamento}</p>
+            {/* Ubicación */}
+            <div className="space-y-3 sm:space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-4">Ubicación</h3>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Departamento
+                </label>
+                <p className="text-gray-900">{competidor.departamento}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Municipio
+                </label>
+                <p className="text-gray-900">{competidor.municipio}</p>
+              </div>
+            </div>
+          </>
+        ) : (
+          /* Motivo de Rechazo - Ocupa todo el espacio disponible */
+          <div className="md:col-span-2 space-y-3 sm:space-y-4">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <ExclamationCircleIcon className="h-8 w-8 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-red-900 mb-3">
+                    Motivo de Rechazo
+                  </h3>
+                  <div className="mb-4">
+                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                      <XCircleIcon className="w-5 h-5 mr-2" />
+                      Inscripción Rechazada
+                    </span>
+                  </div>
+                  <div className="bg-white border border-red-200 rounded-md p-4">
+                    <p className="text-red-800 leading-relaxed">
+                      {competidor.motivoRechazo || 'No se especificó un motivo de rechazo.'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Municipio
-            </label>
-            <p className="text-gray-900">{competidor.municipio}</p>
-          </div>
-        </div>
+        )}
       </div>
 
-      {/* Información de Pago - Responsive */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <h3 className="text-lg font-semibold text-gray-900">Información de Pago</h3>
-          <div>{getEstadoPagoBadge(competidor.estadoPago)}</div>
+      {/* Información de Pago - Solo si no está rechazado */}
+      {!isRechazado && (
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+            <h3 className="text-lg font-semibold text-gray-900">Información de Pago</h3>
+            <div>{getEstadoPagoBadge(competidor.estadoPago)}</div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Botón Volver - Responsive */}
       <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
