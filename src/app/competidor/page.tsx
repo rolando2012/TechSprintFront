@@ -6,7 +6,7 @@ import { FaInfoCircle, FaCalendarAlt } from 'react-icons/fa'
 
 export default function CompetidorPage() {
   const options = [
-    { icon: <FaInfoCircle size={70} />, label: 'Consultar estado', ruta: '' },
+    { icon: <FaInfoCircle size={70} />, label: 'Consultar estado', ruta: '/competidor/consulta' },
     { icon: <FaCalendarAlt size={70} />, label: 'Calendario',ruta:'/competidor/calendario' },
   ]
 
