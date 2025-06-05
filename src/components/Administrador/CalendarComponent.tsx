@@ -35,8 +35,7 @@ function CalendarComponent() {
   }, []);
 
   const handleShowCalendar = async () => {
-    if (!selectedCompetencia) return;
-    
+    if (!selectedCompetencia) return;   
     // Mostrar loading con SweetAlert2
     Swal.fire({
       title: 'Now loading',
@@ -50,8 +49,7 @@ function CalendarComponent() {
     try {
       const etapasData = await fetchEtapasCompetencia(selectedCompetencia);
       setEtapas(etapasData);
-      setShowCalendar(true);
-      
+      setShowCalendar(true);    
       // Cerrar loading y mostrar éxito
       Swal.fire({
         title: 'Finished!',
@@ -60,8 +58,7 @@ function CalendarComponent() {
         showConfirmButton: false
       });
     } catch (error) {
-      console.error('Error fetching etapas:', error);
-      
+      console.error('Error fetching etapas:', error);     
       // Mostrar error
       Swal.fire({
         title: 'Error!',
@@ -81,29 +78,45 @@ function CalendarComponent() {
   };
 
   function getDayColor(day: number | null) {
-    if (day === null) return '';
-    const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    const etapa = etapas.find(e => {
-      const start = new Date(e.fechaInicio);
-      const end = new Date(e.fechaFin);
-      return date >= start && date <= end;
-    });
-    if (!etapa) return '';
-    
-    // Determinar color basado en el nombre exacto de la etapa
-    switch (etapa.nombreEtapa) {
-      case 'Inscripciones':
-        return 'bg-blue-100 text-blue-800';
-      case 'Validación de Requisitos':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Pago de Inscripciones':
-        return 'bg-purple-100 text-purple-800';
-      case 'Competición':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-slate-100 text-slate-800';
-    }
+  if (day === null) return '';
+
+  // 1) Construimos la fecha del calendario (a medianoche local)
+  const date = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth(),
+    day
+  );
+  date.setHours(0, 0, 0, 0);
+
+  // 2) Buscamos la etapa, normalizando start y end
+  const etapa = etapas.find(e => {
+    const start = new Date(e.fechaInicio);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(e.fechaFin);
+    // Si quieres que incluya TODO el día de fin, puedes poner 23:59:59
+    end.setHours(23, 59, 59, 999);
+
+    return date >= start && date <= end;
+  });
+
+  if (!etapa) return '';
+
+  // 3) Si encontramos una etapa que “contiene” ese día, devolvemos la clase CSS
+  switch (etapa.nombreEtapa) {
+    case 'Inscripciones':
+      return 'bg-blue-100 text-blue-800';
+    case 'Validación de Requisitos':
+      return 'bg-yellow-100 text-yellow-800';
+    case 'Pago de Inscripciones':
+      return 'bg-purple-100 text-purple-800';
+    case 'Competición':
+      return 'bg-green-100 text-green-800';
+    default:
+      return 'bg-slate-100 text-slate-800';
   }
+}
+
 
   function getLegendColor(nombreEtapa: string) {
     const nombreLower = nombreEtapa.toLowerCase();
