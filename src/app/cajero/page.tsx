@@ -87,10 +87,7 @@ export default function CajeroPage() {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-        timeZone: 'America/La_Paz'
+        
       };
 
       // Formatear fechas para mostrar
@@ -117,9 +114,7 @@ export default function CajeroPage() {
               <p style="color: #0066cc; font-weight: bold; margin-top: 10px;">
                 📅 ${startFormatted}
               </p>
-              <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
-                (Hora de Bolivia)
-              </p>
+             
             </div>
           `,
           confirmButtonText: "Entendido"
@@ -143,9 +138,7 @@ export default function CajeroPage() {
               <p style="color: #cc0000; font-weight: bold; margin-top: 10px;">
                 📅 ${endFormatted}
               </p>
-              <p style="color: #666; margin-top: 10px; font-size: 0.9em;">
-                (Hora de Bolivia)
-              </p>
+             
             </div>
           `,
           confirmButtonText: "Entendido"
