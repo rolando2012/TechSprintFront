@@ -6,7 +6,7 @@ import { inter } from '@/config/fonts';
 import { getTutors } from '@/lib/api/registro';
 import {registrarCompetidor} from '@/lib/api/registro';
 import Swal from 'sweetalert2';
-import { Grab } from 'lucide-react';
+import { Grab, X } from 'lucide-react';
 
 const tutores = await getTutors();
 
@@ -22,6 +22,39 @@ export default function TutorAssignmentPage() {
       ...prev,
       [area]: { codTut: tutorId, nombre: nombreTutor } as TutorAssignmentData,
     }));
+  };
+
+  const onDeleteInscripcion = async (areaToDelete: string) => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: `Se eliminará la inscripción del área "${areaToDelete}"`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      // Eliminar de inscripciones
+      setInscripciones(prev => prev.filter(insc => insc.area !== areaToDelete));
+      
+      // Eliminar de tutorAssignments
+      setTutorAssignments(prev => {
+        const newAssignments = { ...prev };
+        delete newAssignments[areaToDelete];
+        return newAssignments;
+      });
+
+      Swal.fire({
+        title: 'Eliminado',
+        text: 'La inscripción ha sido eliminada correctamente',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    }
   };
 
   const onSubmit = async (e: FormEvent) => {
@@ -113,6 +146,7 @@ export default function TutorAssignmentPage() {
               <th className="py-2 px-4 text-left">Grado</th>
               <th className="py-2 px-4 text-left">Área(s) de competencia</th>
               <th className="py-2 px-4 text-left">Tutor asignado</th>
+              <th className="py-2 px-4 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -139,6 +173,16 @@ export default function TutorAssignmentPage() {
                         </option>
                       ))}
                     </select>
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    <button
+                      type="button"
+                      onClick={() => onDeleteInscripcion(insc.area)}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 text-red-600 hover:text-red-700 transition-colors duration-200"
+                      title={`Eliminar inscripción de ${insc.area}`}
+                    >
+                      <X size={16} />
+                    </button>
                   </td>
                 </tr>
               );
