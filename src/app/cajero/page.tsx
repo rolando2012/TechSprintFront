@@ -7,175 +7,194 @@ import { FaMoneyCheckAlt, FaHistory } from "react-icons/fa";
 
 export default function CajeroPage() {
   const router = useRouter();
+async function checkPago(): Promise<boolean> {
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+  
+  Swal.fire({
+    title: "Verificando fechas...",
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading(),
+  });
 
-  async function checkPago(): Promise<boolean> {
-    const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-    
-    Swal.fire({
-      title: "Verificando fechas...",
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
+  try {
+    // Fetch con configuración para evitar cache
+    const res = await fetch(`${BASE_URL}/consulta/competencia/pago-etapa-general`, {
+      method: 'GET',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      },
+      cache: 'no-store' // Next.js 15 cache configuration
     });
 
-    try {
-      // Fetch con configuración para evitar cache
-      const res = await fetch(`${BASE_URL}/consulta/competencia/pago-etapa-general`, {
-        method: 'GET',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        },
-        cache: 'no-store' // Next.js 15 cache configuration
-      });
+    if (!res.ok) {
+      throw new Error("No hay etapa de pago disponible.");
+    }
 
-      if (!res.ok) {
-        throw new Error("No hay etapa de pago disponible.");
-      }
+    const data = await res.json();
+    const { competenciaNombre, pagoEtapa } = data;
 
-      const data = await res.json();
-      const { competenciaNombre, pagoEtapa } = data;
+    // Validación de datos
+    if (!pagoEtapa || !pagoEtapa.fechaInicio || !pagoEtapa.horaInicio || 
+        !pagoEtapa.fechaFin || !pagoEtapa.horaFin) {
+      throw new Error("Datos de etapa de pago incompletos.");
+    }
 
-      // Validación de datos
-      if (!pagoEtapa || !pagoEtapa.fechaInicio || !pagoEtapa.horaInicio || 
-          !pagoEtapa.fechaFin || !pagoEtapa.horaFin) {
-        throw new Error("Datos de etapa de pago incompletos.");
-      }
-
-      // Función para convertir UTC a Bolivia (UTC-4)
-      const convertToBoliviaTime = (fechaUTC: string, horaUTC: string): Date => {
-        // Extraer fecha
-        const fecha = new Date(fechaUTC);
-        
-        // Extraer hora (viene como "1970-01-01T04:00:00.000Z")
-        const horaDate = new Date(horaUTC);
-        const horas = horaDate.getUTCHours();
-        const minutos = horaDate.getUTCMinutes();
-        const segundos = horaDate.getUTCSeconds();
-        
-        // Crear fecha completa en UTC
-        const fechaCompleta = new Date(Date.UTC(
-          fecha.getUTCFullYear(),
-          fecha.getUTCMonth(),
-          fecha.getUTCDate(),
-          horas,
-          minutos,
-          segundos
-        ));
-        
-        // Convertir a hora Bolivia (UTC-4)
-        // Restamos 4 horas para obtener la hora local de Bolivia
-        const fechaBolivia = new Date(fechaCompleta.getTime() - (4 * 60 * 60 * 1000));
-        
-        return fechaBolivia;
-      };
-
-      // Convertir fechas a hora Bolivia
-      const startBolivia = convertToBoliviaTime(pagoEtapa.fechaInicio, pagoEtapa.horaInicio);
-      const endBolivia = convertToBoliviaTime(pagoEtapa.fechaFin, pagoEtapa.horaFin);
+    // Función para crear fecha completa en hora de Bolivia
+    const createBoliviaDateTime = (fechaISO: string, horaISO: string): Date => {
+      // Extraer fecha (YYYY-MM-DD)
+      const fecha = new Date(fechaISO);
       
-      // Obtener fecha actual en Bolivia
-      const nowUTC = new Date();
-      const nowBolivia = new Date(nowUTC.getTime() - (4 * 60 * 60 * 1000));
+      // Extraer hora (viene como "1970-01-01T04:00:00.000Z")
+      const horaDate = new Date(horaISO);
+      const horas = horaDate.getUTCHours();
+      const minutos = horaDate.getUTCMinutes();
+      const segundos = horaDate.getUTCSeconds();
+      
+      // Crear fecha completa directamente en Bolivia (sin conversiones UTC)
+      // Usar los componentes de fecha directamente
+      const fechaCompleta = new Date(
+        fecha.getFullYear(),
+        fecha.getMonth(),
+        fecha.getDate(),
+        horas,
+        minutos,
+        segundos
+      );
+      
+      return fechaCompleta;
+    };
 
-      // Cerrar modal de loading
-      Swal.close();
+    // Crear fechas de inicio y fin en hora Bolivia
+    const startBolivia = createBoliviaDateTime(pagoEtapa.fechaInicio, pagoEtapa.horaInicio);
+    const endBolivia = createBoliviaDateTime(pagoEtapa.fechaFin, pagoEtapa.horaFin);
+    
+    // Obtener fecha actual de Bolivia
+    const nowBolivia = new Date();
 
-      // Opciones de formateo para Bolivia
-      const formatOptions: Intl.DateTimeFormatOptions = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        
-      };
+    // Cerrar modal de loading
+    Swal.close();
 
-      // Formatear fechas para mostrar
-      const startFormatted = startBolivia.toLocaleString("es-BO", formatOptions);
-      const endFormatted = endBolivia.toLocaleString("es-BO", formatOptions);
+    // Opciones de formateo para Bolivia
+    const formatOptions: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'America/La_Paz'
+    };
 
-      console.log('Fechas debug:', {
-        startUTC: pagoEtapa.fechaInicio,
-        horaUTC: pagoEtapa.horaInicio,
-        startBolivia: startBolivia.toISOString(),
-        nowBolivia: nowBolivia.toISOString(),
-        endBolivia: endBolivia.toISOString()
-      });
+    // Formatear fechas para mostrar
+    const startFormatted = startBolivia.toLocaleString("es-BO", formatOptions);
+    const endFormatted = endBolivia.toLocaleString("es-BO", formatOptions);
 
-      // Verificar estado de la etapa
-      if (nowBolivia < startBolivia) {
-        // Antes de la apertura
-        await Swal.fire({
-          icon: "info",
-          title: "Aún no disponible",
-          html: `
-            <div style="text-align: left; padding: 10px;">
-              <p><strong>La etapa de Pago de Inscripciones de "${competenciaNombre}" se habilitará el:</strong></p>
-              <p style="color: #0066cc; font-weight: bold; margin-top: 10px;">
+    // Debug para verificar fechas
+    console.log('Fechas pago debug:', {
+      fechaInicioOriginal: pagoEtapa.fechaInicio,
+      horaInicioOriginal: pagoEtapa.horaInicio,
+      startBolivia: startBolivia.toString(),
+      nowBolivia: nowBolivia.toString(),
+      endBolivia: endBolivia.toString(),
+      startFormatted,
+      endFormatted,
+      comparacion: {
+        antesDeInicio: nowBolivia < startBolivia,
+        dentroDelPeriodo: nowBolivia >= startBolivia && nowBolivia <= endBolivia,
+        despuesDelFin: nowBolivia > endBolivia
+      }
+    });
+
+    // Verificar estado de la etapa
+    if (nowBolivia < startBolivia) {
+      // Antes de la apertura
+      await Swal.fire({
+        icon: "info",
+        title: "Aún no disponible",
+        html: `
+          <div style="text-align: left; padding: 15px;">
+            <p><strong>La etapa de Pago de Inscripciones de "${competenciaNombre}" se habilitará el:</strong></p>
+            <div style="background-color: #e8f4fd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #2196f3;">
+              <p style="color: #1976d2; font-weight: bold; font-size: 1.1em; margin: 0;">
                 📅 ${startFormatted}
               </p>
-             
             </div>
-          `,
-          confirmButtonText: "Entendido"
-        });
-        return false;
-      }
-
-      if (nowBolivia >= startBolivia && nowBolivia <= endBolivia) {
-        // Durante el periodo válido
-        return true;
-      }
-
-      if (nowBolivia > endBolivia) {
-        // Después de la fecha de fin
-        await Swal.fire({
-          icon: "warning",
-          title: "Fecha de pago finalizada",
-          html: `
-            <div style="text-align: left; padding: 10px;">
-              <p><strong>La etapa de Pago de Inscripciones de "${competenciaNombre}" finalizó el:</strong></p>
-              <p style="color: #cc0000; font-weight: bold; margin-top: 10px;">
-                📅 ${endFormatted}
-              </p>
-             
-            </div>
-          `,
-          confirmButtonText: "Entendido"
-        });
-        return false;
-      }
-
-      return false;
-
-    } catch (err: any) {
-      // Cerrar loading y mostrar error
-      Swal.close();
-      
-      console.error('Error en checkPago:', err);
-      
-      await Swal.fire({
-        icon: "error",
-        title: "Error de conexión",
-        html: `
-          <div style="text-align: left; padding: 10px;">
-            <p><strong>No se pudo verificar las fechas de pago:</strong></p>
-            <p style="color: #cc0000; margin-top: 10px;">
-              ${err.message || "Error desconocido al conectar con el servidor."}
-            </p>
-            <p style="color: #666; margin-top: 15px; font-size: 0.9em;">
-              Por favor, verifica tu conexión a internet y vuelve a intentar.
+            <p style="color: #666; font-size: 0.9em; text-align: center;">
+              (Hora de Bolivia)
             </p>
           </div>
         `,
-        confirmButtonText: "Reintentar",
-        showCancelButton: true,
-        cancelButtonText: "Volver"
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#2196f3"
       });
-      
       return false;
     }
+
+    if (nowBolivia >= startBolivia && nowBolivia <= endBolivia) {
+      // Durante el periodo válido
+      return true;
+    }
+
+    if (nowBolivia > endBolivia) {
+      // Después de la fecha de fin
+      await Swal.fire({
+        icon: "warning",
+        title: "Fecha de pago finalizada",
+        html: `
+          <div style="text-align: left; padding: 15px;">
+            <p><strong>La etapa de Pago de Inscripciones de "${competenciaNombre}" finalizó el:</strong></p>
+            <div style="background-color: #fff8e1; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ff9800;">
+              <p style="color: #f57c00; font-weight: bold; font-size: 1.1em; margin: 0;">
+                📅 ${endFormatted}
+              </p>
+            </div>
+            <p style="color: #666; font-size: 0.9em; text-align: center;">
+              (Hora de Bolivia)
+            </p>
+          </div>
+        `,
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#ff9800"
+      });
+      return false;
+    }
+
+    return false;
+
+  } catch (err: any) {
+    // Cerrar loading y mostrar error
+    Swal.close();
+    
+    console.error('Error en checkPago:', err);
+    
+    await Swal.fire({
+      icon: "error",
+      title: "Error de conexión",
+      html: `
+        <div style="text-align: left; padding: 15px;">
+          <p><strong>No se pudo verificar las fechas de pago:</strong></p>
+          <div style="background-color: #ffebee; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f44336;">
+            <p style="color: #d32f2f; font-weight: bold; margin: 0;">
+              ${err.message || "Error desconocido al conectar con el servidor."}
+            </p>
+          </div>
+          <p style="color: #666; font-size: 0.9em; text-align: center;">
+            Por favor, verifica tu conexión a internet y vuelve a intentar.
+          </p>
+        </div>
+      `,
+      confirmButtonText: "Reintentar",
+      confirmButtonColor: "#f44336",
+      showCancelButton: true,
+      cancelButtonText: "Volver"
+    });
+    
+    return false;
   }
+}
 
   const handlePagosPendientes = async () => {
     try {
