@@ -122,7 +122,7 @@ export default function CompetenciasPage() {
         >
           Volver
         </Link>
-        <Link
+        {/* <Link
           href="/administrador/lista/crear/datos-comp"
           className="sm:absolute sm:left-1/2 sm:transform sm:-translate-x-1/2 w-full sm:w-auto flex items-center 
           justify-center text-lg sm:text-xl px-6 sm:px-12 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-700 
@@ -130,7 +130,7 @@ export default function CompetenciasPage() {
         >
           <GoPlusCircle className="h-6 w-6 sm:h-8 sm:w-8 mr-2" />
           Agregar Competencia
-        </Link>
+        </Link> */}
       </div>
     </div>
   );
