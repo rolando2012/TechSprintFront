@@ -69,6 +69,7 @@ export interface CompetidorConsulta {
   estadoInscripcion: string;
   nombre: string;
   carnet: string;
+  email: string;
   fechaNac: string;
   celular: string;
   emailContacto: string;

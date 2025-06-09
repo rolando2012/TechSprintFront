@@ -136,7 +136,7 @@ export default function DetallesInscripcion({ competidor, onVolver }: DetallesIn
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Correo Electrónico
             </label>
-            <p className="text-gray-900 break-all">{competidor.emailContacto}</p>
+            <p className="text-gray-900 break-all">{competidor.email}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
