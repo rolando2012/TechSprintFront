@@ -219,7 +219,18 @@ export default function CompetenciasPage() {
 
   useEffect(() => {
     fetchCompetenciasAPI()
-      .then(data => setCompetencias(data))
+      .then(data => {
+      // data es [{ codCompet, nombreCompet, … }]
+      const mapped = data.map(c => ({
+        codCompet: c.codCompet.toString(),
+        nombreCompet: c.nombreCompet,
+        gestion: c.gestion.toString(),
+        fechaIni: c.fechaIni,
+        fechaFin: c.fechaFin,
+        costo: c.costo.toString()
+      }));
+      setCompetencias(mapped);
+    })
       .catch(console.error)
       .finally(() => setIsLoading(false));
   }, []);
@@ -261,14 +272,14 @@ export default function CompetenciasPage() {
             <div className="col-span-1 p-2 font-semibold text-center">Editar</div>
           </div>
           {competencias.map(c => (
-            <div key={c.codComp} className="grid grid-cols-13 bg-white border-b hover:bg-gray-50 text-sm transition-colors">
+            <div key={c.codCompet} className="grid grid-cols-13 bg-white border-b hover:bg-gray-50 text-sm transition-colors">
               <div className="col-span-3 p-2 font-medium text-gray-900">{c.nombreCompet}</div>
               <div className="col-span-2 p-2 font-medium text-gray-900">{c.gestion}</div>
               <div className="col-span-3 p-2 text-gray-700">{new Date(c.fechaIni).toLocaleDateString('es-BO')}</div>
               <div className="col-span-3 p-2 text-gray-700">{new Date(c.fechaFin).toLocaleDateString('es-BO')}</div>
               <div className="colspan-1 p-2 text-center text-gray-700 font-medium">{c.costo}</div>
               <div className="col-span-1 p-2 text-center">
-                <button onClick={() => handleEditClick(c.codComp)} className="text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-1 rounded-md transition-colors" aria-label="Editar">
+                <button onClick={() => handleEditClick(c.codCompet)} className="text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-1 rounded-md transition-colors" aria-label="Editar">
                   <Edit size={16} />
                 </button>
               </div>

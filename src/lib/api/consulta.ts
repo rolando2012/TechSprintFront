@@ -2,16 +2,6 @@ import axios from 'axios';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
- export interface Competencia {
-  id: string;
-  nombreCompet: string;
-  version: string;
-  fecha: string; 
-  fechaFin: string;
-  costo: string;
-}
-
-
 export interface Area {
   nombreArea: string;
   codArea: number;

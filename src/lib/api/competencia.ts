@@ -33,7 +33,7 @@ export type Stage = {
   }
   
   export interface Competencia {
-    codComp: string;
+    codCompet: string;
     nombreCompet: string;
     gestion: string;
     fechaIni: string;
