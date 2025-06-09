@@ -24,7 +24,7 @@ export const obtenerAreas = async (competidorId: string): Promise<Area[]> => {
 export interface CompetidorConsulta {
   codComp: number;
   estadoInscripcion: string;
-  nombre: string;
+  nombreCompetidor: string;
   carnet: string;
   fechaNac: string;
   celular: string;

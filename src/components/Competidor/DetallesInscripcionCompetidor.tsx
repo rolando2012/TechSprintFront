@@ -1,5 +1,5 @@
 'use client';
-import { CompetidorConsulta } from '@/lib/api/competidor';
+import { CompetidorConsulta } from '@/lib/api/consulta';
 import { 
   CheckCircleIcon, 
   ClockIcon, 
@@ -131,7 +131,7 @@ export default function DetallesInscripcionCompetidor({ competidor, onVolver }: 
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Nombres y Apellidos
               </label>
-              <p className="text-gray-900 break-words">{competidor.nombre}</p>
+              <p className="text-gray-900 break-words">{competidor.nombreCompetidor}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

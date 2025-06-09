@@ -82,7 +82,7 @@ export default function CompetenciasPage() {
               <div className="col-span-3 p-2 sm:p-3 font-semibold">Fecha Inicio</div>
               <div className="col-span-3 p-2 sm:p-3 font-semibold">Fecha Fin</div>
               <div className="col-span-1 p-2 sm:p-3 font-semibold text-center">Costo</div>
-              {/* <div className="col-span-1 p-2 sm:p-3 font-semibold text-center">Editar</div> */}
+              <div className="col-span-1 p-2 sm:p-3 font-semibold text-center">Editar</div>
             </div>
 
             {/* Filas de datos */}
@@ -97,12 +97,12 @@ export default function CompetenciasPage() {
                 <div className="col-span-3 p-2 sm:p-3 text-gray-700">{formatFecha(comp.fechaFin)}</div>
                 <div className="col-span-1 p-2 sm:p-3 text-center text-gray-700 font-medium">{comp.costo}</div>
                 <div className="col-span-1 p-2 sm:p-3 flex justify-center items-center">
-                  {/* <button 
+                  <button 
                     className="text-gray-600 hover:text-blue-600 p-1 rounded-md hover:bg-blue-50 transition-colors" 
                     aria-label="Editar"
                   >
                     <Edit size={16} />
-                  </button> */}
+                  </button>
                 </div>
               </div>
             ))}
